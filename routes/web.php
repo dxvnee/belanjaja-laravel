@@ -22,3 +22,8 @@ Route::middleware([
         return Inertia::render('Dashboard');
     })->name('dashboard');
 });
+
+Route::prefix('admin')->name('admin.')->middleware(['auth', 'admin'])->group(function(){
+    Route::resource('products', ProductController::class);
+}
+);

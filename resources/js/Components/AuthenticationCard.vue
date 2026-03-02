@@ -1,10 +1,18 @@
 <template>
-    <div class="min-h-screen flex flex-col sm:justify-center items-center pt-6 sm:pt-0 bg-gray-100 dark:bg-gray-900">
-        <div>
+    <div
+        class="min-h-screen flex flex-col justify-center items-center p-5 bg-primary-50"
+    >
+        <div class="flex flex-row items-center">
             <slot name="logo" />
+            <div class="flex flex-col gap-1">
+                <h1 class="text-5xl font-black text-primary-600">Belanjaja!</h1>
+                <h1 class="text-md text-black">Beli semua dengan mudah :)</h1>
+            </div>
         </div>
 
-        <div class="w-full sm:max-w-md mt-6 px-6 py-4 bg-white dark:bg-gray-800 shadow-md overflow-hidden sm:rounded-lg">
+        <div
+            class="w-full max-w-md mt-2 px-6 py-4 bg-white dark:bg-gray-800 overflow-hidden rounded-lg"
+        >
             <slot />
         </div>
     </div>
