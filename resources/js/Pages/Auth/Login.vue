@@ -7,6 +7,7 @@ import InputError from "@/Components/InputError.vue";
 import InputLabel from "@/Components/InputLabel.vue";
 import PrimaryButton from "@/Components/PrimaryButton.vue";
 import TextInput from "@/Components/TextInput.vue";
+import LinkSentence from "@/Components/LinkSentence.vue";
 
 defineProps({
     canResetPassword: Boolean,
@@ -59,6 +60,8 @@ const submit = () => {
                     required
                     autofocus
                     autocomplete="username"
+                    placeholder="Email"
+                    icon ="email"
                 />
                 <InputError class="mt-2" :message="form.errors.email" />
             </div>
@@ -72,6 +75,7 @@ const submit = () => {
                     class="mt-1 block w-full"
                     required
                     autocomplete="current-password"
+                    icon="lock"
                 />
                 <InputError class="mt-2" :message="form.errors.password" />
             </div>
@@ -92,7 +96,7 @@ const submit = () => {
                 </Link>
             </div>
 
-            <div class="mt-10">
+            <div class="mt-10 gap-2 flex flex-col items-center">
                 <PrimaryButton
                     class="w-full font-bold"
                     :class="{ 'opacity-25': form.processing }"
@@ -100,6 +104,7 @@ const submit = () => {
                 >
                     Log in
                 </PrimaryButton>
+                <LinkSentence text1="Don't have an account?" text2="Register" :link="route('register')" />
             </div>
         </form>
     </AuthenticationCard>
