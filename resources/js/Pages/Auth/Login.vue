@@ -99,8 +99,7 @@ const submit = () => {
             <div class="mt-10 gap-2 flex flex-col items-center">
                 <PrimaryButton
                     class="w-full font-bold"
-                    :class="{ 'opacity-25': form.processing }"
-                    :disabled="form.processing"
+                    :loading="form.processing"
                 >
                     Log in
                 </PrimaryButton>

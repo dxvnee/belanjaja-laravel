@@ -1,6 +1,7 @@
 <script setup>
 import { onMounted, ref, useAttrs } from "vue";
 import { Icons } from "@/Icons";
+import { EyeIcon, EyeSlashIcon } from "@heroicons/vue/20/solid";
 
 const attrs = useAttrs();
 defineProps({
@@ -9,11 +10,24 @@ defineProps({
         type: String,
         default: null,
     },
+    type: {
+        type: String,
+        default: "text",
+    },
+    iconClick: {
+        type: Function,
+        default: null,
+    }
 });
 
 defineEmits(["update:modelValue"]);
 
 const input = ref(null);
+const showPassword = ref(false);
+
+const togglePassword = () => {
+    showPassword.value = !showPassword.value;
+}
 
 onMounted(() => {
     if (input.value.hasAttribute("autofocus")) {
@@ -29,7 +43,11 @@ defineExpose({ focus: () => input.value.focus() });
         <component
             v-if="icon && Icons[icon]"
             :is="Icons[icon]"
-            class="h-5 w-5 text-gray-400 absolute left-3 top-1/2 -translate-y-1/2"
+            :class="[
+                'h-5 w-5 text-gray-400 absolute left-3 top-1/2 -translate-y-1/2 z-10',
+                iconClick ? 'cursor-pointer' : 'pointer-events-none',
+            ]"
+            @click="iconClick ? iconClick() : null"
         />
         <input
             ref="input"
@@ -40,6 +58,13 @@ defineExpose({ focus: () => input.value.focus() });
             ]"
             :value="modelValue"
             @input="$emit('update:modelValue', $event.target.value)"
+            :type="type === 'password' ? (showPassword ? 'text' : 'password') : type"
+        />
+        <component
+            v-if="type === 'password'"
+            :is="showPassword ? EyeSlashIcon : EyeIcon"
+            @click="togglePassword"
+            class="h-5 w-5 text-gray-400 absolute right-3 top-1/2 -translate-y-1/2 cursor-pointer"
         />
     </div>
 </template>

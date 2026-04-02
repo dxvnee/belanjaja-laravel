@@ -1,12 +1,26 @@
 <script setup>
 import { Link } from '@inertiajs/vue3';
+import { computed } from 'vue';
+
+const props = defineProps({
+    size: {
+        type: [String, Number],
+        default: 128,
+    },
+});
+
+const logoSize = computed(() => {
+    return typeof props.size === 'number' ? `${props.size}px` : props.size;
+});
+
 </script>
 
 <template>
-    <Link :href="'/'" class="text-primary-600 hover:text-primary-700 transition">
+    <Link :href="'/'" class="inline-flex items-center text-primary-600 hover:text-primary-700 transition">
         <svg
-            class="size-32"
-            viewBox="0 0 48  48"
+            :style="{ width: logoSize, height: logoSize }"
+            class="shrink-0"
+            viewBox="0 0 48 48"
             fill="none"
             xmlns="http://www.w3.org/2000/svg"
         >

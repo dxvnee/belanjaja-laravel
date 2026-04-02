@@ -9,7 +9,18 @@
 .animate-input-error {
     animation: input-error-enter 220ms ease-out;
 }
-
+.borderb {
+    --tw-border-opacity: 1;
+    border-color: rgb(0 0 0 / var(--tw-border-opacity, 1));
+    border-width: 1px;
+}
+.no-scrollbar::-webkit-scrollbar {
+    display: none;
+}
+.no-scrollbar {
+    -ms-overflow-style: none;
+    scrollbar-width: none;
+}
 @keyframes input-error-enter {
     from {
         opacity: 0;
