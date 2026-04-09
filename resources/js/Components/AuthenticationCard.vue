@@ -1,3 +1,7 @@
+<script setup lang="ts">
+import Card from "./Card.vue";
+</script>
+
 <template>
     <div
         class="min-h-screen flex flex-col justify-center items-center p-5 bg-primary-50"
@@ -10,10 +14,8 @@
             </div>
         </div>
 
-        <div
-            class="w-full max-w-md mt-2 px-6 py-4 bg-white dark:bg-gray-800 overflow-hidden rounded-lg"
-        >
+        <card>
             <slot />
-        </div>
+        </card>
     </div>
 </template>

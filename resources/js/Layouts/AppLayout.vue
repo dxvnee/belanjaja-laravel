@@ -15,7 +15,10 @@ defineProps({
 
         <Banner />
 
-        <div class="min-h-screen" :style="{ backgroundColor: theme.background }">
+        <div
+            class="min-h-screen"
+            :style="{ backgroundColor: theme.background }"
+        >
             <AppNavbar />
 
             <header
@@ -28,7 +31,9 @@ defineProps({
             </header>
 
             <main>
-                <slot />
+                <div class="py-6 mx-auto w-full max-w-7xl px-4 sm:px-6 lg:px-8">
+                    <slot />
+                </div>
             </main>
         </div>
     </div>

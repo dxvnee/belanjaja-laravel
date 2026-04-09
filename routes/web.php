@@ -21,9 +21,14 @@ Route::middleware([
     Route::get('/dashboard', function () {
         return Inertia::render('Dashboard');
     })->name('dashboard');
+
+    Route::get('/jual', function () {
+        return Inertia::render('Jual');
+    })->name('jual.index');
 });
 
-Route::prefix('admin')->name('admin.')->middleware(['auth', 'admin'])->group(function(){
-    Route::resource('products', ProductController::class);
-}
+Route::prefix('admin')->name('admin.')->middleware(['auth', 'admin'])->group(
+    function () {
+        Route::resource('products', ProductController::class);
+    }
 );

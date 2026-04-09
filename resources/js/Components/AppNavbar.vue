@@ -43,21 +43,27 @@ const submit = () => {
 const logout = () => {
     router.post(route("logout"));
 };
+
+const jual = () => {
+    router.get(route("jual.index"));
+};
 </script>
 
 <template>
     <nav
-        class="bg-white dark:bg-gray-800 border-b border-gray-100 dark:border-gray-700"
+        class="w-full border-gray-300 bg-white dark:border-gray-700 dark:bg-gray-800 border"
     >
         <!-- Primary Navigation Menu -->
         <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-            <div class="flex justify-between h-16">
+            <div class="flex justify-between items-center h-16">
                 <div class="flex items-center">
                     <!-- Logo -->
                     <div class="flex items-center">
                         <AuthenticationCardLogo :size="64" />
                     </div>
-                    <h1 class="text-2xl font-black text-primary-600">Belanjaja!</h1>
+                    <h1 class="text-2xl font-black text-primary-600">
+                        Belanjaja!
+                    </h1>
                 </div>
 
                 <div class="hidden sm:flex sm:items-center sm:ms-6 w-full">
@@ -85,7 +91,7 @@ const logout = () => {
                                     'opacity-25': form.processing,
                                 }"
                                 :disabled="form.processing"
-                                @click="logout"
+                                @click="jual"
                             >
                                 + Jual
                             </PrimaryButton>
@@ -95,7 +101,9 @@ const logout = () => {
 
                 <!-- Hamburger -->
                 <Hamburger
-                    v-model:showingNavigationDropdown="showingNavigationDropdown"
+                    v-model:showingNavigationDropdown="
+                        showingNavigationDropdown
+                    "
                 />
             </div>
         </div>
@@ -118,7 +126,9 @@ const logout = () => {
             </div>
 
             <!-- Responsive Settings Options -->
-            <div class="pt-4 pb-1 border-t border-gray-200 dark:border-gray-600">
+            <div
+                class="pt-4 pb-1 border-t border-gray-200 dark:border-gray-600"
+            >
                 <div class="flex items-center px-4">
                     <div
                         v-if="$page.props.jetstream.managesProfilePhotos"
@@ -161,12 +171,16 @@ const logout = () => {
 
                     <!-- Authentication -->
                     <form method="POST" @submit.prevent="logout">
-                        <ResponsiveNavLink as="button">Log Out</ResponsiveNavLink>
+                        <ResponsiveNavLink as="button"
+                            >Log Out</ResponsiveNavLink
+                        >
                     </form>
 
                     <!-- Team Management -->
                     <template v-if="$page.props.jetstream.hasTeamFeatures">
-                        <div class="border-t border-gray-200 dark:border-gray-600" />
+                        <div
+                            class="border-t border-gray-200 dark:border-gray-600"
+                        />
 
                         <div class="block px-4 py-2 text-xs text-gray-400">
                             Manage Team
@@ -194,7 +208,9 @@ const logout = () => {
                         </ResponsiveNavLink>
 
                         <!-- Team Switcher -->
-                        <template v-if="$page.props.auth.user.all_teams.length > 1">
+                        <template
+                            v-if="$page.props.auth.user.all_teams.length > 1"
+                        >
                             <div
                                 class="border-t border-gray-200 dark:border-gray-600"
                             />
