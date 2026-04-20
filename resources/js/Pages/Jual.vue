@@ -1,6 +1,7 @@
 <script setup>
 import Card from "@/Components/Card.vue";
 import InputGambar from "@/Components/InputGambar.vue";
+import InputError from "@/Components/InputError.vue";
 import InputLabel from "@/Components/InputLabel.vue";
 import PrimaryButton from "@/Components/PrimaryButton.vue";
 import TextInput from "@/Components/TextInput.vue";
@@ -13,9 +14,17 @@ const form = useForm({
     judul: "",
     harga: "",
     deskripsi: "",
+    photo1: null,
+    photo2: null,
+    photo3: null,
 });
 
-const submit = () => {};
+const submit = () => {
+    form.post(route("jual.store"), {
+        preserveScroll: true,
+        forceFormData: true,
+    });
+};
 </script>
 
 <template>
@@ -38,24 +47,31 @@ const submit = () => {};
                     Foto Anda akan menjadi foto sampul/thumbnail
                 </p>
 
-                <div class="grid grid-cols-1 gap-4 pb-5 pt-4 sm:grid-cols-2 lg:grid-cols-3">
-                    <div
-                        v-for="slot in photoSlots"
-                        :key="slot"
-                        class="flex flex-col gap-2"
-                    >
-                        <InputGambar />
-                        <p class="text-sm text-black text-center">
-                            Foto {{ slot }}
-                        </p>
-                    </div>
-                </div>
-
-                <p class="text-lg font-medium text-black">
-                    Berikan Detail Item Anda
-                </p>
-
                 <form @submit.prevent="submit">
+                    <div
+                        class="grid grid-cols-1 gap-4 pb-5 pt-4 sm:grid-cols-2 lg:grid-cols-3"
+                    >
+                        <div
+                            v-for="slot in photoSlots"
+                            :key="slot"
+                            class="flex flex-col gap-2"
+                        >
+                            <InputGambar v-model="form[`photo${slot}`]" />
+                            <InputError
+                                class="mt-1"
+                                :message="form.errors[`photo${slot}`]"
+                            />
+
+                            <p class="text-sm text-black text-center">
+                                Foto {{ slot }}
+                            </p>
+                        </div>
+                    </div>
+
+                    <p class="text-lg font-medium text-black">
+                        Berikan Detail Item Anda
+                    </p>
+
                     <div class="space-y-4">
                         <div class="grid grid-cols-1 gap-5 md:grid-cols-2">
                             <div class="flex-1">
@@ -71,6 +87,10 @@ const submit = () => {};
                                     placeholder="Judul Iklan"
                                     icon="iklan"
                                 />
+                                <InputError
+                                    class="mt-2"
+                                    :message="form.errors.judul"
+                                />
                             </div>
 
                             <div class="flex-1">
@@ -84,6 +104,10 @@ const submit = () => {};
                                     autocomplete="off"
                                     placeholder="Harga"
                                     icon="harga"
+                                />
+                                <InputError
+                                    class="mt-2"
+                                    :message="form.errors.harga"
                                 />
                             </div>
                         </div>
@@ -99,6 +123,10 @@ const submit = () => {};
                                 placeholder="Deskripsi"
                                 icon="deskripsi"
                             />
+                            <InputError
+                                class="mt-2"
+                                :message="form.errors.deskripsi"
+                            />
                         </div>
 
                         <div class="flex justify-end pt-2">
@@ -108,6 +136,7 @@ const submit = () => {};
                                     'opacity-25': form.processing,
                                 }"
                                 :disabled="form.processing"
+                                type="submit"
                             >
                                 Jual
                             </PrimaryButton>

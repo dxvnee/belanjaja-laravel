@@ -3,6 +3,7 @@ import { Head } from "@inertiajs/vue3";
 import Banner from "@/Components/Banner.vue";
 import { theme } from "@/theme.js";
 import AppNavbar from "@/Components/AppNavbar.vue";
+import BottomBar from "@/Components/BottomBar.vue";
 
 defineProps({
     title: String,
@@ -35,6 +36,8 @@ defineProps({
                     <slot />
                 </div>
             </main>
+
+            <BottomBar />
         </div>
     </div>
 </template>

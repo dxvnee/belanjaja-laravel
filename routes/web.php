@@ -1,5 +1,8 @@
 <?php
 
+use App\Http\Controllers\DashboardController;
+use App\Http\Controllers\JualController;
+use App\Http\Controllers\ProductController;
 use Illuminate\Foundation\Application;
 use Illuminate\Support\Facades\Route;
 use Inertia\Inertia;
@@ -18,17 +21,14 @@ Route::middleware([
     config('jetstream.auth_session'),
     'verified',
 ])->group(function () {
-    Route::get('/dashboard', function () {
-        return Inertia::render('Dashboard');
-    })->name('dashboard');
+    Route::get('/dashboard', [DashboardController::class, 'index'])->name('dashboard');
 
     Route::get('/jual', function () {
         return Inertia::render('Jual');
     })->name('jual.index');
-});
 
-Route::prefix('admin')->name('admin.')->middleware(['auth', 'admin'])->group(
-    function () {
-        Route::resource('products', ProductController::class);
-    }
-);
+    Route::get('/product/{id}', [ProductController::class, 'show'])->name('product.show');
+
+    Route::post('/jual', [JualController::class, 'index'])->name('jual.index');
+    Route::post('/jual', [JualController::class, 'store'])->name('jual.store');
+});

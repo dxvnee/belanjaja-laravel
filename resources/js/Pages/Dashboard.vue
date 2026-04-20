@@ -1,6 +1,16 @@
 <script setup>
+import EmptyState from "@/Components/EmptyState.vue";
+import ProductCard from "@/Components/ProductCard.vue";
 import AppLayout from "@/Layouts/AppLayout.vue";
-import { ref } from "vue";
+import { router } from "@inertiajs/vue3";
+import { ref, computed } from "vue";
+
+defineProps({
+    products: {
+        type: Array,
+        default: () => [],
+    },
+});
 
 const container = ref(null);
 const current = ref(0);
@@ -17,6 +27,9 @@ const scrollToIndex = (index) => {
     current.value = index;
 };
 
+const goToProductDetail = (id) => {
+    router.visit(route('product.show', { id }));
+};
 const buttonColor = (index) => {
     return index === current.value
         ? "bg-primary-600 h-3 w-3"
@@ -32,16 +45,17 @@ const onMouseWheel = (event) => {
         behavior: "smooth",
     });
 
-    current.value = Math.round((el.scrollLeft + event.deltaY) / (maxScrollLeft / 4));
+    current.value = Math.round(
+        (el.scrollLeft + event.deltaY) / (maxScrollLeft / 4),
+    );
     console.log(el.scrollLeft, event.deltaY, current.value);
-
 };
 </script>
 
 <template>
     <AppLayout title="Belanjaja">
         <div class="py-12">
-            <div class="mx-auto w-full max-w-7xl px-4 sm:px-6 lg:px-8">
+            <div class="mx-auto w-full max-w-7xl ">
                 <div class="h-[180px] sm:h-[220px] md:h-64">
                     <div
                         ref="container"
@@ -63,7 +77,9 @@ const onMouseWheel = (event) => {
                             </div>
                         </div>
                     </div>
-                    <div class="m-2 flex items-center justify-center gap-1 sm:mt-3">
+                    <div
+                        class="m-2 flex items-center justify-center gap-1 sm:mt-3"
+                    >
                         <div
                             v-for="i in 5"
                             :key="i"
@@ -75,6 +91,37 @@ const onMouseWheel = (event) => {
                             ></button>
                         </div>
                     </div>
+                </div>
+            </div>
+        </div>
+        <div class="mx-auto w-full max-w-7xl">
+            <h2
+                class="font-semibold text-xl text-gray-800 dark:text-gray-200 leading-tight mb-2"
+            >
+                Produk Baru
+            </h2>
+            <p class="text-md text-gray-600 dark:text-gray-400 mb-6">
+                Pilih kategori barang yang ingin kamu beli!
+            </p>
+
+            <div
+                v-if="products.length === 0"
+                class="text-center py-12 text-gray-500"
+            >
+                <EmptyState message="Belum ada produk yang tersedia" />
+            </div>
+
+
+            <div
+                v-else
+                class="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5 gap-4"
+            >
+                <div
+                    v-for="product in products"
+                    :key="product.id"
+                    class="bg-white dark:bg-gray-800 rounded-lg shadow-md overflow-hidden hover:shadow-xl transition-shadow duration-300 cursor-pointer"
+                >
+                    <ProductCard :onClick="() => goToProductDetail(product.id)" :product="product" />
                 </div>
             </div>
         </div>
