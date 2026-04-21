@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use App\Models\Product;
 use App\Models\ProductImage;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Str;
 
 class JualController extends Controller
@@ -23,16 +24,19 @@ class JualController extends Controller
             'photo1' => ['nullable', 'image', 'max:2048'],
             'photo2' => ['nullable', 'image', 'max:2048'],
             'photo3' => ['nullable', 'image', 'max:2048'],
+            'kategori' => ['required', 'numeric', 'max:6'],
         ]);
 
         // Create product
         $product = Product::create([
+            'user_id' => Auth::id(),
             'name' => $validated['judul'],
             'slug' => $this->generateUniqueSlug($validated['judul']),
             'description' => $validated['deskripsi'],
             'price' => $validated['harga'],
             'stock' => 1,
-            'is_active' => true,
+            'is_act ive' => true,
+            'category_id' => $validated['kategori'],
         ]);
 
         // Store product images

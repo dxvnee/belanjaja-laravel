@@ -20,7 +20,10 @@ const previewUrl = computed(() => {
 
 <template>
     <label
-        class="w-full h-48 border-2 border-gray-300 border-dashed rounded-lg flex items-center justify-center cursor-pointer"
+        :class="[
+            'w-full h-48 border-2 border-gray-300 rounded-lg flex items-center justify-center cursor-pointer hover:border-gray-400 transition-all duration-200 hover:scale-[1.01]',
+            previewUrl ? '' : 'border-dashed'
+        ]"
     >
         <input
             type="file"

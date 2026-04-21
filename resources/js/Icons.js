@@ -8,6 +8,7 @@ import {
     TagIcon,
     DocumentTextIcon,
     BanknotesIcon,
+    ShoppingCartIcon,
 } from '@heroicons/vue/20/solid'
 
 export const Icons = {
@@ -19,4 +20,5 @@ export const Icons = {
     iklan: TagIcon,
     deskripsi: DocumentTextIcon,
     harga: BanknotesIcon,
+    cart: ShoppingCartIcon
 }

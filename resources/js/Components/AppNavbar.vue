@@ -7,6 +7,7 @@ import PrimaryButton from "@/Components/PrimaryButton.vue";
 import AccountDropdown from "@/Components/AccountDropdown.vue";
 import Hamburger from "@/Components/Hamburger.vue";
 import ResponsiveNavLink from "@/Components/ResponsiveNavLink.vue";
+import { Icons } from "@/Icons";
 
 const showingNavigationDropdown = ref(false);
 
@@ -82,11 +83,13 @@ const jual = () => {
                     </div>
 
                     <!-- Settings Dropdown -->
-                    <div class="min-w-48 ms-5 flex justify-end items-center">
+                    <div class=" ms-5 flex justify-end items-center">
+                        <component :is="Icons['cart']" class="size-6 text-gray-500 dark:text-gray-400"></component>
+
                         <AccountDropdown :logout="logout" />
                         <div>
                             <PrimaryButton
-                                class="w-full"
+                                class="w-full flex items-center min-w-20"
                                 :class="{
                                     'opacity-25': form.processing,
                                 }"

@@ -133,19 +133,20 @@ const buyNow = () => {
                         <!-- Action Buttons -->
                         <div class="space-y-3 border-t border-gray-200 pt-6">
                             <PrimaryButton
-                                class="w-full justify-center py-3 text-base"
+                                class="w-full justify-center text-base"
                                 :disabled="product.stock <= 0"
                                 @click="buyNow"
                             >
                                 Beli Sekarang
                             </PrimaryButton>
-                            <button
-                                class="w-full rounded-lg border-2 border-primary-600 bg-white px-4 py-3 text-base font-semibold text-primary-600 transition-colors hover:bg-primary-50 disabled:cursor-not-allowed disabled:opacity-50 dark:bg-gray-800 dark:hover:bg-gray-700"
+                            <PrimaryButton
+                                variant="secondary"
+                                class="w-full justify-center text-base"
                                 :disabled="product.stock <= 0"
                                 @click="addToCart"
                             >
                                 Tambah ke Keranjang
-                            </button>
+                            </PrimaryButton>
                         </div>
                     </div>
                 </div>

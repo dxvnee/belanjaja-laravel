@@ -119,7 +119,6 @@ const onMouseWheel = (event) => {
                 <div
                     v-for="product in products"
                     :key="product.id"
-                    class="bg-white dark:bg-gray-800 rounded-lg shadow-md overflow-hidden hover:shadow-xl transition-shadow duration-300 cursor-pointer"
                 >
                     <ProductCard :onClick="() => goToProductDetail(product.id)" :product="product" />
                 </div>

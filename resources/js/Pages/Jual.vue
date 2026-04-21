@@ -7,6 +7,7 @@ import PrimaryButton from "@/Components/PrimaryButton.vue";
 import TextInput from "@/Components/TextInput.vue";
 import AppLayout from "@/Layouts/AppLayout.vue";
 import { useForm } from "@inertiajs/vue3";
+import SelectInput from "@/Components/SelectInput.vue";
 
 const photoSlots = [1, 2, 3];
 
@@ -14,17 +15,22 @@ const form = useForm({
     judul: "",
     harga: "",
     deskripsi: "",
+    kategori: "",
     photo1: null,
     photo2: null,
     photo3: null,
 });
 
 const submit = () => {
+    console.log(form);
+
     form.post(route("jual.store"), {
         preserveScroll: true,
         forceFormData: true,
     });
 };
+
+
 </script>
 
 <template>
@@ -110,6 +116,30 @@ const submit = () => {
                                     :message="form.errors.harga"
                                 />
                             </div>
+                        </div>
+                        <div>
+                            <InputLabel for="kategori" value="Kategori" />
+                            <SelectInput
+                                id="kategori"
+                                v-model="form.kategori"
+                                class="mt-1 block w-full"
+                                required
+                                autocomplete="off"
+                                placeholder="Pilih Kategori"
+                                :option="[
+                                    { value: 1, label: 'Elektronik' },
+                                    { value: 2, label: 'Fashion' },
+                                    { value: 3, label: 'Rumah Tangga' },
+                                    { value: 4, label: 'Hobi' },
+                                    { value: 5, label: 'Kendaraan' },
+                                    { value: 6, label: 'Lainnya' },
+                                ]"
+                                icon="kategori"
+                            />
+                            <InputError
+                                class="mt-2"
+                                :message="form.errors.deskripsi"
+                            />
                         </div>
                         <div>
                             <InputLabel for="deskripsi" value="Deskripsi" />

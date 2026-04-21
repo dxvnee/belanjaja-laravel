@@ -54,6 +54,8 @@ defineProps({
 
             <DropdownLink :href="route('profile.show')"> Profile </DropdownLink>
 
+            <DropdownLink :href="route('admin.show')"> Jualan saya </DropdownLink>
+
             <DropdownLink
                 v-if="$page.props.jetstream.hasApiFeatures"
                 :href="route('api-tokens.index')"
