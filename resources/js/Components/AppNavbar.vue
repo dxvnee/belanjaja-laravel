@@ -48,6 +48,11 @@ const logout = () => {
 const jual = () => {
     router.get(route("jual.index"));
 };
+
+const cart = () => {
+    router.get(route("cart.index"));
+};
+
 </script>
 
 <template>
@@ -84,7 +89,7 @@ const jual = () => {
 
                     <!-- Settings Dropdown -->
                     <div class=" ms-5 flex justify-end items-center">
-                        <component :is="Icons['cart']" class="size-6 text-gray-500 dark:text-gray-400"></component>
+                        <component :is="Icons['cart']" class="size-6 text-gray-500 dark:text-gray-400 hover:text-gray-600 dark:hover:text-gray-200 cursor-pointer transition-all" @click="cart"></component>
 
                         <AccountDropdown :logout="logout" />
                         <div>

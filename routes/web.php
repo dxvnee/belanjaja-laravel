@@ -1,6 +1,7 @@
 <?php
 
 use App\Http\Controllers\AdminController;
+use App\Http\Controllers\CartController;
 use App\Http\Controllers\DashboardController;
 use App\Http\Controllers\JualController;
 use App\Http\Controllers\ProductController;
@@ -32,6 +33,8 @@ Route::middleware([
 
     Route::post('/jual', [JualController::class, 'index'])->name('jual.index');
     Route::post('/jual', [JualController::class, 'store'])->name('jual.store');
+
+    Route::get('/cart', [CartController::class, 'index'])->name('cart.index');
 
     Route::get('/jualan-saya', [AdminController::class, 'index'])->name('admin.show');
 });
