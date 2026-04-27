@@ -8,6 +8,10 @@ defineProps({
         default: () => [],
     },
 });
+
+const goToProductDetail = (id) => {
+    router.visit(route('product.show', { id }));
+};
 </script>
 
 <template>

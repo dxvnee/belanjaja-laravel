@@ -1,5 +1,9 @@
 <script setup>
-import IconButton from './IconButton.vue';
+import { router } from "@inertiajs/vue3";
+import IconButton from "./IconButton.vue";
+import { useConfirm } from "../Composable/UseConfirm";
+
+const { confirm } = useConfirm();
 
 defineProps({
     product: {
@@ -31,13 +35,19 @@ const getProductImage = (product) => {
     return "/images/placeholder-product.png";
 };
 
-const deleteFromCart = (productId) => {
-    router.post(route('cart.remove', productId), {
+const deleteFromCart = async (productId, productName) => {
+    const confirmed = await confirm({
+        title: "Hapus dari Keranjang?",
+        message: `Hapus "${productName}" dari keranjang belanjamu?`,
+    });
+
+    if (!confirmed) return;
+
+    router.post(route("cart.remove", productId), {
         preserveScroll: true,
     });
 };
 
-</script>
 
 <template>
     <div
@@ -89,7 +99,7 @@ const deleteFromCart = (productId) => {
                     <IconButton
                         v-if="deleteIcon"
                         icons="trash"
-                        :fun="() => deleteFromCart(product.id)"
+                        :fun="() => deleteFromCart(product.id, product.name)"
                     />
                 </div>
             </div>
