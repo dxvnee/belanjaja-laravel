@@ -16,10 +16,10 @@ defineProps({
             <h2
                 class="font-semibold text-xl text-gray-800 dark:text-gray-200 leading-tight"
             >
-                Jualan Saya
+                Keranjang Saya
             </h2>
             <p class="text-md text-black mb-10">
-                Lihat dan kelola iklan yang sudah kamu buat!
+                Lihat dan kelola produk yang ada di keranjangmu!
             </p>
         </slot>
 
@@ -28,13 +28,14 @@ defineProps({
                 <ProductCard
                     :onClick="() => goToProductDetail(product.id)"
                     :product="product"
+                    :deleteIcon="true"
                 />
             </div>
         </div>
 
         <div v-else  class="flex w-full justify-center">
             <p class="text-lg font-medium text-black">
-                Belum ada iklan yang dibuat.
+                Belum ada produk di keranjangmu.
             </p>
         </div>
     </AppLayout>

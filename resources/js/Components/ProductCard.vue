@@ -1,4 +1,6 @@
 <script setup>
+import IconButton from './IconButton.vue';
+
 defineProps({
     product: {
         type: Object,
@@ -7,6 +9,10 @@ defineProps({
     onClick: {
         type: Function,
         default: null,
+    },
+    deleteIcon: {
+        type: Boolean,
+        default: false,
     },
 });
 
@@ -24,6 +30,13 @@ const getProductImage = (product) => {
     }
     return "/images/placeholder-product.png";
 };
+
+const deleteFromCart = (productId) => {
+    router.post(route('cart.remove', productId), {
+        preserveScroll: true,
+    });
+};
+
 </script>
 
 <template>
@@ -58,17 +71,27 @@ const getProductImage = (product) => {
             >
                 {{ product.description }}
             </p>
-            <div
-                v-if="product.stock <= 0"
-                class="mt-2 text-xs text-red-500 font-medium"
-            >
-                Stok Habis
-            </div>
-            <div
-                v-else-if="product.stock < 5"
-                class="mt-2 text-xs text-orange-500"
-            >
-                Stok: {{ product.stock }}
+
+            <div class="mt-4 flex items-center justify-between">
+                <div
+                    v-if="product.stock <= 0"
+                    class="mt-2 text-xs text-red-500 font-medium"
+                >
+                    Stok Habis
+                </div>
+                <div
+                    v-else-if="product.stock < 5"
+                    class="mt-2 text-xs text-orange-500"
+                >
+                    Stok: {{ product.stock }}
+                </div>
+                <div>
+                    <IconButton
+                        v-if="deleteIcon"
+                        icons="trash"
+                        :fun="() => deleteFromCart(product.id)"
+                    />
+                </div>
             </div>
         </div>
     </div>

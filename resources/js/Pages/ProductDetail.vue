@@ -33,8 +33,9 @@ const selectImage = (index) => {
 };
 
 const addToCart = () => {
-    // TODO: Implement add to cart functionality
-    console.log("Add to cart:", props.product.id);
+    router.post(route("cart.add", props.product.id), {
+        preserveScroll: true,
+    });
 };
 
 const buyNow = () => {
