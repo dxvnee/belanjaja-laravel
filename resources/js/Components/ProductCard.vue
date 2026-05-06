@@ -1,11 +1,11 @@
 <script setup>
 import { router } from "@inertiajs/vue3";
 import IconButton from "./IconButton.vue";
-import { useConfirm } from "../Composable/UseConfirm";
+import { useFeedback } from "../Composable/useFeedback";
 
-const { confirm } = useConfirm();
+const { confirm, showSuccess, showError, showLoading, hideLoading } = useFeedback();
 
-defineProps({
+const props = defineProps({
     product: {
         type: Object,
         required: true,
@@ -18,7 +18,13 @@ defineProps({
         type: Boolean,
         default: false,
     },
+    quantity: {
+        type: Number,
+        default: 0,
+    },
 });
+
+
 
 const formatPrice = (price) => {
     return new Intl.NumberFormat("id-ID", {
@@ -36,22 +42,27 @@ const getProductImage = (product) => {
 };
 
 const deleteFromCart = async (productId, productName) => {
-    const confirmed = await confirm({
-        title: "Hapus dari Keranjang?",
-        message: `Hapus "${productName}" dari keranjang belanjamu?`,
-    });
+    const confirmed = await confirm(
+        "Hapus dari keranjang",
+        `Hapus "${productName}" dari keranjang?`,
+    );
 
     if (!confirmed) return;
 
-    router.post(route("cart.remove", productId), {
+    showLoading("Menghapus produk...");
+
+    router.delete(route("cart.remove", productId), {
         preserveScroll: true,
+        onSuccess: () => showSuccess("Berhasil", `Produk "${productName}" telah dihapus dari keranjang.`),
+        onError: (errors) => showError("Gagal", `Gagal menghapus produk "${productName}" dari keranjang.`),
+        onFinish: () => hideLoading()
     });
 };
 
+</script>
 
 <template>
     <div
-        @click="onClick"
         class="bg-white dark:bg-gray-800 rounded-lg shadow-md overflow-hidden hover:scale-[1.01] transition-transform duration-300 cursor-pointer"
     >
         <div
@@ -90,10 +101,10 @@ const deleteFromCart = async (productId, productName) => {
                     Stok Habis
                 </div>
                 <div
-                    v-else-if="product.stock < 5"
+                    v-else
                     class="mt-2 text-xs text-orange-500"
                 >
-                    Stok: {{ product.stock }}
+                    {{ quantity > 0 ? `Jumlah: ${quantity}` : `Stok: ${product.stock}` }}
                 </div>
                 <div>
                     <IconButton

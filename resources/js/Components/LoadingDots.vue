@@ -5,6 +5,10 @@ const props = defineProps({
     size: {
         type: String,
         default: 'md' // sm | md | lg
+    },
+    color: {
+        type: String,
+        default: 'text-white'
     }
 });
 
@@ -18,7 +22,7 @@ const dotClass = computed(() => {
 </script>
 
 <template>
-    <div class="flex items-center gap-1 text-white">
+    <div class="flex items-center gap-1" :class="color">
         <span :class="[dotClass, 'animate-bounce [animation-delay:-0.3s] rounded-full bg-current']"></span>
         <span :class="[dotClass, 'animate-bounce [animation-delay:-0.15s] rounded-full bg-current']"></span>
         <span :class="[dotClass, 'animate-bounce rounded-full bg-current']"></span>

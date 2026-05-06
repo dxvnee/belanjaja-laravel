@@ -7,7 +7,6 @@ use App\Models\CartItem;
 use App\Models\Product;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
-use Illuminate\Validation\Rules\In;
 use Inertia\Inertia;
 
 class CartController extends Controller
@@ -17,34 +16,62 @@ class CartController extends Controller
         $user = Auth::user();
         $cart = $this->checkCart($user);
 
-        $cart_items = CartItem::where('cart_id', $cart->id)->get();
-
-        $products = $cart_items->map(function ($item) {
-            return Product::find($item->product_id)
-                ->with('images')
-                ->first();
-        });
+        $cart_items = CartItem::where('cart_id', $cart->id)
+            ->with('product.images')
+            ->get();
 
         return Inertia::render('Cart', [
-            'products' => $products,
+            'cart_items' => $cart_items,
         ]);
     }
 
-    public function add($id)
+    public function add(Request $request)
     {
+        $request->validate([
+            'product_id' => ['required', 'exists:products,id'],
+            'quantity' => ['required', 'integer', 'min:1'],
+        ]);
+
+        $id = $request->input('product_id');
+        $quantity = $request->input('quantity');
+
         $user = Auth::user();
         $cart = $this->checkCart($user);
 
         $product = Product::findOrFail($id);
 
-        CartItem::create([
-            'cart_id' => $cart->id,
-            'product_id' => $id,
-            'quantity' => 1,
-            'price_snapshot' => $product->price,
-        ]);
+        $isCarted = CartItem::where('cart_id', $cart->id)->where('product_id', $id)->first();
 
-        return back()->with('success', 'Produk berhasil ditambahkan ke keranjang!');
+        if ($isCarted) {
+            $isCarted->quantity += $quantity;
+            if ($isCarted->quantity > $product->stock) {
+                return back()->with('error', 'Jumlah melebihi stok yang tersedia!');
+            }
+            $isCarted->save();
+        } else {
+            CartItem::create([
+                'cart_id' => $cart->id,
+                'product_id' => $id,
+                'quantity' => $quantity,
+                'price_snapshot' => $product->price,
+            ]);
+
+            return back()->with('success', 'Produk berhasil ditambahkan ke keranjang!');
+        }
+    }
+
+    public function remove($id)
+    {
+        try {
+            $user = Auth::user();
+            $cart = $this->checkCart($user);
+
+            CartItem::where('cart_id', $cart->id)->where('product_id', $id)->delete();
+
+            return back()->with('success', 'Produk berhasil dihapus dari keranjang!');
+        } catch (\Exception $e) {
+            return back()->with('error', 'Terjadi kesalahan saat menghapus produk dari keranjang!');
+        }
     }
 
     public function checkCart($user)

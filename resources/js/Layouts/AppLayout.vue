@@ -4,7 +4,8 @@ import Banner from "@/Components/Banner.vue";
 import { theme } from "@/theme.js";
 import AppNavbar from "@/Components/AppNavbar.vue";
 import BottomBar from "@/Components/BottomBar.vue";
-import ConfirmDialog from "@/Components/ConfirmDialog.vue";
+import AppDialog from "@/Components/AppDialog.vue";
+import LoadingDialog from "@/Components/LoadingDialog.vue";
 
 defineProps({
     title: String,
@@ -37,7 +38,9 @@ defineProps({
                     <slot />
                 </div>
             </main>
-            <ConfirmDialog />
+
+            <LoadingDialog />
+            <AppDialog />
 
             <BottomBar />
         </div>

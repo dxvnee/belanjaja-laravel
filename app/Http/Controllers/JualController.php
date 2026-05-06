@@ -35,7 +35,7 @@ class JualController extends Controller
             'description' => $validated['deskripsi'],
             'price' => $validated['harga'],
             'stock' => 1,
-            'is_act ive' => true,
+            'is_active' => true,
             'category_id' => $validated['kategori'],
         ]);
 

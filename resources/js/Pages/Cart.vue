@@ -1,16 +1,17 @@
 <script setup>
+import { router } from "@inertiajs/vue3";
 import ProductCard from "@/Components/ProductCard.vue";
 import AppLayout from "@/Layouts/AppLayout.vue";
 
 defineProps({
-    products: {
+    cart_items: {
         type: Array,
         default: () => [],
     },
 });
 
 const goToProductDetail = (id) => {
-    router.visit(route('product.show', { id }));
+    router.visit(route("product.show", { id }));
 };
 </script>
 
@@ -27,17 +28,21 @@ const goToProductDetail = (id) => {
             </p>
         </slot>
 
-        <div v-if="products.length > 0" class="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5 gap-4">
-            <div v-for="product in products" :key="product.id">
+        <div
+            v-if="cart_items.length > 0"
+            class="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5 gap-4"
+        >
+            <div v-for="item in cart_items" :key="item.id">
                 <ProductCard
-                    :onClick="() => goToProductDetail(product.id)"
-                    :product="product"
+                    :onClick="() => goToProductDetail(item.product.id)"
+                    :product="item.product"
                     :deleteIcon="true"
+                    :quantity="item.quantity"
                 />
             </div>
         </div>
 
-        <div v-else  class="flex w-full justify-center">
+        <div v-else class="flex w-full justify-center">
             <p class="text-lg font-medium text-black">
                 Belum ada produk di keranjangmu.
             </p>

@@ -3,6 +3,10 @@ import AppLayout from "@/Layouts/AppLayout.vue";
 import PrimaryButton from "@/Components/PrimaryButton.vue";
 import { ref } from "vue";
 import { router } from "@inertiajs/vue3";
+import { useFeedback } from "@/Composable/useFeedback";
+import Counter from "@/Components/Counter.vue";
+
+const { confirm, showSuccess, showError, showLoading, hideLoading } = useFeedback();
 
 const props = defineProps({
     product: {
@@ -11,6 +15,7 @@ const props = defineProps({
     },
 });
 
+const quantity = ref(1);
 const currentImageIndex = ref(0);
 
 const formatPrice = (price) => {
@@ -32,9 +37,24 @@ const selectImage = (index) => {
     currentImageIndex.value = index;
 };
 
-const addToCart = () => {
-    router.post(route("cart.add", props.product.id), {
+const addToCart = async () => {
+    const confirmed = await confirm(
+        "Tambah ke Keranjang",
+        `Apakah Anda yakin ingin menambahkan "${props.product.name}" ke keranjang?`,
+    );
+
+    if (!confirmed) return;
+
+    showLoading("Menambahkan produk ke keranjang...");
+
+    router.post(route("cart.add"), {
+        product_id: props.product.id,
+        quantity: quantity.value
+    }, {
         preserveScroll: true,
+        onSuccess: () => showSuccess("Berhasil", `"${props.product.name}" telah ditambahkan ke keranjang.`),
+        onError: () => showError("Gagal", `Gagal menambahkan "${props.product.name}" ke keranjang. Silakan coba lagi.`),
+        onFinish: () => hideLoading(),
     });
 };
 
@@ -129,6 +149,10 @@ const buyNow = () => {
                             >
                                 {{ product.description }}
                             </p>
+                        </div>
+
+                        <div>
+                            <Counter v-model="quantity" :max-value="product.stock"></Counter>
                         </div>
 
                         <!-- Action Buttons -->

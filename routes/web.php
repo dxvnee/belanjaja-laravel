@@ -35,7 +35,8 @@ Route::middleware([
     Route::post('/jual', [JualController::class, 'store'])->name('jual.store');
 
     Route::get('/cart', [CartController::class, 'index'])->name('cart.index');
-    Route::post('/cart/add/{id}', [CartController::class, 'add'])->name('cart.add');
+    Route::post('/cart/add', [CartController::class, 'add'])->name('cart.add');
+    Route::delete('/cart/remove/{id}', [CartController::class, 'remove'])->name('cart.remove');
 
     Route::get('/jualan-saya', [AdminController::class, 'index'])->name('admin.show');
 });

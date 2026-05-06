@@ -8,6 +8,10 @@ import TextInput from "@/Components/TextInput.vue";
 import AppLayout from "@/Layouts/AppLayout.vue";
 import { useForm } from "@inertiajs/vue3";
 import SelectInput from "@/Components/SelectInput.vue";
+import { useFeedback } from "@/Composable/useFeedback";
+
+const { confirm, showSuccess, showError, showLoading, hideLoading } = useFeedback();
+
 
 const photoSlots = [1, 2, 3];
 
@@ -21,10 +25,22 @@ const form = useForm({
     photo3: null,
 });
 
-const submit = () => {
+const submit = async () => {
+    const confirmed = await confirm(
+        "Konfirmasi Jual",
+        "Apakah Anda yakin ingin menjual barang ini?",
+    );
+
+    if (!confirmed) return;
+
+    showLoading("Menjual barang...");
+
     form.post(route("jual.store"), {
         preserveScroll: true,
         forceFormData: true,
+        onSuccess: () => showSuccess("Berhasil", "Barang berhasil dijual!"),
+        onError: (errors) => showError("Gagal", "Gagal menjual barang. Silakan coba lagi."),
+        onFinish: () => { form.reset(); hideLoading(); },
     });
 };
 
