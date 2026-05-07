@@ -2,6 +2,7 @@
 
 use App\Http\Controllers\AdminController;
 use App\Http\Controllers\CartController;
+use App\Http\Controllers\CheckoutController;
 use App\Http\Controllers\DashboardController;
 use App\Http\Controllers\JualController;
 use App\Http\Controllers\ProductController;
@@ -37,6 +38,9 @@ Route::middleware([
     Route::get('/cart', [CartController::class, 'index'])->name('cart.index');
     Route::post('/cart/add', [CartController::class, 'add'])->name('cart.add');
     Route::delete('/cart/remove/{id}', [CartController::class, 'remove'])->name('cart.remove');
+    Route::patch('/cart/updateQty/{id}', [CartController::class, 'updateQty'])->name('cart.updateQty');
+
+    Route::get('/checkout', [CheckoutController::class, 'index'])->name('checkout.index');
 
     Route::get('/jualan-saya', [AdminController::class, 'index'])->name('admin.show');
 });

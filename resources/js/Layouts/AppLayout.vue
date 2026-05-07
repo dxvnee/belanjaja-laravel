@@ -19,7 +19,7 @@ defineProps({
         <Banner />
 
         <div
-            class="min-h-screen"
+            class="min-h-screen flex flex-col"
             :style="{ backgroundColor: theme.background }"
         >
             <AppNavbar />
@@ -33,7 +33,7 @@ defineProps({
                 </div>
             </header>
 
-            <main>
+            <main class="flex-1">
                 <div class="py-6 mx-auto w-full max-w-7xl px-4 sm:px-6 lg:px-8">
                     <slot />
                 </div>

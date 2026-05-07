@@ -59,8 +59,13 @@ const addToCart = async () => {
 };
 
 const buyNow = () => {
-    // TODO: Implement buy now functionality
-    console.log("Buy now:", props.product.id);
+    router.visit(route("checkout.index"), {
+        method: "post",
+        data: {
+            product_id: props.product.id,
+            quantity: quantity.value
+        },
+    });
 };
 </script>
 

@@ -85,4 +85,20 @@ class CartController extends Controller
         }
         return $cart;
     }
+
+    public function updateQty(Request $request)
+    {
+        $user = Auth::user();
+        $cart = $this->checkCart($user);
+
+        $request->validate([
+            'quantity' => ['required', 'integer', 'min:0'],
+        ])['quantity'];
+
+        CartItem::where('cart_id', $cart->id)
+            ->where('product_id', $request->route('id'))
+            ->update(['quantity' => $request->input('quantity')]);
+
+        return back()->with('success', 'Jumlah produk berhasil diperbarui!');
+    }
 }
