@@ -3,12 +3,12 @@ import { router } from "@inertiajs/vue3";
 import ProductCard from "@/Components/ProductCard.vue";
 import AppLayout from "@/Layouts/AppLayout.vue";
 import PrimaryButton from "@/Components/PrimaryButton.vue";
-import { ref, computed } from "vue";
+import { ref, computed, watch } from "vue";
 import { useFeedback } from "@/Composable/useFeedback";
 
 const { confirm } = useFeedback();
 
-defineProps({
+const props = defineProps({
     cart_items: {
         type: Array,
         default: () => [],
@@ -33,19 +33,19 @@ const beli = async () => {
 const product_cart = ref([]);
 
 const addProductToCart = (product) => {
-    const product_add = {
-        id: product.id,
-        price: product.price,
-    };
+    const index = product_cart.value.indexOf(product.id);
 
-    const index = product_cart.value.findIndex((p) => p.id === product_add.id);
-
-    if (index === -1) product_cart.value.push(product_add);
+    if (index === -1) product_cart.value.push(product.id);
     else product_cart.value.splice(index, 1);
 };
 
 const total_price = computed(() =>
-    product_cart.value.reduce((sum, p) => sum + parseFloat(p.price), 0),
+    props.cart_items
+        .filter((item) => product_cart.value.includes(item.product.id))
+        .reduce(
+            (sum, item) => sum + parseFloat(item.product.price) * item.quantity,
+            0,
+        ),
 );
 
 const formatPrice = (price) => {
@@ -85,15 +85,16 @@ const formatPrice = (price) => {
                 class="sticky bottom-0 px-4 py-2 bg-white rounded shadow-md flex flex-col items-end justify-center"
             >
                 <div class="flex flex-row">
-                    <p class="text-xl text-black pe-2">
-                        Total:
-                    </p>
+                    <p class="text-xl text-black pe-2">Total:</p>
                     <p class="text-xl font-bold text-primary-600">
                         {{ formatPrice(total_price) }}
                     </p>
                 </div>
 
-                <PrimaryButton class="flex items-center min-w-20 mt-3" @click="beli">
+                <PrimaryButton
+                    class="flex items-center min-w-20 mt-3"
+                    @click="beli"
+                >
                     Checkout
                 </PrimaryButton>
             </div>

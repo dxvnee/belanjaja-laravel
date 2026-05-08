@@ -23,5 +23,5 @@ export const Icons = {
     harga: BanknotesIcon,
     cart: ShoppingCartIcon,
     trash: TrashIcon,
-
+    stock: BanknotesIcon, 
 }

@@ -20,6 +20,7 @@ class JualController extends Controller
         $validated = $request->validate([
             'judul' => ['required', 'string', 'max:255'],
             'harga' => ['required', 'numeric', 'min:0'],
+            'stok' => ['required', 'integer', 'min:1'],
             'deskripsi' => ['required', 'string'],
             'photo1' => ['nullable', 'image', 'max:2048'],
             'photo2' => ['nullable', 'image', 'max:2048'],
@@ -34,7 +35,7 @@ class JualController extends Controller
             'slug' => $this->generateUniqueSlug($validated['judul']),
             'description' => $validated['deskripsi'],
             'price' => $validated['harga'],
-            'stock' => 1,
+            'stock' => $validated['stok'],
             'is_active' => true,
             'category_id' => $validated['kategori'],
         ]);

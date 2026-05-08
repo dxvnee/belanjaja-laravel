@@ -10,14 +10,15 @@ import { useForm } from "@inertiajs/vue3";
 import SelectInput from "@/Components/SelectInput.vue";
 import { useFeedback } from "@/Composable/useFeedback";
 
-const { confirm, showSuccess, showError, showLoading, hideLoading } = useFeedback();
-
+const { confirm, showSuccess, showError, showLoading, hideLoading } =
+    useFeedback();
 
 const photoSlots = [1, 2, 3];
 
 const form = useForm({
     judul: "",
     harga: "",
+    stok: "",
     deskripsi: "",
     kategori: "",
     photo1: null,
@@ -39,12 +40,14 @@ const submit = async () => {
         preserveScroll: true,
         forceFormData: true,
         onSuccess: () => showSuccess("Berhasil", "Barang berhasil dijual!"),
-        onError: (errors) => showError("Gagal", "Gagal menjual barang. Silakan coba lagi."),
-        onFinish: () => { form.reset(); hideLoading(); },
+        onError: (errors) =>
+            showError("Gagal", "Gagal menjual barang. Silakan coba lagi."),
+        onFinish: () => {
+            form.reset();
+            hideLoading();
+        },
     });
 };
-
-
 </script>
 
 <template>
@@ -130,6 +133,27 @@ const submit = async () => {
                                     :message="form.errors.harga"
                                 />
                             </div>
+                        </div>
+                        <div>
+                            <InputLabel for="stok" value="Stok" />
+                            <TextInput
+                                id="stok"
+                                v-model="form.stok"
+                                type="number"
+                                class="mt-1 block w-full"
+                                required
+                                autofocus
+                                autocomplete="off"
+                                placeholder="Stok"
+                                icon="stock"
+                                min="0"
+                                max="99998"
+                                @keydown="(e) => ['e', 'E', '+', '-', '.'].includes(e.key) && e.preventDefault()"
+                            />
+                            <InputError
+                                class="mt-2"
+                                :message="form.errors.stok"
+                            />
                         </div>
                         <div>
                             <InputLabel for="kategori" value="Kategori" />
