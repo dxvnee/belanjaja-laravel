@@ -5,9 +5,12 @@ import { useFeedback } from "../Composable/useFeedback";
 import { ref, computed, watch } from "vue";
 import Counter from "./Counter.vue";
 import Checkbox from "./Checkbox.vue";
+import Card from "./Card.vue";
+import { useHelpers } from "../Composable/useHelpers";
 
 const { confirm, showSuccess, showError, showLoading, hideLoading } =
     useFeedback();
+const { formatPrice, getProductImage } = useHelpers();
 
 const props = defineProps({
     product: {
@@ -40,21 +43,6 @@ watch(checked, () => {
 
 const quantity_ref = ref(props.quantity);
 const price_total = computed(() => props.product.price * quantity_ref.value);
-
-const formatPrice = (price) => {
-    return new Intl.NumberFormat("id-ID", {
-        style: "currency",
-        currency: "IDR",
-        minimumFractionDigits: 0,
-    }).format(price);
-};
-
-const getProductImage = (product) => {
-    if (product.images && product.images.length > 0) {
-        return `/storage/${product.images[0].image_path}`;
-    }
-    return "/images/placeholder-product.png";
-};
 
 const deleteFromCart = async (productId, productName) => {
     const confirmed = await confirm(
@@ -112,12 +100,11 @@ function updateQty(qty) {
         },
     );
 }
-
 </script>
 
 <template>
-    <div
-        :class="`${checkoutMode ? 'flex flex-row' : ''} bg-white w-full dark:bg-gray-800 rounded-lg shadow-md overflow-hidden hover:scale-[1.01] transition-transform duration-300 cursor-pointer`"
+    <Card
+        :class="`${checkoutMode ? 'flex flex-row' : ''} bg-white w-full dark:bg-gray-800 rounded-lg overflow-hidden hover:scale-[1.01] transition-transform duration-300 cursor-pointer`"
     >
         <div
             @click="onClick"
@@ -181,9 +168,7 @@ function updateQty(qty) {
                 icons="trash"
                 :fun="() => deleteFromCart(product.id, product.name)"
             />
-            <Checkbox
-                v-model:checked="checked"
-            />
+            <Checkbox v-model:checked="checked" />
         </div>
-    </div>
+    </Card>
 </template>

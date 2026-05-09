@@ -14,7 +14,7 @@ import Card from "./Card.vue";
             </div>
         </div>
 
-        <card>
+        <card class="p-10">
             <slot />
         </card>
     </div>

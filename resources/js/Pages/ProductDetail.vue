@@ -4,9 +4,12 @@ import PrimaryButton from "@/Components/PrimaryButton.vue";
 import { ref } from "vue";
 import { router } from "@inertiajs/vue3";
 import { useFeedback } from "@/Composable/useFeedback";
+import { useHelpers } from "@/Composable/useHelpers";
 import Counter from "@/Components/Counter.vue";
 
-const { confirm, showSuccess, showError, showLoading, hideLoading } = useFeedback();
+const { confirm, showSuccess, showError, showLoading, hideLoading } =
+    useFeedback();
+const { formatPrice } = useHelpers();
 
 const props = defineProps({
     product: {
@@ -17,14 +20,6 @@ const props = defineProps({
 
 const quantity = ref(1);
 const currentImageIndex = ref(0);
-
-const formatPrice = (price) => {
-    return new Intl.NumberFormat("id-ID", {
-        style: "currency",
-        currency: "IDR",
-        minimumFractionDigits: 0,
-    }).format(price);
-};
 
 const getCurrentImage = () => {
     if (props.product.images && props.product.images.length > 0) {
@@ -47,15 +42,27 @@ const addToCart = async () => {
 
     showLoading("Menambahkan produk ke keranjang...");
 
-    router.post(route("cart.add"), {
-        product_id: props.product.id,
-        quantity: quantity.value
-    }, {
-        preserveScroll: true,
-        onSuccess: () => showSuccess("Berhasil", `"${props.product.name}" telah ditambahkan ke keranjang.`),
-        onError: () => showError("Gagal", `Gagal menambahkan "${props.product.name}" ke keranjang. Silakan coba lagi.`),
-        onFinish: () => hideLoading(),
-    });
+    router.post(
+        route("cart.add"),
+        {
+            product_id: props.product.id,
+            quantity: quantity.value,
+        },
+        {
+            preserveScroll: true,
+            onSuccess: () =>
+                showSuccess(
+                    "Berhasil",
+                    `"${props.product.name}" telah ditambahkan ke keranjang.`,
+                ),
+            onError: () =>
+                showError(
+                    "Gagal",
+                    `Gagal menambahkan "${props.product.name}" ke keranjang. Silakan coba lagi.`,
+                ),
+            onFinish: () => hideLoading(),
+        },
+    );
 };
 
 const buyNow = () => {
@@ -63,7 +70,7 @@ const buyNow = () => {
         method: "post",
         data: {
             product_id: props.product.id,
-            quantity: quantity.value
+            quantity: quantity.value,
         },
     });
 };
@@ -157,7 +164,10 @@ const buyNow = () => {
                         </div>
 
                         <div>
-                            <Counter v-model="quantity" :max-value="product.stock"></Counter>
+                            <Counter
+                                v-model="quantity"
+                                :max-value="product.stock"
+                            ></Counter>
                         </div>
 
                         <!-- Action Buttons -->

@@ -5,8 +5,11 @@ import AppLayout from "@/Layouts/AppLayout.vue";
 import PrimaryButton from "@/Components/PrimaryButton.vue";
 import { ref, computed, watch } from "vue";
 import { useFeedback } from "@/Composable/useFeedback";
+import { useHelpers } from "@/Composable/useHelpers";
+import Card from "@/Components/Card.vue";
 
 const { confirm } = useFeedback();
+const { formatPrice } = useHelpers();
 
 const props = defineProps({
     cart_items: {
@@ -14,6 +17,8 @@ const props = defineProps({
         default: () => [],
     },
 });
+
+const product_cart = ref([]);
 
 const goToProductDetail = (id) => {
     router.visit(route("product.show", { id }));
@@ -27,10 +32,13 @@ const beli = async () => {
 
     if (!confirmed) return;
 
-    router.visit(route("checkout.index"));
+    router.visit(route("checkout.index"), {
+        method: "get",
+        data: {
+            product_ids: product_cart.value,
+        },
+    });
 };
-
-const product_cart = ref([]);
 
 const addProductToCart = (product) => {
     const index = product_cart.value.indexOf(product.id);
@@ -47,14 +55,6 @@ const total_price = computed(() =>
             0,
         ),
 );
-
-const formatPrice = (price) => {
-    return new Intl.NumberFormat("id-ID", {
-        style: "currency",
-        currency: "IDR",
-        minimumFractionDigits: 0,
-    }).format(price);
-};
 </script>
 
 <template>
@@ -81,8 +81,8 @@ const formatPrice = (price) => {
                 />
             </div>
 
-            <div
-                class="sticky bottom-0 px-4 py-2 bg-white rounded shadow-md flex flex-col items-end justify-center"
+            <Card
+                class="sticky bottom-0 py-4 px-4 flex flex-col items-end justify-center"
             >
                 <div class="flex flex-row">
                     <p class="text-xl text-black pe-2">Total:</p>
@@ -97,7 +97,7 @@ const formatPrice = (price) => {
                 >
                     Checkout
                 </PrimaryButton>
-            </div>
+            </Card>
         </div>
 
         <div v-else class="flex w-full justify-center">

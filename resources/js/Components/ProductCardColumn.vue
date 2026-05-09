@@ -2,8 +2,11 @@
 import { router } from "@inertiajs/vue3";
 import IconButton from "./IconButton.vue";
 import { useFeedback } from "../Composable/useFeedback";
+import { useHelpers } from "../Composable/useHelpers";
 
-const { confirm, showSuccess, showError, showLoading, hideLoading } = useFeedback();
+const { confirm, showSuccess, showError, showLoading, hideLoading } =
+    useFeedback();
+const { formatPrice, getProductImage } = useHelpers();
 
 const props = defineProps({
     product: {
@@ -24,23 +27,6 @@ const props = defineProps({
     },
 });
 
-
-
-const formatPrice = (price) => {
-    return new Intl.NumberFormat("id-ID", {
-        style: "currency",
-        currency: "IDR",
-        minimumFractionDigits: 0,
-    }).format(price);
-};
-
-const getProductImage = (product) => {
-    if (product.images && product.images.length > 0) {
-        return `/storage/${product.images[0].image_path}`;
-    }
-    return "/images/placeholder-product.png";
-};
-
 const deleteFromCart = async (productId, productName) => {
     const confirmed = await confirm(
         "Hapus dari keranjang",
@@ -53,12 +39,19 @@ const deleteFromCart = async (productId, productName) => {
 
     router.delete(route("cart.remove", productId), {
         preserveScroll: true,
-        onSuccess: () => showSuccess("Berhasil", `Produk "${productName}" telah dihapus dari keranjang.`),
-        onError: (errors) => showError("Gagal", `Gagal menghapus produk "${productName}" dari keranjang.`),
-        onFinish: () => hideLoading()
+        onSuccess: () =>
+            showSuccess(
+                "Berhasil",
+                `Produk "${productName}" telah dihapus dari keranjang.`,
+            ),
+        onError: (errors) =>
+            showError(
+                "Gagal",
+                `Gagal menghapus produk "${productName}" dari keranjang.`,
+            ),
+        onFinish: () => hideLoading(),
     });
 };
-
 </script>
 
 <template>
@@ -100,11 +93,12 @@ const deleteFromCart = async (productId, productName) => {
                 >
                     Stok Habis
                 </div>
-                <div
-                    v-else
-                    class="mt-2 text-xs text-orange-500"
-                >
-                    {{ quantity > 0 ? `Jumlah: ${quantity}` : `Stok: ${product.stock}` }}
+                <div v-else class="mt-2 text-xs text-orange-500">
+                    {{
+                        quantity > 0
+                            ? `Jumlah: ${quantity}`
+                            : `Stok: ${product.stock}`
+                    }}
                 </div>
                 <div>
                     <IconButton

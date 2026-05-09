@@ -35,14 +35,14 @@ const decrease = () => {
     <div class="flex items-center gap-2">
         <button
             @click="decrease"
-            class="bg-primary-200 dark:bg-primary-700 text-gray-800 dark:text-gray-200 rounded px-2 py-1"
+            class="bg-primary-100 dark:bg-primary-700 text-gray-800 dark:text-gray-200 rounded px-2 py-1"
         >
             -
         </button>
         <span class="text-sm">{{ count }}</span>
         <button
             @click="increase"
-            class="bg-primary-200 dark:bg-primary-700 text-gray-800 dark:text-gray-200 rounded px-2 py-1"
+            class="bg-primary-100 dark:bg-primary-700 text-gray-800 dark:text-gray-200 rounded px-2 py-1"
         >
             +
         </button>
