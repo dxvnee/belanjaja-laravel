@@ -3,16 +3,50 @@ import Card from "@/Components/Card.vue";
 import PrimaryButton from "@/Components/PrimaryButton.vue";
 import AppLayout from "@/Layouts/AppLayout.vue";
 import { useHelpers } from "@/Composable/useHelpers";
+import { router } from "@inertiajs/vue3";
+import { useFeedback } from "@/Composable/useFeedback";
 
 const { formatPrice, getProductImage } = useHelpers();
+const { showLoading, hideLoading, showSuccess, showError, confirm } =
+    useFeedback();
 
-defineProps({
+const props = defineProps({
     products: {
         type: Array,
         default: () => [],
     },
 });
 
+const total = props.products.reduce((sum, item) => {
+    return sum + parseFloat(item.product.price) * item.quantity;
+}, 0);
+
+const beli = async () => {
+    const confirmed = await confirm(
+        "Konfirmasi Pembelian",
+        "Apakah Anda yakin ingin membeli produk ini?",
+    );
+
+    if (!confirmed) return;
+
+    showLoading("Memproses pesanan...");
+
+    router.visit(route("checkout.store"), {
+        method: "post",
+        data: {
+            product_ids: props.products.map((item) => item.product.id),
+        },
+        onSuccess: () => {
+            showSuccess("Pesanan berhasil dibuat!");
+        },
+        onError: () => {
+            showError("Gagal membuat pesanan. Silakan coba lagi.");
+        },
+        onFinish: () => {
+            hideLoading();
+        },
+    });
+};
 </script>
 
 <template>
@@ -64,7 +98,7 @@ defineProps({
                         </thead>
                         <tbody>
                             <tr
-                                v-for="(item) in products"
+                                v-for="item in products"
                                 :key="item.id"
                                 class="border-t"
                             >
@@ -100,10 +134,13 @@ defineProps({
 
             <Card class="max-w-none p-5">
                 <div class="w-full flex flex-col items-end gap-4">
-                    <p class="text-lg font-bold">
-                        Total Pembayaran: {{ formatPrice(total) }}
-                    </p>
-                    <PrimaryButton> Lanjut ke Pembayaran </PrimaryButton>
+                    <div class="flex flex-row gap-2">
+                        <p class="text-lg">Total Pembayaran:</p>
+                        <p class="text-lg font-bold">
+                            {{ formatPrice(total) }}
+                        </p>
+                    </div>
+                    <PrimaryButton @click="beli"> Beli </PrimaryButton>
                 </div>
             </Card>
         </div>

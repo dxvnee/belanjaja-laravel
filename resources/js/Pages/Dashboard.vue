@@ -48,7 +48,6 @@ const onMouseWheel = (event) => {
     current.value = Math.round(
         (el.scrollLeft + event.deltaY) / (maxScrollLeft / 4),
     );
-    console.log(el.scrollLeft, event.deltaY, current.value);
 };
 </script>
 
