@@ -1,8 +1,12 @@
 <script setup>
-import { computed, watch } from "vue";
+import { computed } from "vue";
 
 const props = defineProps({
     modelValue: File,
+    existingImage: {
+        type: String,
+        default: null,
+    },
 });
 const emit = defineEmits(["update:modelValue"]);
 
@@ -12,9 +16,10 @@ const handleFile = (e) => {
 };
 
 const previewUrl = computed(() => {
-    return props.modelValue
-        ? window.URL.createObjectURL(props.modelValue)
-        : null;
+    if (props.modelValue instanceof File) {
+        return window.URL.createObjectURL(props.modelValue);
+    }
+    return props.existingImage || null;
 });
 </script>
 
@@ -22,7 +27,7 @@ const previewUrl = computed(() => {
     <label
         :class="[
             'w-full h-48 border-2 border-gray-300 rounded-lg flex items-center justify-center cursor-pointer hover:border-gray-400 transition-all duration-200 hover:scale-[1.01]',
-            previewUrl ? '' : 'border-dashed'
+            previewUrl ? '' : 'border-dashed',
         ]"
     >
         <input

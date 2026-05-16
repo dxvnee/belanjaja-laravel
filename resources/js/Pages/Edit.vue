@@ -7,14 +7,22 @@ import ProductDetails from "@/Components/ProductDetails.vue";
 const { confirm, showSuccess, showError, showLoading, hideLoading } =
     useFeedback();
 
+const props = defineProps({
+    product: {
+        type: Object,
+        required: true,
+    },
+});
+
 const photoSlots = [1, 2, 3];
 
 const form = useForm({
-    judul: "",
-    harga: "",
-    stok: "",
-    deskripsi: "",
-    kategori: "",
+    judul: props.product.name,
+    harga: props.product.price,
+    stok: props.product.stock,
+    deskripsi: props.product.description,
+    kategori: props.product.category_id,
+    images: props.product.images || [],
     photo1: null,
     photo2: null,
     photo3: null,
@@ -22,45 +30,40 @@ const form = useForm({
 
 const submit = async () => {
     const confirmed = await confirm(
-        "Konfirmasi Jual",
-        "Apakah Anda yakin ingin menjual barang ini?",
+        "Konfirmasi Edit",
+        "Apakah Anda yakin ingin menyimpan perubahan?",
     );
 
     if (!confirmed) return;
 
-    showLoading("Menjual barang...");
+    showLoading("Menyimpan perubahan...");
 
-    form.post(route("jual.store"), {
+    form.post(route("product.update", { id: props.product.id }), {
         preserveScroll: true,
         forceFormData: true,
-        onSuccess: () => showSuccess("Berhasil", "Barang berhasil dijual!"),
-        onError: (errors) =>
-            showError("Gagal", "Gagal menjual barang. Silakan coba lagi."),
-        onFinish: () => {
-            form.reset();
-            hideLoading();
-        },
+        onSuccess: () => showSuccess("Berhasil", "Produk berhasil diperbarui!"),
+        onError: () =>
+            showError("Gagal", "Gagal memperbarui produk. Silakan coba lagi."),
+        onFinish: () => hideLoading(),
     });
 };
 </script>
 
 <template>
-    <AppLayout title="Jual">
+    <AppLayout title="Edit Produk">
         <slot name="header">
             <h2
                 class="font-semibold text-xl text-gray-800 dark:text-gray-200 leading-tight"
             >
-                Jual Barang
+                Edit Produk
             </h2>
-            <p class="text-md text-black mb-10">
-                Pilih kategori barang yang ingin kamu jual!
-            </p>
         </slot>
 
         <ProductDetails
             :photoSlots="photoSlots"
             :form="form"
             :submit="submit"
+            submitLabel="Simpan"
         />
     </AppLayout>
 </template>

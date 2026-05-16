@@ -16,6 +16,10 @@ const props = defineProps({
         type: Object,
         required: true,
     },
+    is_owner: {
+        type: Boolean,
+        required: true,
+    },
 });
 
 const quantity = ref(1);
@@ -72,6 +76,34 @@ const buyNow = () => {
             product_id: props.product.id,
             quantity: quantity.value,
         },
+    });
+};
+
+const edit = () => {
+    router.visit(route("product.edit", { id: props.product.id }));
+};
+
+const deleteProduct = async () => {
+    const confirmed = await confirm(
+        "Hapus Produk",
+        `Apakah Anda yakin ingin menghapus "${props.product.name}"? Tindakan ini tidak dapat dibatalkan.`,
+    );
+
+    if (!confirmed) return;
+
+    showLoading("Menghapus produk...");
+
+    router.delete(route("product.destroy", { id: props.product.id }), {
+        onSuccess: () => {
+            showSuccess("Berhasil", `"${props.product.name}" telah dihapus.`);
+            router.visit(route("jual.index"));
+        },
+        onError: () =>
+            showError(
+                "Gagal",
+                `Gagal menghapus "${props.product.name}". Silakan coba lagi.`,
+            ),
+        onFinish: () => hideLoading(),
     });
 };
 </script>
@@ -163,7 +195,7 @@ const buyNow = () => {
                             </p>
                         </div>
 
-                        <div>
+                        <div v-if="!is_owner">
                             <Counter
                                 v-model="quantity"
                                 :max-value="product.stock"
@@ -171,7 +203,10 @@ const buyNow = () => {
                         </div>
 
                         <!-- Action Buttons -->
-                        <div class="space-y-3 border-t border-gray-200 pt-6">
+                        <div
+                            v-if="!is_owner"
+                            class="space-y-3 border-t border-gray-200 pt-6"
+                        >
                             <PrimaryButton
                                 class="w-full justify-center text-base"
                                 :disabled="product.stock <= 0"
@@ -186,6 +221,24 @@ const buyNow = () => {
                                 @click="addToCart"
                             >
                                 Tambah ke Keranjang
+                            </PrimaryButton>
+                        </div>
+                        <div
+                            v-else
+                            class="border-t flex flex-row items-center justify-center gap-3 border-gray-200 pt-6"
+                        >
+                            <PrimaryButton
+                                class="w-full justify-center text-base"
+                                @click="edit"
+                            >
+                                Edit
+                            </PrimaryButton>
+                            <PrimaryButton
+                                class="w-full justify-center text-base"
+                                variant="secondary"
+                                @click="deleteProduct"
+                            >
+                                Hapus
                             </PrimaryButton>
                         </div>
                     </div>

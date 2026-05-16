@@ -29,6 +29,9 @@ Route::middleware([
     })->name('jual.index');
 
     Route::get('/product/{id}', [ProductController::class, 'show'])->name('product.show');
+    Route::get('/product/{id}/edit', [ProductController::class, 'edit'])->name('product.edit');
+    Route::post('/product/{id}/update', [ProductController::class, 'update'])->name('product.update');
+    Route::delete('/product/{id}', [ProductController::class, 'destroy'])->name('product.destroy');
 
     Route::post('/jual', [JualController::class, 'index'])->name('jual.index');
     Route::post('/jual', [JualController::class, 'store'])->name('jual.store');
