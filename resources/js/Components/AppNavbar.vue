@@ -63,10 +63,10 @@ const cart = () => {
         <!-- Primary Navigation Menu -->
         <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
             <div class="flex justify-between items-center h-16">
-                <div class="flex items-center">
+                <div class="flex items-center gap-1">
                     <!-- Logo -->
-                    <div class="flex items-center border-b border ">
-                        <AuthenticationCardLogo :size="64" />
+                    <div class="flex items-center">
+                        <AuthenticationCardLogo :size="48" />
                     </div>
                     <h1 class="text-2xl font-black text-primary-600">
                         Belanjaja!

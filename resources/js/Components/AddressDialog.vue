@@ -4,6 +4,7 @@ import { ref } from "vue";
 import Card from "./Card.vue";
 import PrimaryButton from "./PrimaryButton.vue";
 import IconButton from "./IconButton.vue";
+import AddressItem from "./AddressItem.vue";
 
 defineProps({
     addresses: {
@@ -32,7 +33,7 @@ const setSelectedAddress = (id) => {
         class="fixed inset-0 z-50 flex items-center justify-center backdrop-blur-xs bg-black/50"
     >
         <Card class="w-[700px] p-5">
-            <div class="flex flex-col justify-between items-center">
+            <div class="flex flex-col justify-between items-center gap-4">
                 <div
                     class="flex flex-row w-full justify-start items-center gap-2"
                 >
@@ -40,7 +41,7 @@ const setSelectedAddress = (id) => {
                     <p class="text-xl font-bold">Ubah Alamat</p>
                 </div>
 
-                <div class="flex w-full h-96">
+                <div class="flex w-full flex-col h-96">
                     <div
                         v-if="addresses.length != 0"
                         v-for="address in addresses"
@@ -55,7 +56,7 @@ const setSelectedAddress = (id) => {
                             ]"
                             @click="setSelectedAddress(address.id)"
                         >
-                            <p>{{ address.address }}</p>
+                            <AddressItem :address="address"/>
                         </Card>
                     </div>
                     <div v-else class="flex w-full justify-center items-center">

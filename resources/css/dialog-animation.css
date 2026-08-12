@@ -13,13 +13,3 @@
 .dialog-leave-to {
   opacity: 0;
 }
-
-.dialog-enter-from .dialog-card {
-  opacity: 0;
-  transform: scale(0.95) translateY(10px);
-}
-
-.dialog-leave-to .dialog-card {
-  opacity: 0;
-  transform: scale(0.95) translateY(8px);
-}

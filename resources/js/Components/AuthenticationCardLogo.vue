@@ -20,7 +20,7 @@ const logoSize = computed(() => {
         <svg
             :style="{ width: logoSize, height: logoSize }"
             class="shrink-0"
-            viewBox="0 0 48 48"
+            viewBox="7 4 34 34"
             fill="none"
             xmlns="http://www.w3.org/2000/svg"
         >
