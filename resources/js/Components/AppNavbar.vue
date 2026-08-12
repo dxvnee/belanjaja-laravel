@@ -65,7 +65,7 @@ const cart = () => {
             <div class="flex justify-between items-center h-16">
                 <div class="flex items-center">
                     <!-- Logo -->
-                    <div class="flex items-center">
+                    <div class="flex items-center border-b border ">
                         <AuthenticationCardLogo :size="64" />
                     </div>
                     <h1 class="text-2xl font-black text-primary-600">

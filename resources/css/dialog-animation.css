@@ -1,0 +1,25 @@
+/* Durasi & Easing */
+.dialog-enter-active,
+.dialog-leave-active {
+  transition: opacity 0.3s cubic-bezier(0.16, 1, 0.3, 1);
+}
+
+.dialog-enter-active .dialog-card,
+.dialog-leave-active .dialog-card {
+  transition: transform 0.3s cubic-bezier(0.16, 1, 0.3, 1), opacity 0.3s cubic-bezier(0.16, 1, 0.3, 1);
+}
+
+.dialog-enter-from,
+.dialog-leave-to {
+  opacity: 0;
+}
+
+.dialog-enter-from .dialog-card {
+  opacity: 0;
+  transform: scale(0.95) translateY(10px);
+}
+
+.dialog-leave-to .dialog-card {
+  opacity: 0;
+  transform: scale(0.95) translateY(8px);
+}

@@ -18,10 +18,25 @@ const props = defineProps({
     },
 });
 
-const product_cart = ref([]);
+const selected_ids = ref([]);
+const quantities = ref(
+    Object.fromEntries(
+        props.cart_items.map((item) => [item.product.id, item.quantity]),
+    ),
+);
 
 const goToProductDetail = (id) => {
     router.visit(route("product.show", { id }));
+};
+
+const onToggleSelect = ({ product, checked }) => {
+    const index = selected_ids.value.indexOf(product.id);
+    if (checked && index === -1) selected_ids.value.push(product.id);
+    else if (!checked && index !== -1) selected_ids.value.splice(index, 1);
+};
+
+const onQtyChanged = ({ productId, qty }) => {
+    quantities.value[productId] = qty;
 };
 
 const beli = async () => {
@@ -35,23 +50,19 @@ const beli = async () => {
     router.visit(route("checkout.index"), {
         method: "get",
         data: {
-            product_ids: product_cart.value,
+            product_ids: selected_ids.value,
         },
     });
 };
 
-const addProductToCart = (product) => {
-    const index = product_cart.value.indexOf(product.id);
-
-    if (index === -1) product_cart.value.push(product.id);
-    else product_cart.value.splice(index, 1);
-};
-
 const total_price = computed(() =>
     props.cart_items
-        .filter((item) => product_cart.value.includes(item.product.id))
+        .filter((item) => selected_ids.value.includes(item.product.id))
         .reduce(
-            (sum, item) => sum + parseFloat(item.product.price) * item.quantity,
+            (sum, item) =>
+                sum +
+                parseFloat(item.product.price) *
+                    (quantities.value[item.product.id] ?? item.quantity),
             0,
         ),
 );
@@ -59,25 +70,24 @@ const total_price = computed(() =>
 
 <template>
     <AppLayout title="Admin">
-        <slot name="header">
-            <h2
-                class="font-semibold text-xl text-gray-800 dark:text-gray-200 leading-tight"
-            >
-                Keranjang Saya
-            </h2>
-            <p class="text-md text-black mb-10">
-                Lihat dan kelola produk yang ada di keranjangmu!
-            </p>
-        </slot>
+        <h2
+            class="font-semibold text-xl text-gray-800 dark:text-gray-200 leading-tight"
+        >
+            Keranjang Saya
+        </h2>
+        <p class="text-md text-black mb-10">
+            Lihat dan kelola produk yang ada di keranjangmu!
+        </p>
 
         <div v-if="cart_items.length > 0" class="grid grid-rows-1 gap-5">
             <div v-for="item in cart_items" :key="item.id">
                 <ProductCard
-                    :onClick="() => goToProductDetail(item.product.id)"
-                    :checkedFun="() => addProductToCart(item.product)"
                     :product="item.product"
                     :quantity="item.quantity"
                     :checkoutMode="true"
+                    @click-product="goToProductDetail(item.product.id)"
+                    @toggle-select="onToggleSelect"
+                    @qty-changed="onQtyChanged"
                 />
             </div>
 

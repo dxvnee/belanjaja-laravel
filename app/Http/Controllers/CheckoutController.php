@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Models\Address;
 use App\Models\Cart;
 use App\Models\CartItem;
 use App\Models\Order;
@@ -14,9 +15,10 @@ class CheckoutController extends Controller
 {
     public function index(Request $request)
     {
+        $user = $request->user();
         $product_ids = $request->input('product_ids', []);
 
-        $cart = $request->user()->cart;
+        $cart = $user->cart;
 
         $products = $cart
             ? CartItem::where('cart_id', $cart->id)
@@ -25,9 +27,14 @@ class CheckoutController extends Controller
             ->get()
             : collect();
 
+        $address = Address::where('user_id',$user->id)
+            ->get()
+            ->toArray();
+
         return Inertia::render('Checkout', [
             'title' => 'Checkout',
             'products' => $products,
+            'addresses' => $address
         ]);
     }
 

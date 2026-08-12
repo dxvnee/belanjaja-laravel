@@ -111,7 +111,7 @@ const deleteProduct = async () => {
 <template>
     <AppLayout :title="product.name">
         <div class="py-12">
-            <div class="mx-auto w-full max-w-7xl px-4 sm:px-6 lg:px-8">
+            <div class="mx-auto w-full max-w-7xl">
                 <div class="grid grid-cols-1 gap-8 lg:grid-cols-2">
                     <!-- Product Images -->
                     <div class="space-y-4">
@@ -202,7 +202,6 @@ const deleteProduct = async () => {
                             ></Counter>
                         </div>
 
-                        <!-- Action Buttons -->
                         <div
                             v-if="!is_owner"
                             class="space-y-3 border-t border-gray-200 pt-6"

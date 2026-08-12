@@ -5,6 +5,8 @@ import AppLayout from "@/Layouts/AppLayout.vue";
 import { useHelpers } from "@/Composable/useHelpers";
 import { router } from "@inertiajs/vue3";
 import { useFeedback } from "@/Composable/useFeedback";
+import AddressDialog from "@/Components/AddressDialog.vue";
+import { ref } from "vue";
 
 const { formatPrice, getProductImage } = useHelpers();
 const { showLoading, hideLoading, showSuccess, showError, confirm } =
@@ -12,6 +14,10 @@ const { showLoading, hideLoading, showSuccess, showError, confirm } =
 
 const props = defineProps({
     products: {
+        type: Array,
+        default: () => [],
+    },
+    addresses: {
         type: Array,
         default: () => [],
     },
@@ -47,10 +53,22 @@ const beli = async () => {
         },
     });
 };
+
+const openAddressDialog = ref(false);
+
+const openDialog = (value) => {
+    openAddressDialog.value = value;
+};
 </script>
 
 <template>
     <AppLayout title="Checkout">
+        <AddressDialog
+            v-if="openAddressDialog"
+            :addresses="addresses"
+            :onDismiss="() => openDialog(false)"
+        />
+
         <slot name="header">
             <h2
                 class="font-semibold text-xl text-gray-800 dark:text-gray-200 leading-tight"
@@ -71,7 +89,7 @@ const beli = async () => {
                         terdaftar di akun Anda.
                     </p>
 
-                    <div class="flex">
+                    <div class="flex gap-4">
                         <h1 class="font-bold">
                             Eigiya Daramuli Kale (081366366550)
                         </h1>
@@ -79,7 +97,9 @@ const beli = async () => {
                             Jalan Tanimbar No. 16, RT.7/RW.5, Cimone Jaya, KOTA
                             TANGERANG - KARAWACI, BANTEN, ID 15114
                         </p>
-                        <PrimaryButton> Ubah Alamat </PrimaryButton>
+                        <PrimaryButton @click="openDialog(true)"
+                            >Ubah</PrimaryButton
+                        >
                     </div>
                 </div>
             </Card>

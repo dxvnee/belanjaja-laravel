@@ -32,3 +32,11 @@
         transform: scale(1);
     }
 }
+
+.button-click {
+    @apply transition ease-in-out duration-150 transform active:scale-[0.99] hover:scale-[1.01];
+}
+
+.button-small-click {
+    @apply transition ease-in-out duration-150 transform active:scale-[0.97] hover:scale-[1.03];
+}

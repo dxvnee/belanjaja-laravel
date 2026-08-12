@@ -31,7 +31,6 @@ defineProps({
                 />
             </div>
         </div>
-        
 
         <div v-else  class="flex w-full justify-center">
             <p class="text-lg font-medium text-black">

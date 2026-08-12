@@ -10,6 +10,7 @@ import {
     BanknotesIcon,
     ShoppingCartIcon,
     TrashIcon,
+    BackwardIcon,
 } from '@heroicons/vue/20/solid'
 
 export const Icons = {
@@ -24,4 +25,5 @@ export const Icons = {
     cart: ShoppingCartIcon,
     trash: TrashIcon,
     stock: BanknotesIcon, 
+    back: BackwardIcon
 }

@@ -34,7 +34,7 @@ defineProps({
             </header>
 
             <main class="flex-1">
-                <div class="py-6 mx-auto w-full max-w-7xl px-4 sm:px-6 lg:px-8">
+                <div class="py-6 mx-auto w-full max-w-7xl px-4 sm:px-20 lg:px-20">
                     <slot />
                 </div>
             </main>

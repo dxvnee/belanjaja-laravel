@@ -22,6 +22,7 @@ class ProductSeeder extends Seeder
                 'price' => 15000000,
                 'stock' => 3,
                 'is_active' => true,
+                'image_path' => 'products/iphone_13_pro_max.png',
             ],
             [
                 'name' => 'Samsung Galaxy S22 Ultra',
@@ -30,6 +31,7 @@ class ProductSeeder extends Seeder
                 'price' => 12500000,
                 'stock' => 5,
                 'is_active' => true,
+                'image_path' => 'products/samsung_galaxy_s22_ultra.png',
             ],
             [
                 'name' => 'MacBook Pro M2 14 inch',
@@ -38,6 +40,7 @@ class ProductSeeder extends Seeder
                 'price' => 28000000,
                 'stock' => 2,
                 'is_active' => true,
+                'image_path' => 'products/macbook_pro_m2.png',
             ],
             [
                 'name' => 'Sony WH-1000XM5',
@@ -46,6 +49,7 @@ class ProductSeeder extends Seeder
                 'price' => 4500000,
                 'stock' => 10,
                 'is_active' => true,
+                'image_path' => 'products/sony_wh_1000xm5.png',
             ],
             [
                 'name' => 'iPad Air 5th Gen 64GB',
@@ -54,16 +58,24 @@ class ProductSeeder extends Seeder
                 'price' => 8500000,
                 'stock' => 4,
                 'is_active' => true,
+                'image_path' => 'products/ipad_air_5.png',
             ],
         ];
 
+        $user = \App\Models\User::first();
+        $category = \App\Models\Category::first();
+
         foreach ($products as $productData) {
+            $imagePath = $productData['image_path'];
+            unset($productData['image_path']);
+
+            $productData['user_id'] = $user->id;
+            $productData['category_id'] = $category->id;
             $product = Product::create($productData);
 
-            // Create sample product image (you can add actual images later)
             ProductImage::create([
                 'product_id' => $product->id,
-                'image_path' => 'products/sample-product.jpg',
+                'image_path' => $imagePath,
             ]);
         }
     }

@@ -1,5 +1,6 @@
 <?php
 
+use App\Http\Controllers\AddressController;
 use App\Http\Controllers\AdminController;
 use App\Http\Controllers\CartController;
 use App\Http\Controllers\CheckoutController;
@@ -47,4 +48,9 @@ Route::middleware([
     Route::get('/orders', [OrderController::class, 'index'])->name('orders.index');
 
     Route::get('/jualan-saya', [AdminController::class, 'index'])->name('admin.show');
+
+    Route::get('/my-address', [AddressController::class, 'index'])->name('address.index');
+    Route::post('/my-address', [AddressController::class, 'store'])->name('address.store');
+    Route::put('/my-address/{id}', [AddressController::class, 'update'])->name('address.update');
+    Route::delete('/my-address/{id}', [AddressController::class, 'destroy'])->name('address.destroy');
 });

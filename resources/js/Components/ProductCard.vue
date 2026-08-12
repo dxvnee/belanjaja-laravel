@@ -17,17 +17,13 @@ const props = defineProps({
         type: Object,
         required: true,
     },
-    onClick: {
-        type: Function,
-        default: null,
-    },
     checkoutMode: {
         type: Boolean,
         default: false,
     },
-    checkedFun: {
-        type: Function,
-        default: null,
+    checked: {
+        type: Boolean,
+        default: false,
     },
     quantity: {
         type: Number,
@@ -35,10 +31,20 @@ const props = defineProps({
     },
 });
 
-const checked = ref(false);
+const emit = defineEmits([
+    "click-product",
+    "update:checked",
+    "update:quantity",
+    "toggle-select",
+    "qty-changed",
+]);
 
-watch(checked, () => {
-    props.checkedFun?.();
+const checked_ref = computed({
+    get: () => props.checked,
+    set: (value) => {
+        emit("update:checked", value);
+        emit("toggle-select", { product: props.product, checked: value });
+    },
 });
 
 const quantity_ref = ref(props.quantity);
@@ -75,6 +81,11 @@ let debounceTimer = null;
 
 watch(quantity_ref, (newQty) => {
     isSaving.value = true;
+    emit("update:quantity", newQty); 
+    emit("qty-changed", {
+        productId: props.product.id,
+        qty: newQty,
+    });
 
     clearTimeout(debounceTimer);
 
@@ -107,7 +118,7 @@ function updateQty(qty) {
         :class="`${checkoutMode ? 'flex flex-row' : ''} bg-white w-full dark:bg-gray-800 rounded-lg overflow-hidden hover:scale-[1.01] transition-transform duration-300 cursor-pointer`"
     >
         <div
-            @click="onClick"
+            @click="$emit('click-product')"
             :class="`${checkoutMode ? 'size-40' : ''} aspect-square overflow-hidden bg-gray-200`"
         >
             <img
@@ -168,7 +179,7 @@ function updateQty(qty) {
                 icons="trash"
                 :fun="() => deleteFromCart(product.id, product.name)"
             />
-            <Checkbox v-model:checked="checked" />
+            <Checkbox class="button-small-click cursor-pointer" v-model:checked="checked_ref" />
         </div>
     </Card>
 </template>

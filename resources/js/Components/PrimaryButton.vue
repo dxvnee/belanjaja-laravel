@@ -20,7 +20,7 @@ defineProps({
 <template>
     <button
         :type="type"
-        class="h-10 *:inline-flex justify-center items-center px-4 py-2 border rounded-md font-semibold text-md focus:outline-none focus:ring-2 focus:ring-offset-2 dark:focus:ring-offset-gray-800 disabled:opacity-50 transition ease-in-out duration-150 transform active:scale-[0.99] hover:scale-[1.01]"
+        class="h-10 *:inline-flex justify-center items-center px-4 py-2 border rounded-md font-semibold text-md focus:outline-none focus:ring-2 focus:ring-offset-2 dark:focus:ring-offset-gray-800 disabled:opacity-50 button-click"
         :class="[
             variant === 'secondary'
                 ? 'bg-white border-primary-600 text-primary-600 hover:bg-primary-50 focus:bg-primary-50 active:bg-primary-100 focus:ring-primary-300'
