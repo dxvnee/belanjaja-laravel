@@ -27,14 +27,14 @@ class CheckoutController extends Controller
             ->get()
             : collect();
 
-        $address = Address::where('user_id',$user->id)
+        $addresses = Address::where('user_id',$user->id)
             ->get()
             ->toArray();
 
         return Inertia::render('Checkout', [
             'title' => 'Checkout',
             'products' => $products,
-            'addresses' => $address
+            'addresses' => $addresses
         ]);
     }
 
@@ -42,6 +42,7 @@ class CheckoutController extends Controller
     {
         $validated = $request->validate([
             'product_ids'   => ['required', 'array', 'min:1'],
+            'address' => ['required', 'array'],
             'product_ids.*' => ['integer', 'exists:products,id'],
         ]);
 
@@ -57,7 +58,6 @@ class CheckoutController extends Controller
 
         abort_if($cartItems->isEmpty(), 422, 'Tidak ada produk yang dipilih.');
 
-        // Validate stock for each item
         foreach ($cartItems as $item) {
             if ($item->product->stock < $item->quantity) {
                 return back()->withErrors([
@@ -68,12 +68,12 @@ class CheckoutController extends Controller
 
         $totalPrice = $cartItems->sum(fn($item) => $item->price_snapshot * $item->quantity);
 
-        DB::transaction(function () use ($user, $cartItems, $totalPrice) {
+        DB::transaction(function () use ($user, $cartItems, $totalPrice, $validated) {
             $order = Order::create([
                 'user_id'          => $user->id,
                 'total_price'      => $totalPrice,
                 'status'           => 'pending',
-                'shipping_address' => null,
+                'shipping_address' => $validated['address'],
             ]);
 
             foreach ($cartItems as $item) {

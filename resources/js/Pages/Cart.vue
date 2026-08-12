@@ -8,7 +8,7 @@ import { useFeedback } from "@/Composable/useFeedback";
 import { useHelpers } from "@/Composable/useHelpers";
 import Card from "@/Components/Card.vue";
 
-const { confirm } = useFeedback();
+const { confirm, showError } = useFeedback();
 const { formatPrice } = useHelpers();
 
 const props = defineProps({
@@ -40,6 +40,11 @@ const onQtyChanged = ({ productId, qty }) => {
 };
 
 const beli = async () => {
+    if (selected_ids.value.length == 0) {
+        showError("Gagal", "Silahkan pilih produk yang ingin dibeli");
+        return;
+    }
+
     const confirmed = await confirm(
         "Checkout",
         "Apakah Anda yakin ingin melanjutkan ke checkout?",

@@ -6,7 +6,7 @@ import PrimaryButton from "./PrimaryButton.vue";
 import IconButton from "./IconButton.vue";
 import AddressItem from "./AddressItem.vue";
 
-defineProps({
+const props = defineProps({
     addresses: {
         type: Array,
         default: () => [],
@@ -15,16 +15,30 @@ defineProps({
         type: Function,
         default: () => {},
     },
+    selectedAddress: {
+        type: Number,
+        default: 0,
+    },
+    changeAddress: {
+        type: Function,
+        default: () => {},
+    },
 });
 
-const selectedAddress = ref(1);
+const selectedAddress = ref(props.selectedAddress);
 
 const tambahAlamat = () => {
+    props.onDismiss();
     router.visit(route("address.index"));
 };
 
 const setSelectedAddress = (id) => {
     selectedAddress.value = id;
+};
+
+const ubahAlamat = (id) => {
+    props.changeAddress(id);
+    props.onDismiss();
 };
 </script>
 
@@ -56,7 +70,7 @@ const setSelectedAddress = (id) => {
                             ]"
                             @click="setSelectedAddress(address.id)"
                         >
-                            <AddressItem :address="address"/>
+                            <AddressItem :address="address" />
                         </Card>
                     </div>
                     <div v-else class="flex w-full justify-center items-center">
@@ -68,7 +82,9 @@ const setSelectedAddress = (id) => {
                     <PrimaryButton variant="secondary" @click="tambahAlamat"
                         >Tambah Alamat</PrimaryButton
                     >
-                    <PrimaryButton>Ubah Alamat</PrimaryButton>
+                    <PrimaryButton @click="ubahAlamat(selectedAddress)"
+                        >Ubah Alamat</PrimaryButton
+                    >
                 </div>
             </div>
         </Card>

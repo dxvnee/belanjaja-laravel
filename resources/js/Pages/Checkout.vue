@@ -6,7 +6,8 @@ import { useHelpers } from "@/Composable/useHelpers";
 import { router } from "@inertiajs/vue3";
 import { useFeedback } from "@/Composable/useFeedback";
 import AddressDialog from "@/Components/AddressDialog.vue";
-import { ref } from "vue";
+import { computed, ref } from "vue";
+import AddressItem from "@/Components/AddressItem.vue";
 
 const { formatPrice, getProductImage } = useHelpers();
 const { showLoading, hideLoading, showSuccess, showError, confirm } =
@@ -22,7 +23,6 @@ const props = defineProps({
         default: () => [],
     },
 });
-
 const total = props.products.reduce((sum, item) => {
     return sum + parseFloat(item.product.price) * item.quantity;
 }, 0);
@@ -41,6 +41,7 @@ const beli = async () => {
         method: "post",
         data: {
             product_ids: props.products.map((item) => item.product.id),
+            address: selectedAddressItem.value,
         },
         onSuccess: () => {
             showSuccess("Pesanan berhasil dibuat!");
@@ -54,7 +55,18 @@ const beli = async () => {
     });
 };
 
+const addresses = ref(props.addresses);
+const selectedAddress = ref(1);
 const openAddressDialog = ref(false);
+
+const selectedAddressItem = computed(() => {
+    return addresses.value.find((a) => a.id == selectedAddress.value);
+});
+
+const changeAddress = (id) => {
+    selectedAddress.value = id;
+    openAddressDialog.value = false;
+};
 
 const openDialog = (value) => {
     openAddressDialog.value = value;
@@ -66,6 +78,8 @@ const openDialog = (value) => {
         <AddressDialog
             v-if="openAddressDialog"
             :addresses="addresses"
+            :selectedAddress="selectedAddress"
+            :changeAddress="(id) => changeAddress(id)"
             :onDismiss="() => openDialog(false)"
         />
 
@@ -89,14 +103,10 @@ const openDialog = (value) => {
                         terdaftar di akun Anda.
                     </p>
 
-                    <div class="flex gap-4">
-                        <h1 class="font-bold">
-                            Eigiya Daramuli Kale (081366366550)
-                        </h1>
-                        <p>
-                            Jalan Tanimbar No. 16, RT.7/RW.5, Cimone Jaya, KOTA
-                            TANGERANG - KARAWACI, BANTEN, ID 15114
-                        </p>
+                    <div
+                        class="flex flex-row items-center justify-between gap-4"
+                    >
+                        <AddressItem :address="selectedAddressItem" />
                         <PrimaryButton @click="openDialog(true)"
                             >Ubah</PrimaryButton
                         >
