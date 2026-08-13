@@ -22,6 +22,10 @@ const props = defineProps({
         type: Array,
         default: () => [],
     },
+    isBuyNow: {
+        type: Boolean,
+        default: false,
+    },
 });
 const total = props.products.reduce((sum, item) => {
     return sum + parseFloat(item.product.price) * item.quantity;
@@ -41,6 +45,11 @@ const beli = async () => {
         method: "post",
         data: {
             product_ids: props.products.map((item) => item.product.id),
+            quantities: props.products.reduce((acc, item) => {
+                acc[item.product.id] = item.quantity;
+                return acc;
+            }, {}),
+            is_buy_now: props.isBuyNow,
             address: selectedAddressItem.value,
         },
         onSuccess: () => {
@@ -75,13 +84,15 @@ const openDialog = (value) => {
 
 <template>
     <AppLayout title="Checkout">
-        <AddressDialog
-            v-if="openAddressDialog"
-            :addresses="addresses"
-            :selectedAddress="selectedAddress"
-            :changeAddress="(id) => changeAddress(id)"
-            :onDismiss="() => openDialog(false)"
-        />
+        <Transition name="dialog">
+            <AddressDialog
+                v-if="openAddressDialog"
+                :addresses="addresses"
+                :selectedAddress="selectedAddress"
+                :changeAddress="(id) => changeAddress(id)"
+                :onDismiss="() => openDialog(false)"
+            />
+        </Transition>
 
         <slot name="header">
             <h2

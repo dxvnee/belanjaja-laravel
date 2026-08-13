@@ -69,13 +69,23 @@ const addToCart = async () => {
     );
 };
 
-const buyNow = () => {
-    router.visit(route("checkout.index"), {
-        method: "post",
+const buyNow = async () => {
+    const confirmed = await confirm(
+        "Beli Sekarang",
+        `Apakah Anda yakin ingin membeli "${props.product.name}" sekarang?`,
+    );
+
+    if (!confirmed) return;
+
+    showLoading("Memproses pembelian...");
+
+    router.visit(route("checkout.buyNow"), {
+        method: "get",
         data: {
             product_id: props.product.id,
             quantity: quantity.value,
         },
+        onFinish: () => hideLoading(),
     });
 };
 

@@ -46,7 +46,7 @@ const ubahAlamat = (id) => {
     <div
         class="fixed inset-0 z-50 flex items-center justify-center backdrop-blur-xs bg-black/50"
     >
-        <Card class="w-[700px] p-5">
+        <Card class="dialog-card w-[700px] p-5">
             <div class="flex flex-col justify-between items-center gap-4">
                 <div
                     class="flex flex-row w-full justify-start items-center gap-2"

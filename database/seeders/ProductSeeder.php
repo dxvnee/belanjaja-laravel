@@ -78,5 +78,23 @@ class ProductSeeder extends Seeder
                 'image_path' => $imagePath,
             ]);
         }
+
+        $sampleImages = [
+            'products/iphone_13_pro_max.png',
+            'products/samsung_galaxy_s22_ultra.png',
+            'products/macbook_pro_m2.png',
+            'products/sony_wh_1000xm5.png',
+            'products/ipad_air_5.png',
+        ];
+
+        Product::factory(20)->create([
+            'user_id' => $user->id,
+            'category_id' => $category->id,
+        ])->each(function ($product) use ($sampleImages) {
+            ProductImage::create([
+                'product_id' => $product->id,
+                'image_path' => fake()->randomElement($sampleImages),
+            ]);
+        });
     }
 }

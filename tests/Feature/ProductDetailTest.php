@@ -35,7 +35,7 @@ class ProductDetailTest extends TestCase
             'image_path' => 'products/iphone2.jpg',
         ]);
 
-        $response = $this->actingAs($user)->get(route('product.show', ['slug' => $product->slug]));
+        $response = $this->actingAs($user)->get(route('product.show', ['id' => $product->id]));
 
         $response->assertStatus(200);
         $response->assertInertia(
@@ -54,7 +54,7 @@ class ProductDetailTest extends TestCase
     {
         $user = User::factory()->create();
 
-        $response = $this->actingAs($user)->get(route('product.show', ['slug' => 'non-existent-product']));
+        $response = $this->actingAs($user)->get(route('product.show', ['id' => 9999]));
 
         $response->assertStatus(404);
     }
@@ -63,7 +63,7 @@ class ProductDetailTest extends TestCase
     {
         $product = Product::factory()->create(['slug' => 'test-product']);
 
-        $response = $this->get(route('product.show', ['slug' => $product->slug]));
+        $response = $this->get(route('product.show', ['id' => $product->id]));
 
         $response->assertRedirect(route('login'));
     }

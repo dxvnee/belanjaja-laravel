@@ -29,6 +29,11 @@ class ProductFactory extends Factory
             'price' => fake()->numberBetween(10000, 10000000),
             'stock' => fake()->numberBetween(1, 100),
             'is_active' => true,
+            'user_id' => \App\Models\User::factory(),
+            'category_id' => fn () => \App\Models\Category::first()?->id ?? \App\Models\Category::create([
+                'name' => 'Elektronik',
+                'slug' => 'elektronik',
+            ])->id,
         ];
     }
 

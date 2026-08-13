@@ -19,11 +19,17 @@ class JualProductTest extends TestCase
         Storage::fake('public');
 
         $user = User::factory()->create();
+        $category = \App\Models\Category::create([
+            'name' => 'Elektronik',
+            'slug' => 'elektronik',
+        ]);
 
         $response = $this->actingAs($user)->post(route('jual.store'), [
             'judul' => 'iPhone 13 128GB',
             'harga' => 8500000,
             'deskripsi' => 'Kondisi mulus dan lengkap.',
+            'stok' => 1,
+            'kategori' => $category->id,
             'photo1' => UploadedFile::fake()->image('iphone.jpg'),
             'photo2' => UploadedFile::fake()->image('iphone2.jpg'),
         ]);
