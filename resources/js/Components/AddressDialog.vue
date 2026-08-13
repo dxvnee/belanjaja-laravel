@@ -73,7 +73,7 @@ const ubahAlamat = (id) => {
                             <AddressItem :address="address" />
                         </Card>
                     </div>
-                    <div v-else class="flex w-full justify-center items-center">
+                    <div v-else class="flex w-full h-full justify-center items-center">
                         <p>Belum ada alamat!</p>
                     </div>
                 </div>

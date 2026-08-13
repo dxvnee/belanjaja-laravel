@@ -2,15 +2,12 @@
 import BannerList from "@/Components/BannerList.vue";
 import EmptyState from "@/Components/EmptyState.vue";
 import ProductCard from "@/Components/ProductCard.vue";
+import Pagination from "@/Components/Pagination.vue";
 import AppLayout from "@/Layouts/AppLayout.vue";
 import { router } from "@inertiajs/vue3";
-import { ref, computed } from "vue";
 
 defineProps({
-    products: {
-        type: Array,
-        default: () => [],
-    },
+    products: Object,
 });
 
 const goToProductDetail = (id) => {
@@ -34,7 +31,7 @@ const goToProductDetail = (id) => {
             </p>
 
             <div
-                v-if="products.length === 0"
+                v-if="products.data.length === 0"
                 class="text-center py-12 text-gray-500"
             >
                 <EmptyState message="Belum ada produk yang tersedia" />
@@ -44,13 +41,15 @@ const goToProductDetail = (id) => {
                 v-else
                 class="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5 gap-4"
             >
-                <div v-for="product in products" :key="product.id">
+                <div v-for="product in products.data" :key="product.id">
                     <ProductCard
                         :onClick="() => goToProductDetail(product.id)"
                         :product="product"
                     />
                 </div>
             </div>
+
+            <Pagination :pagination="products" />
         </div>
     </AppLayout>
 </template>

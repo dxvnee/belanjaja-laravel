@@ -12,7 +12,8 @@ class DashboardController extends Controller
         $products = Product::with('images')
             ->where('is_active', true)
             ->latest()
-            ->get();
+            ->paginate(10)
+            ->withQueryString();
 
         return Inertia::render('Dashboard', [
             'products' => $products,
