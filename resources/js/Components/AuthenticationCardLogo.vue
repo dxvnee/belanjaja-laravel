@@ -5,11 +5,11 @@ import { computed } from 'vue';
 const props = defineProps({
     size: {
         type: [String, Number],
-        default: 128,
+        default: 85,
     },
 });
 
-const logoSize = computed(() => {
+const logoSize = computed(()    => {
     return typeof props.size === 'number' ? `${props.size}px` : props.size;
 });
 

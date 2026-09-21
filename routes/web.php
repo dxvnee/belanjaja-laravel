@@ -47,11 +47,13 @@ Route::middleware([
     Route::post('/checkout', [CheckoutController::class, 'store'])->name('checkout.store');
 
     Route::get('/orders', [OrderController::class, 'index'])->name('orders.index');
+    Route::get('/orders/{id}/payment', [OrderController::class, 'payment'])->name('orders.payment');
+    Route::post('/orders/{id}/pay', [OrderController::class, 'pay'])->name('orders.pay');
 
     Route::get('/jualan-saya', [AdminController::class, 'index'])->name('admin.show');
 
-    Route::get('/my-address', [AddressController::class, 'index'])->name('address.index');
-    Route::post('/my-address', [AddressController::class, 'store'])->name('address.store');
-    Route::put('/my-address/{id}', [AddressController::class, 'update'])->name('address.update');
-    Route::delete('/my-address/{id}', [AddressController::class, 'destroy'])->name('address.destroy');
+    Route::resource('my-address', AddressController::class)
+        ->parameters(['my-address' => 'address'])
+        ->names('address')
+        ->only(['index', 'store', 'update', 'destroy']);
 });

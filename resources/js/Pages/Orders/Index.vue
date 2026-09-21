@@ -2,7 +2,7 @@
 import AppLayout from "@/Layouts/AppLayout.vue";
 import Card from "@/Components/Card.vue";
 import { useHelpers } from "@/Composable/useHelpers";
-import { usePage } from "@inertiajs/vue3";
+import { usePage, Link } from "@inertiajs/vue3";
 import { computed } from "vue";
 
 const { formatPrice } = useHelpers();
@@ -136,10 +136,19 @@ const formatDate = (dateStr) => {
                     </table>
 
                     <!-- Order Footer -->
-                    <div class="flex justify-end mt-4 pt-4 border-t">
-                        <div class="flex flex-row gap-2">
-                            <p class="font-medium">Total Pembayaran:</p>
-                            <p class="font-bold">
+                    <div class="flex flex-col sm:flex-row sm:justify-between sm:items-center mt-4 pt-4 border-t gap-4">
+                        <div>
+                            <Link
+                                v-if="order.status === 'pending'"
+                                :href="route('orders.payment', { id: order.id })"
+                                class="inline-flex justify-center items-center px-4 py-2 border border-transparent text-sm font-medium rounded-md shadow-sm text-white bg-primary-600 hover:bg-primary-700 focus:outline-none transition duration-150 ease-in-out"
+                            >
+                                Bayar Sekarang
+                            </Link>
+                        </div>
+                        <div class="flex flex-row gap-2 justify-end items-center">
+                            <p class="font-medium text-sm text-gray-600">Total Pembayaran:</p>
+                            <p class="font-bold text-base text-gray-900">
                                 {{ formatPrice(order.total_price) }}
                             </p>
                         </div>

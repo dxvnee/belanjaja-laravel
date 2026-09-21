@@ -134,11 +134,10 @@ const submit = () => {
                 </InputLabel>
             </div>
 
-            <div class="mt-10 flex flex-col gap-1 items-center">
+            <div class="mt-10 gap-2 flex flex-col items-center">
                 <PrimaryButton
-                    class="w-full"
-                    :class="{ 'opacity-25': form.processing }"
-                    :disabled="form.processing"
+                    class="w-full font-bold"
+                    :loading="form.processing"
                 >
                     Register
                 </PrimaryButton>

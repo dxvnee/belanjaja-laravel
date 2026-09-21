@@ -6,7 +6,7 @@ import Card from "./Card.vue";
     <div
         class="min-h-screen flex flex-col justify-center items-center p-5 bg-primary-50"
     >
-        <div class="flex flex-row items-center">
+        <div class="flex flex-row items-center pb-5">
             <slot name="logo" />
             <div class="flex flex-col gap-1">
                 <h1 class="text-5xl font-black text-primary-600">Belanjaja!</h1>
@@ -14,7 +14,7 @@ import Card from "./Card.vue";
             </div>
         </div>
 
-        <card class="p-10">
+        <card class="p-10 w-full sm:max-w-md">
             <slot />
         </card>
     </div>
