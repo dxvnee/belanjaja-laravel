@@ -1,6 +1,7 @@
 <script setup>
 import ProductCard from "@/Components/ProductCard.vue";
 import AppLayout from "@/Layouts/AppLayout.vue";
+import { router } from "@inertiajs/vue3";
 
 defineProps({
     products: {
@@ -8,6 +9,10 @@ defineProps({
         default: () => [],
     },
 });
+
+const goToProductDetail = (id) => {
+    router.visit(route("product.show", { id }));
+};
 </script>
 
 <template>
@@ -23,7 +28,10 @@ defineProps({
             </p>
         </slot>
 
-        <div v-if="products.length > 0" class="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5 gap-4">
+        <div
+            v-if="products.length > 0"
+            class="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5 gap-4"
+        >
             <div v-for="product in products" :key="product.id">
                 <ProductCard
                     :onClick="() => goToProductDetail(product.id)"
@@ -32,7 +40,7 @@ defineProps({
             </div>
         </div>
 
-        <div v-else  class="flex w-full justify-center">
+        <div v-else class="flex w-full justify-center">
             <p class="text-lg font-medium text-black">
                 Belum ada iklan yang dibuat.
             </p>

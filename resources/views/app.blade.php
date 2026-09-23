@@ -13,6 +13,12 @@
         <!-- Scripts -->
         @routes
         @vite(['resources/js/app.js', "resources/js/Pages/{$page['component']}.vue"])
+        <!-- Midtrans Snap -->
+        <script
+            type="text/javascript"
+            src="{{ config('services.midtrans.is_production') ? 'https://app.midtrans.com/snap/snap.js' : 'https://app.sandbox.midtrans.com/snap/snap.js' }}"
+            data-client-key="{{ config('services.midtrans.client_key') }}"
+        ></script>
         @inertiaHead
     </head>
     <body class="font-sans antialiased">

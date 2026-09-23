@@ -25,16 +25,12 @@ Route::middleware([
 ])->group(function () {
     Route::get('/dashboard', [DashboardController::class, 'index'])->name('dashboard');
 
-    Route::get('/jual', function () {
-        return Inertia::render('Jual');
-    })->name('jual.index');
-
     Route::get('/product/{id}', [ProductController::class, 'show'])->name('product.show');
     Route::get('/product/{id}/edit', [ProductController::class, 'edit'])->name('product.edit');
     Route::post('/product/{id}/update', [ProductController::class, 'update'])->name('product.update');
     Route::delete('/product/{id}', [ProductController::class, 'destroy'])->name('product.destroy');
 
-    Route::post('/jual', [JualController::class, 'index'])->name('jual.index');
+    Route::get('/jual', [JualController::class, 'index'])->name('jual.index');
     Route::post('/jual', [JualController::class, 'store'])->name('jual.store');
 
     Route::get('/cart', [CartController::class, 'index'])->name('cart.index');

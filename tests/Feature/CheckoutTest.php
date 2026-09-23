@@ -62,7 +62,9 @@ class CheckoutTest extends TestCase
             'address' => $addressData,
         ]);
 
-        $response->assertRedirect(route('orders.index'));
+        $order = Order::where('user_id', $user->id)->first();
+        $this->assertNotNull($order);
+        $response->assertRedirect(route('orders.payment', ['id' => $order->id]));
 
         // Assert database has order
         $this->assertDatabaseHas('orders', [
@@ -72,8 +74,6 @@ class CheckoutTest extends TestCase
         ]);
 
         // Check if shipping_address cast works
-        $order = Order::where('user_id', $user->id)->first();
-        $this->assertNotNull($order);
         $this->assertEquals($addressData, $order->shipping_address);
     }
 
@@ -124,7 +124,9 @@ class CheckoutTest extends TestCase
             'address' => $addressData,
         ]);
 
-        $response->assertRedirect(route('orders.index'));
+        $order = Order::where('user_id', $user->id)->first();
+        $this->assertNotNull($order);
+        $response->assertRedirect(route('orders.payment', ['id' => $order->id]));
 
         // Assert database has order
         $this->assertDatabaseHas('orders', [
@@ -137,8 +139,6 @@ class CheckoutTest extends TestCase
         $this->assertEquals(7, $product->fresh()->stock);
 
         // Check if shipping_address cast works
-        $order = Order::where('user_id', $user->id)->first();
-        $this->assertNotNull($order);
         $this->assertEquals($addressData, $order->shipping_address);
     }
 }

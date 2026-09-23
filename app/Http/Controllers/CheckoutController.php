@@ -131,7 +131,7 @@ class CheckoutController extends Controller
 
         $totalPrice = $items->sum(fn($item) => $item->price_snapshot * $item->quantity);
 
-        DB::transaction(function () use ($user, $items, $totalPrice, $validated) {
+        $order = DB::transaction(function () use ($user, $items, $totalPrice, $validated) {
             $order = Order::create([
                 'user_id'          => $user->id,
                 'total_price'      => $totalPrice,
@@ -154,8 +154,10 @@ class CheckoutController extends Controller
                     $item->cart_item->delete();
                 }
             }
+
+            return $order;
         });
 
-        return redirect()->route('orders.index')->with('success', 'Pesanan berhasil dibuat!');
+        return redirect()->route('orders.payment', ['id' => $order->id])->with('success', 'Pesanan berhasil dibuat! Silakan selesaikan pembayaran.');
     }
 }

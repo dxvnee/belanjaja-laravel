@@ -7,12 +7,13 @@ use App\Models\ProductImage;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Str;
+use Inertia\Inertia;
 
 class JualController extends Controller
 {
     public function index()
     {
-        return view('jual.index');
+        return Inertia::render('Jual');
     }
 
     public function store(Request $request)

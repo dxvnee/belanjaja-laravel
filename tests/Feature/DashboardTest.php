@@ -47,9 +47,9 @@ class DashboardTest extends TestCase
         $response->assertInertia(
             fn($page) => $page
                 ->component('Dashboard')
-                ->has('products', 2)
-                ->has('products.0.images', 1)
-                ->has('products.1.images', 1)
+                ->has('products.data', 2)
+                ->has('products.data.0.images', 1)
+                ->has('products.data.1.images', 1)
         );
     }
 
