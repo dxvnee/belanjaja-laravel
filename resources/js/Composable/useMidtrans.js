@@ -4,10 +4,6 @@ export function useMidtrans() {
     const isSnapLoaded = ref(typeof window !== "undefined" && !!window.snap);
     const isProcessing = ref(false);
 
-    /**
-     * Memastikan script Snap Midtrans sudah dimuat ke dalam DOM
-     * Jika belum, muat secara dinamis
-     */
     const loadSnapScript = (clientKey, isProduction = false) => {
         return new Promise((resolve, reject) => {
             if (typeof window === "undefined") {
@@ -92,12 +88,6 @@ export function useMidtrans() {
         });
     };
 
-    /**
-     * Menanamkan (Embed) Snap ke dalam container HTML tertentu
-     * @param {string} snapToken
-     * @param {string} embedId Id element container
-     * @param {Object} options Callback onSuccess, onPending, onError, onClose
-     */
     const embed = (snapToken, embedId, options = {}) => {
         if (!window.snap) {
             console.error("Midtrans Snap belum siap.");
