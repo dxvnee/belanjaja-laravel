@@ -26,7 +26,7 @@ const previewUrl = computed(() => {
 <template>
     <label
         :class="[
-            'w-full h-48 border-2 border-gray-300 rounded-lg flex items-center justify-center cursor-pointer hover:border-gray-400 transition-all duration-200 hover:scale-[1.01]',
+            'w-full h-48 border-2 border-gray-300 dark:border-gray-700 bg-white dark:bg-gray-800 rounded-lg flex items-center justify-center cursor-pointer hover:border-gray-400 dark:hover:border-gray-500 transition-all duration-200 hover:scale-[1.01]',
             previewUrl ? '' : 'border-dashed',
         ]"
     >

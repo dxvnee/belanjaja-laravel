@@ -80,7 +80,7 @@ const total_price = computed(() =>
         >
             Keranjang Saya
         </h2>
-        <p class="text-md text-black mb-10">
+        <p class="text-md text-gray-600 dark:text-gray-400 mb-10">
             Lihat dan kelola produk yang ada di keranjangmu!
         </p>
 
@@ -100,8 +100,8 @@ const total_price = computed(() =>
                 class="sticky bottom-0 py-4 px-4 flex flex-col items-end justify-center"
             >
                 <div class="flex flex-row">
-                    <p class="text-xl text-black pe-2">Total:</p>
-                    <p class="text-xl font-bold text-primary-600">
+                    <p class="text-xl text-gray-900 dark:text-gray-100 pe-2">Total:</p>
+                    <p class="text-xl font-bold text-primary-600 dark:text-primary-400">
                         {{ formatPrice(total_price) }}
                     </p>
                 </div>
@@ -116,7 +116,7 @@ const total_price = computed(() =>
         </div>
 
         <div v-else class="flex w-full justify-center">
-            <p class="text-lg font-medium text-black">
+            <p class="text-lg font-medium text-gray-600 dark:text-gray-400">
                 Belum ada produk di keranjangmu.
             </p>
         </div>

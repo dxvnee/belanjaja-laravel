@@ -138,10 +138,10 @@ const formatDate = (dateStr) => {
             <div class="lg:col-span-2 space-y-6">
                 <!-- Daftar Produk -->
                 <Card class="p-6 max-w-none">
-                    <h3 class="text-base font-semibold text-gray-800 dark:text-gray-200 border-b pb-3 mb-4">
+                    <h3 class="text-base font-semibold text-gray-800 dark:text-gray-200 border-b border-gray-200 dark:border-gray-700 pb-3 mb-4">
                         Daftar Produk ({{ order.items.length }})
                     </h3>
-                    <div class="divide-y max-h-80 overflow-y-auto pr-1">
+                    <div class="divide-y divide-gray-200 dark:divide-gray-700 max-h-80 overflow-y-auto pr-1">
                         <div
                             v-for="item in order.items"
                             :key="item.id"
@@ -158,7 +158,7 @@ const formatDate = (dateStr) => {
                                     <p class="font-medium text-gray-900 dark:text-gray-100 line-clamp-1">
                                         {{ item.product?.name ?? "Produk" }}
                                     </p>
-                                    <p class="text-xs text-gray-500 mt-0.5">
+                                    <p class="text-xs text-gray-500 dark:text-gray-400 mt-0.5">
                                         {{ item.quantity }} &times; {{ formatPrice(item.price_snapshot) }}
                                     </p>
                                 </div>
@@ -172,16 +172,16 @@ const formatDate = (dateStr) => {
 
                 <!-- Alamat Pengiriman -->
                 <Card v-if="order.shipping_address" class="p-6 max-w-none">
-                    <h3 class="text-base font-semibold text-gray-800 dark:text-gray-200 border-b pb-3 mb-3">
+                    <h3 class="text-base font-semibold text-gray-800 dark:text-gray-200 border-b border-gray-200 dark:border-gray-700 pb-3 mb-3">
                         Alamat Pengiriman
                     </h3>
                     <div class="text-sm space-y-1 text-gray-600 dark:text-gray-300">
                         <p class="font-semibold text-gray-900 dark:text-gray-100">
                             {{ order.shipping_address.name }}
                         </p>
-                        <p class="text-xs text-gray-500">{{ order.shipping_address.phone }}</p>
+                        <p class="text-xs text-gray-500 dark:text-gray-400">{{ order.shipping_address.phone }}</p>
                         <p class="mt-2 text-gray-700 dark:text-gray-300">{{ order.shipping_address.detail }}</p>
-                        <p class="text-xs text-gray-500">
+                        <p class="text-xs text-gray-500 dark:text-gray-400">
                             {{ order.shipping_address.subdistrict }}, {{ order.shipping_address.city }}, {{ order.shipping_address.province }} {{ order.shipping_address.postal_code }}
                         </p>
                     </div>
@@ -190,34 +190,34 @@ const formatDate = (dateStr) => {
 
             <div class="lg:col-span-1 space-y-6">
                 <Card class="p-6 max-w-none h-full">
-                    <div class="flex items-center justify-between border-b pb-3 mb-4">
+                    <div class="flex items-center justify-between border-b border-gray-200 dark:border-gray-700 pb-3 mb-4">
                         <h3 class="text-base font-semibold text-gray-800 dark:text-gray-200">
                             Ringkasan Pembayaran
                         </h3>
                         <StatusSpan
                             statusLabel="Menunggu Pembayaran"
-                            statusColor="bg-yellow-100 text-yellow-800 "
+                            statusColor="bg-yellow-100 text-yellow-800 dark:bg-yellow-900/40 dark:text-yellow-300 dark:border dark:border-yellow-700/50"
                         />
                     </div>
 
                     <div class="space-y-3 text-sm">
                         <div class="flex justify-between">
-                            <span class="text-gray-500">ID Pesanan</span>
+                            <span class="text-gray-500 dark:text-gray-400">ID Pesanan</span>
                             <span class="font-mono text-gray-900 dark:text-gray-100">#{{ order.id }}</span>
                         </div>
                         <div class="flex justify-between">
-                            <span class="text-gray-500">Waktu Pemesanan</span>
+                            <span class="text-gray-500 dark:text-gray-400">Waktu Pemesanan</span>
                             <span class="text-gray-700 dark:text-gray-300">{{ formatDate(order.created_at) }}</span>
                         </div>
-                        <div class="flex justify-between border-t pt-3 font-semibold text-base">
+                        <div class="flex justify-between border-t border-gray-200 dark:border-gray-700 pt-3 font-semibold text-base">
                             <span class="text-gray-800 dark:text-gray-200">Total Tagihan</span>
-                            <span class="text-xl font-bold text-primary-600">
+                            <span class="text-xl font-bold text-primary-600 dark:text-primary-400">
                                 {{ formatPrice(order.total_price) }}
                             </span>
                         </div>
                     </div>
 
-                    <div class="mt-6 pt-6 border-t space-y-3">
+                    <div class="mt-6 pt-6 border-t border-gray-200 dark:border-gray-700 space-y-3">
                         <PrimaryButton
                             class="w-full flex justify-center items-center py-3 text-sm font-semibold"
                             :loading="isProcessing"

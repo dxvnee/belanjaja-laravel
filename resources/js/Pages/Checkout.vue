@@ -100,7 +100,7 @@ const openDialog = (value) => {
             >
                 Checkout
             </h2>
-            <p class="text-md text-black mb-10">
+            <p class="text-md text-gray-600 dark:text-gray-400 mb-10">
                 Berikut adalah produk yang akan Anda beli.
             </p>
         </slot>
@@ -108,7 +108,7 @@ const openDialog = (value) => {
         <div class="flex flex-col gap-4">
             <Card class="max-w-none p-5">
                 <div class="w-full">
-                    <p>Alamat Pengiriman:</p>
+                    <p class="font-semibold text-gray-900 dark:text-gray-100">Alamat Pengiriman:</p>
                     <p class="text-sm text-gray-600 dark:text-gray-400 mb-4">
                         Alamat pengiriman akan disesuaikan dengan alamat yang
                         terdaftar di akun Anda.
@@ -127,9 +127,9 @@ const openDialog = (value) => {
 
             <Card class="max-w-none p-5">
                 <div class="w-full">
-                    <p>Produk Dipesan:</p>
-                    <table class="w-full text-left mt-4">
-                        <thead>
+                    <p class="font-semibold text-gray-900 dark:text-gray-100">Produk Dipesan:</p>
+                    <table class="w-full text-left mt-4 text-sm">
+                        <thead class="text-gray-500 dark:text-gray-400">
                             <tr>
                                 <th class="pb-2">Nama Produk</th>
                                 <th class="pb-2">Harga</th>
@@ -141,26 +141,26 @@ const openDialog = (value) => {
                             <tr
                                 v-for="item in products"
                                 :key="item.id"
-                                class="border-t"
+                                class="border-t border-gray-200 dark:border-gray-700 text-gray-800 dark:text-gray-200"
                             >
-                                <td class="py-2">
+                                <td class="py-3">
                                     <div
                                         class="flex flex-row items-center gap-3"
                                     >
                                         <img
                                             :src="getProductImage(item.product)"
                                             alt="product image"
-                                            class="h-16 w-16 object-cover rounded"
+                                            class="h-16 w-16 object-cover rounded border border-gray-200 dark:border-gray-700"
                                         />
-                                        <p>{{ item.product.name }}</p>
+                                        <p class="font-medium text-gray-900 dark:text-gray-100">{{ item.product.name }}</p>
                                     </div>
                                 </td>
 
-                                <td class="py-2">
+                                <td class="py-3">
                                     {{ formatPrice(item.product.price) }}
                                 </td>
-                                <td class="py-2">{{ item.quantity }}</td>
-                                <td class="py-2">
+                                <td class="py-3">{{ item.quantity }}</td>
+                                <td class="py-3 font-semibold text-gray-900 dark:text-gray-100">
                                     {{
                                         formatPrice(
                                             item.product.price * item.quantity,
@@ -175,9 +175,9 @@ const openDialog = (value) => {
 
             <Card class="max-w-none p-5">
                 <div class="w-full flex flex-col items-end gap-4">
-                    <div class="flex flex-row gap-2">
-                        <p class="text-lg">Total Pembayaran:</p>
-                        <p class="text-lg font-bold">
+                    <div class="flex flex-row items-baseline gap-2">
+                        <p class="text-lg text-gray-600 dark:text-gray-400">Total Pembayaran:</p>
+                        <p class="text-xl font-bold text-primary-600 dark:text-primary-400">
                             {{ formatPrice(total) }}
                         </p>
                     </div>

@@ -1,7 +1,6 @@
 <script setup>
 import { Head } from "@inertiajs/vue3";
 import Banner from "@/Components/Banner.vue";
-import { theme } from "@/theme.js";
 import AppNavbar from "@/Components/AppNavbar.vue";
 import BottomBar from "@/Components/BottomBar.vue";
 import AppDialog from "@/Components/AppDialog.vue";
@@ -19,14 +18,13 @@ defineProps({
         <Banner />
 
         <div
-            class="min-h-screen flex flex-col"
-            :style="{ backgroundColor: theme.background }"
+            class="min-h-screen flex flex-col bg-gray-50 dark:bg-gray-900 text-gray-900 dark:text-gray-100 transition-colors duration-200"
         >
             <AppNavbar />
 
             <header
                 v-if="$slots.header"
-                class="bg-white dark:bg-gray-800 shadow"
+                class="bg-white dark:bg-gray-800 border-b border-gray-200 dark:border-gray-700 shadow-sm"
             >
                 <div class="max-w-7xl mx-auto py-6 px-4 sm:px-6 lg:px-8">
                     <slot name="header" />

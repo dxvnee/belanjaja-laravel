@@ -32,7 +32,7 @@ const submit = () => {
             <AuthenticationCardLogo />
         </template>
 
-        <p class="text-center text-md font-medium text-black mb-10">
+        <p class="text-center text-md font-medium text-gray-600 dark:text-gray-400 mb-10">
             Create an account to get started.
         </p>
 

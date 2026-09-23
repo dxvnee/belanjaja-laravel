@@ -23,7 +23,7 @@ const goToProductDetail = (id) => {
             >
                 Jualan Saya
             </h2>
-            <p class="text-md text-black mb-10">
+            <p class="text-md text-gray-600 dark:text-gray-400 mb-10">
                 Lihat dan kelola iklan yang sudah kamu buat!
             </p>
         </slot>
@@ -41,7 +41,7 @@ const goToProductDetail = (id) => {
         </div>
 
         <div v-else class="flex w-full justify-center">
-            <p class="text-lg font-medium text-black">
+            <p class="text-lg font-medium text-gray-600 dark:text-gray-400">
                 Belum ada iklan yang dibuat.
             </p>
         </div>

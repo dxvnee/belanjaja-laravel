@@ -30,8 +30,8 @@ defineProps({
 <template>
     <div class="flex w-full justify-center">
         <Card class="mx-auto w-full !max-w-none p-5">
-            <p class="text-lg font-medium text-black">Unggah Foto Iklan</p>
-            <p class="text-sm text-black">
+            <p class="text-lg font-semibold text-gray-900 dark:text-gray-100">Unggah Foto Iklan</p>
+            <p class="text-sm text-gray-600 dark:text-gray-400">
                 Foto Anda akan menjadi foto sampul/thumbnail
             </p>
 
@@ -58,13 +58,13 @@ defineProps({
                             :message="form.errors[`photo${slot}`]"
                         />
 
-                        <p class="text-sm text-black text-center">
+                        <p class="text-sm text-gray-600 dark:text-gray-400 text-center">
                             Foto {{ slot }}
                         </p>
                     </div>
                 </div>
 
-                <p class="text-lg font-medium text-black">
+                <p class="text-lg font-semibold text-gray-900 dark:text-gray-100">
                     Berikan Detail Item Anda
                 </p>
 

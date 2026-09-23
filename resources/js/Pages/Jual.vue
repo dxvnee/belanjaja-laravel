@@ -52,7 +52,7 @@ const submit = async () => {
             >
                 Jual Barang
             </h2>
-            <p class="text-md text-black mb-10">
+            <p class="text-md text-gray-600 dark:text-gray-400 mb-10">
                 Pilih kategori barang yang ingin kamu jual!
             </p>
         </slot>

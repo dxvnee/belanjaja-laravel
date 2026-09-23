@@ -126,7 +126,7 @@ const deleteProduct = async () => {
                     <!-- Product Images -->
                     <div class="space-y-4">
                         <div
-                            class="aspect-square w-full overflow-hidden rounded-lg bg-gray-200"
+                            class="aspect-square w-full overflow-hidden rounded-lg bg-gray-100 dark:bg-gray-800 border border-gray-200 dark:border-gray-700"
                         >
                             <img
                                 :src="getCurrentImage()"
@@ -147,7 +147,7 @@ const deleteProduct = async () => {
                                 :class="
                                     currentImageIndex === index
                                         ? 'border-primary-600'
-                                        : 'border-gray-200 hover:border-gray-400'
+                                        : 'border-gray-200 dark:border-gray-700 hover:border-gray-400 dark:hover:border-gray-500'
                                 "
                                 @click="selectImage(index)"
                             >
@@ -179,20 +179,20 @@ const deleteProduct = async () => {
                         <div class="flex items-center gap-4">
                             <div
                                 v-if="product.stock > 0"
-                                class="rounded-lg bg-green-100 px-3 py-1 text-sm font-medium text-green-800 dark:bg-green-900 dark:text-green-200"
+                                class="rounded-lg bg-green-100 px-3 py-1 text-sm font-medium text-green-800 dark:bg-green-900/40 dark:text-green-300 dark:border dark:border-green-800"
                             >
                                 Stok: {{ product.stock }}
                             </div>
                             <div
                                 v-else
-                                class="rounded-lg bg-red-100 px-3 py-1 text-sm font-medium text-red-800 dark:bg-red-900 dark:text-red-200"
+                                class="rounded-lg bg-red-100 px-3 py-1 text-sm font-medium text-red-800 dark:bg-red-900/40 dark:text-red-300 dark:border dark:border-red-800"
                             >
                                 Stok Habis
                             </div>
                         </div>
 
                         <!-- Description -->
-                        <div class="border-t border-gray-200 pt-6">
+                        <div class="border-t border-gray-200 dark:border-gray-700 pt-6">
                             <h2
                                 class="text-lg font-semibold text-gray-900 dark:text-gray-100"
                             >
@@ -214,7 +214,7 @@ const deleteProduct = async () => {
 
                         <div
                             v-if="!is_owner"
-                            class="space-y-3 border-t border-gray-200 pt-6"
+                            class="space-y-3 border-t border-gray-200 dark:border-gray-700 pt-6"
                         >
                             <PrimaryButton
                                 class="w-full justify-center text-base"
@@ -234,7 +234,7 @@ const deleteProduct = async () => {
                         </div>
                         <div
                             v-else
-                            class="border-t flex flex-row items-center justify-center gap-3 border-gray-200 pt-6"
+                            class="border-t flex flex-row items-center justify-center gap-3 border-gray-200 dark:border-gray-700 pt-6"
                         >
                             <PrimaryButton
                                 class="w-full justify-center text-base"

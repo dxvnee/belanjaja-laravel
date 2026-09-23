@@ -9,8 +9,10 @@ import Hamburger from "@/Components/Hamburger.vue";
 import ResponsiveNavLink from "@/Components/ResponsiveNavLink.vue";
 import { Icons } from "@/Icons";
 import IconButton from "./IconButton.vue";
+import { useDarkMode } from "@/Composable/useDarkMode";
 
 const showingNavigationDropdown = ref(false);
+const { isDark, toggleDarkMode } = useDarkMode();
 
 const form = useForm({
     search: "",
@@ -168,6 +170,29 @@ const cart = () => {
                         :active="route().current('profile.show')"
                     >
                         Profile
+                    </ResponsiveNavLink>
+
+                    <ResponsiveNavLink
+                        :href="route('admin.show')"
+                        :active="route().current('admin.show')"
+                    >
+                        Jualan Saya
+                    </ResponsiveNavLink>
+
+                    <ResponsiveNavLink
+                        :href="route('orders.index')"
+                        :active="route().current('orders.index')"
+                    >
+                        Pembelian Saya
+                    </ResponsiveNavLink>
+
+                    <ResponsiveNavLink as="button" @click="toggleDarkMode">
+                        <div class="flex items-center justify-between w-full">
+                            <span>Mode Tampilan</span>
+                            <span class="text-xs font-semibold px-2 py-0.5 rounded-full bg-gray-100 dark:bg-gray-700 text-gray-700 dark:text-gray-200">
+                                {{ isDark ? '🌙 Dark' : '☀️ Light' }}
+                            </span>
+                        </div>
                     </ResponsiveNavLink>
 
                     <ResponsiveNavLink

@@ -8,7 +8,7 @@ defineProps({
 </script>
 
 <template>
-    <div class="text-center py-12 text-gray-500">
+    <div class="text-center py-12 text-gray-500 dark:text-gray-400">
         <p class="text-lg">{{ message }}</p>
     </div>
 </template>

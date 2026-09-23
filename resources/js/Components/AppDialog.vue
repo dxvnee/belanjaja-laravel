@@ -25,7 +25,7 @@ const typeConfig = {
                     : closeDialog(false)
             "
         >
-            <Card class="dialog-card bg-white rounded-xl w-96 p-6 shadow-lg">
+            <Card class="dialog-card rounded-xl w-96 p-6 shadow-xl border border-gray-200 dark:border-gray-700 bg-white dark:bg-gray-800">
                 <div class="flex items-center gap-2 mb-2">
                     <span
                         class="text-xl font-bold"
@@ -33,12 +33,12 @@ const typeConfig = {
                     >
                         {{ typeConfig[state.dialog.type]?.icon }}
                     </span>
-                    <h2 class="text-lg font-semibold">
+                    <h2 class="text-lg font-semibold text-gray-900 dark:text-gray-100">
                         {{ state.dialog.title }}
                     </h2>
                 </div>
 
-                <p class="text-gray-600 mb-6">{{ state.dialog.message }}</p>
+                <p class="text-gray-600 dark:text-gray-300 mb-6">{{ state.dialog.message }}</p>
 
                 <div class="flex justify-end gap-2">
                     <template v-if="state.dialog.mode === 'confirm'">

@@ -29,13 +29,13 @@ defineProps({
             <Link
                 v-if="pagination.prev_page_url"
                 :href="pagination.prev_page_url"
-                class="px-3 py-1.5 rounded-lg bg-primary-600 text-white dark:text-gray-300 hover:bg-primary-700 dark:hover:bg-gray-750 transition duration-150 font-medium"
+                class="px-3 py-1.5 rounded-lg bg-primary-600 text-white hover:bg-primary-700 dark:bg-primary-600 dark:hover:bg-primary-500 transition duration-150 font-medium"
             >
                 &larr;
             </Link>
             <span
                 v-else
-                class="px-3 py-1.5 rounded-lg bg-primary-600-900/50 text-gray-300 dark:text-gray-600 cursor-not-allowed font-medium"
+                class="px-3 py-1.5 rounded-lg border border-gray-200 dark:border-gray-800 bg-gray-100 dark:bg-gray-800 text-gray-400 dark:text-gray-600 cursor-not-allowed font-medium"
             >
                 &larr;
             </span>
@@ -43,13 +43,13 @@ defineProps({
             <Link
                 v-if="pagination.next_page_url"
                 :href="pagination.next_page_url"
-                class="px-3 py-1.5 rounded-lg bg-primary-600 text-white dark:text-gray-300 hover:bg-primary-700 dark:hover:bg-gray-750 transition duration-150 font-medium"
+                class="px-3 py-1.5 rounded-lg bg-primary-600 text-white hover:bg-primary-700 dark:bg-primary-600 dark:hover:bg-primary-500 transition duration-150 font-medium"
             >
                 &rarr;
             </Link>
             <span
                 v-else
-                class="px-3 py-1.5 rounded-lg border border-gray-200 dark:border-gray-800 bg-gray-50 dark:bg-gray-900/50 text-gray-300 dark:text-gray-600 cursor-not-allowed font-medium"
+                class="px-3 py-1.5 rounded-lg border border-gray-200 dark:border-gray-800 bg-gray-100 dark:bg-gray-800 text-gray-400 dark:text-gray-600 cursor-not-allowed font-medium"
             >
                 &rarr;
             </span>

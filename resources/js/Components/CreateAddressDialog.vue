@@ -89,7 +89,7 @@ const submit = async () => {
                     class="flex flex-row w-full justify-start items-center gap-2"
                 >
                     <IconButton icons="back" @click="onDismiss" />
-                    <p class="text-xl font-bold">
+                    <p class="text-xl font-bold text-gray-900 dark:text-gray-100">
                         {{ isEdit ? "Ubah Alamat" : "Tambah Alamat" }}
                     </p>
                 </div>

@@ -69,8 +69,8 @@ const deleteAddress = async (id) => {
                 >
                     Atur Alamat
                 </h2>
-                <p class="text-md text-black">
-                    Berikut adalah produk yang akan Anda beli.
+                <p class="text-md text-gray-600 dark:text-gray-400 mb-2">
+                    Kelola alamat pengiriman untuk kemudahan belanja Anda.
                 </p>
             </div>
         </slot>
@@ -102,7 +102,7 @@ const deleteAddress = async (id) => {
                             />
                             <IconButton
                                 @click="deleteAddress(address.id)"
-                                class="size-2 text-gray-500 hover:text-red-650 hover:bg-red-50 dark:hover:bg-red-950/20 rounded-full transition-colors"
+                                class="size-2 text-gray-500 hover:text-red-600 dark:hover:text-red-400 hover:bg-red-50 dark:hover:bg-red-950/20 rounded-full transition-colors"
                                 title="Hapus Alamat"
                                 icons="trash"
                             />
@@ -113,7 +113,7 @@ const deleteAddress = async (id) => {
 
             <div
                 v-else
-                class="flex flex-col justify-center items-center h-96 bg-white dark:bg-gray-900 rounded-lg border border-gray-300 dark:border-gray-700 p-6 shadow-sm"
+                class="flex flex-col justify-center items-center h-96 bg-white dark:bg-gray-800 rounded-lg border border-gray-200 dark:border-gray-700 p-6 shadow-sm"
             >
                 <EmptyState/>
             </div>

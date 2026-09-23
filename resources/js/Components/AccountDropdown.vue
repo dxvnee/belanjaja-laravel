@@ -1,13 +1,18 @@
 <script setup>
 import Dropdown from "@/Components/Dropdown.vue";
 import DropdownLink from "@/Components/DropdownLink.vue";
+import { useDarkMode } from "@/Composable/useDarkMode";
 
 defineProps({
     logout: Function,
 });
+
+const { isDark, initTheme, toggleDarkMode } = useDarkMode();
+
 </script>
 
 <template>
+
     <Dropdown align="right" width="48">
         <template #trigger>
             <button
@@ -57,6 +62,15 @@ defineProps({
             <DropdownLink :href="route('admin.show')"> Jualan saya </DropdownLink>
 
             <DropdownLink :href="route('orders.index')"> Pembelian saya </DropdownLink>
+
+            <DropdownLink as="button" type="button" @click="toggleDarkMode">
+                <div class="flex items-center justify-between w-full">
+                    <span>Mode Tampilan</span>
+                    <span class="text-xs font-semibold px-2 py-0.5 rounded-full bg-gray-100 dark:bg-gray-600 text-gray-700 dark:text-gray-200">
+                        {{ isDark ? '🌙 Dark' : '☀️ Light' }}
+                    </span>
+                </div>
+            </DropdownLink>
 
             <div class="border-t border-gray-200 dark:border-gray-600" />
 

@@ -52,7 +52,7 @@ const ubahAlamat = (id) => {
                     class="flex flex-row w-full justify-start items-center gap-2"
                 >
                     <IconButton :fun="onDismiss" icons="back" />
-                    <p class="text-xl font-bold">Ubah Alamat</p>
+                    <p class="text-xl font-bold text-gray-900 dark:text-gray-100">Ubah Alamat</p>
                 </div>
 
                 <div class="flex w-full flex-col h-96">
@@ -66,7 +66,7 @@ const ubahAlamat = (id) => {
                             :class="[
                                 selectedAddress == address.id
                                     ? 'ring-2 ring-primary-500'
-                                    : 'ring-gray-200',
+                                    : 'ring-1 ring-gray-200 dark:ring-gray-700',
                             ]"
                             @click="setSelectedAddress(address.id)"
                         >
@@ -74,7 +74,7 @@ const ubahAlamat = (id) => {
                         </Card>
                     </div>
                     <div v-else class="flex w-full h-full justify-center items-center">
-                        <p>Belum ada alamat!</p>
+                        <p class="text-gray-500 dark:text-gray-400">Belum ada alamat!</p>
                     </div>
                 </div>
 

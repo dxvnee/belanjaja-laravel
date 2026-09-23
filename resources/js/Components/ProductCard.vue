@@ -119,7 +119,7 @@ function updateQty(qty) {
     >
         <div
             @click="$emit('click-product')"
-            :class="`${checkoutMode ? 'size-40' : ''} aspect-square overflow-hidden bg-gray-200`"
+            :class="`${checkoutMode ? 'size-40' : ''} aspect-square overflow-hidden bg-gray-100 dark:bg-gray-700`"
         >
             <img
                 :src="getProductImage(product)"

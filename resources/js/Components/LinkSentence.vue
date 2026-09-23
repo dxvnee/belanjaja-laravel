@@ -11,10 +11,10 @@ defineProps({
 
 <template>
     <div class="flex flex-row gap-1">
-        <p class="text-sm">{{ text1 }}</p>
+        <p class="text-sm text-gray-600 dark:text-gray-400">{{ text1 }}</p>
         <Link
             :href="link"
-            class="text-sm font-bold text-primary-600 hover:text-primary-800 rounded-md"
+            class="text-sm font-bold text-primary-600 dark:text-primary-400 hover:text-primary-700 dark:hover:text-primary-300 rounded-md transition-colors"
         >
             {{ text2 }}
         </Link>
