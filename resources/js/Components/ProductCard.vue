@@ -115,7 +115,7 @@ function updateQty(qty) {
 
 <template>
     <Card
-        :class="`${checkoutMode ? 'flex flex-row' : ''} bg-white w-full dark:bg-gray-800 rounded-lg overflow-hidden hover:scale-[1.01] transition-transform duration-300 cursor-pointer`"
+        :class="`${checkoutMode ? 'flex flex-row' : ''} bg-white w-full h-full dark:bg-gray-800 rounded-lg overflow-hidden hover:scale-[1.01] transition-transform duration-300 cursor-pointer`"
     >
         <div
             @click="$emit('click-product')"

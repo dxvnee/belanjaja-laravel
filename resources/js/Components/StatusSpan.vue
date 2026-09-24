@@ -13,7 +13,7 @@ const props = defineProps({
 
 <template>
     <span
-        class="text-xs px-2.5 py-1 rounded-full whitespace-nowrap"
+        class="text-xs px-2.5 py-1 rounded-md whitespace-nowrap"
         :class="statusColor"
     >
         {{ statusLabel }}

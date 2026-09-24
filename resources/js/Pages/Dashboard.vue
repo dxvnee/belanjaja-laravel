@@ -39,7 +39,7 @@ const goToProductDetail = (id) => {
 
             <div
                 v-else
-                class="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5 gap-4"
+                class="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5 gap-4 "
             >
                 <div v-for="product in products.data" :key="product.id">
                     <ProductCard

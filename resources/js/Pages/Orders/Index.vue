@@ -4,14 +4,13 @@ import Card from "@/Components/Card.vue";
 import { useHelpers } from "@/Composable/useHelpers";
 import { usePage, Link } from "@inertiajs/vue3";
 import { computed } from "vue";
+import StatusSpan from "@/Components/StatusSpan.vue";
+import Pagination from "@/Components/Pagination.vue";
 
 const { formatPrice } = useHelpers();
 
 const props = defineProps({
-    orders: {
-        type: Array,
-        default: () => [],
-    },
+    orders: Object,
 });
 
 const flash = computed(() => usePage().props.flash ?? {});
@@ -69,19 +68,18 @@ const formatDate = (dateStr) => {
                 {{ flash.success }}
             </div>
 
-            <div v-if="orders.length === 0">
+            <div v-if="orders.data.length === 0">
                 <Card class="max-w-none p-8 text-center">
                     <p class="text-gray-500 dark:text-gray-400">Belum ada pesanan.</p>
                 </Card>
             </div>
 
             <Card
-                v-for="order in orders"
+                v-for="order in orders.data"
                 :key="order.id"
                 class="max-w-none p-5"
             >
                 <div class="w-full">
-                    <!-- Order Header -->
                     <div
                         class="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-2 mb-4 pb-4 border-b border-gray-200 dark:border-gray-700"
                     >
@@ -93,17 +91,12 @@ const formatDate = (dateStr) => {
                                 {{ formatDate(order.created_at) }}
                             </p>
                         </div>
-                        <span
-                            :class="[
-                                'text-xs font-semibold px-3 py-1 rounded-full whitespace-nowrap',
-                                statusClass(order.status),
-                            ]"
-                        >
-                            {{ statusLabel(order.status) }}
-                        </span>
+                        <StatusSpan
+                            :status-color="statusClass(order.status)"
+                            :status-label="statusLabel(order.status)"
+                        />
                     </div>
 
-                    <!-- Order Items -->
                     <table class="w-full text-left text-sm">
                         <thead>
                             <tr class="text-gray-500 dark:text-gray-400">
@@ -135,7 +128,6 @@ const formatDate = (dateStr) => {
                         </tbody>
                     </table>
 
-                    <!-- Order Footer -->
                     <div class="flex flex-col sm:flex-row sm:justify-between sm:items-center mt-4 pt-4 border-t border-gray-200 dark:border-gray-700 gap-4">
                         <div>
                             <Link
@@ -155,6 +147,8 @@ const formatDate = (dateStr) => {
                     </div>
                 </div>
             </Card>
+
+            <Pagination :pagination="orders" />
         </div>
     </AppLayout>
 </template>

@@ -18,7 +18,8 @@ class OrderController extends Controller
             ->orders()
             ->with('items.product.images')
             ->latest()
-            ->get();
+            ->paginate(10)
+            ->withQueryString();
 
         return Inertia::render('Orders/Index', [
             'orders' => $orders,

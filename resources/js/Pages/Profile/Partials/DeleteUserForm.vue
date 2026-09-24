@@ -40,40 +40,44 @@ const closeModal = () => {
 <template>
     <ActionSection>
         <template #title>
-            Delete Account
+            Hapus Akun
         </template>
 
         <template #description>
-            Permanently delete your account.
+            Hapus akun Anda secara permanen beserta semua data terkait.
         </template>
 
         <template #content>
-            <div class="max-w-xl text-sm text-gray-600 dark:text-gray-400">
-                Once your account is deleted, all of its resources and data will be permanently deleted. Before deleting your account, please download any data or information that you wish to retain.
+            <div class="max-w-xl text-sm text-gray-600 dark:text-gray-400 leading-relaxed">
+                Setelah akun Anda dihapus, seluruh sumber daya dan data yang terkait akan dihapus secara permanen. Sebelum menghapus akun, pastikan Anda telah mengunduh informasi penting yang ingin Anda simpan.
             </div>
 
             <div class="mt-5">
                 <DangerButton @click="confirmUserDeletion">
-                    Delete Account
+                    Hapus Akun Saya
                 </DangerButton>
             </div>
 
             <!-- Delete Account Confirmation Modal -->
             <DialogModal :show="confirmingUserDeletion" @close="closeModal">
                 <template #title>
-                    Delete Account
+                    Konfirmasi Hapus Akun
                 </template>
 
                 <template #content>
-                    Are you sure you want to delete your account? Once your account is deleted, all of its resources and data will be permanently deleted. Please enter your password to confirm you would like to permanently delete your account.
+                    Apakah Anda yakin ingin menghapus akun Anda? Tindakan ini tidak dapat dibatalkan. Seluruh data transaksi, pesanan, dan profil Anda akan terhapus secara permanen.
+                    
+                    <p class="mt-2 text-sm text-gray-600 dark:text-gray-400">
+                        Silakan masukkan kata sandi Anda untuk mengonfirmasi penghapusan akun:
+                    </p>
 
                     <div class="mt-4">
                         <TextInput
                             ref="passwordInput"
                             v-model="form.password"
                             type="password"
-                            class="mt-1 block w-3/4"
-                            placeholder="Password"
+                            class="mt-1 block w-full sm:w-3/4"
+                            placeholder="Kata sandi akun Anda"
                             autocomplete="current-password"
                             @keyup.enter="deleteUser"
                         />
@@ -84,7 +88,7 @@ const closeModal = () => {
 
                 <template #footer>
                     <SecondaryButton @click="closeModal">
-                        Cancel
+                        Batal
                     </SecondaryButton>
 
                     <DangerButton
@@ -93,7 +97,7 @@ const closeModal = () => {
                         :disabled="form.processing"
                         @click="deleteUser"
                     >
-                        Delete Account
+                        Hapus Akun Sekarang
                     </DangerButton>
                 </template>
             </DialogModal>
