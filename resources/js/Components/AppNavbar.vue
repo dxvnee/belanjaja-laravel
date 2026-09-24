@@ -23,25 +23,8 @@ const props = defineProps({
 });
 
 const form = useForm({
-    search: "",
+    search: page.props.query || "",
 });
-
-onMounted(() => {
-    const urlParams = new URLSearchParams(window.location.search);
-    const initialQuery = page.props.query || urlParams.get("query") || urlParams.get("q") || "";
-    if (initialQuery) {
-        form.search = initialQuery;
-    }
-});
-
-watch(
-    () => page.props.query,
-    (newQuery) => {
-        if (newQuery !== undefined) {
-            form.search = newQuery || "";
-        }
-    }
-);
 
 const switchToTeam = (team) => {
     router.put(

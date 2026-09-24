@@ -23,12 +23,13 @@ class DashboardController extends Controller
 
     public function search(Request $request)
     {
-        $query = trim((string) ($request->query('query') ?? $request->query('q') ?? $request->input('query')));
+        $query = trim($request->query('query', ''));
 
         $products = Product::with('images')
             ->where('is_active', true)
             ->when($query !== '', function ($q) use ($query) {
                 $term = '%' . strtolower($query) . '%';
+
                 $q->where(function ($sub) use ($term) {
                     $sub->whereRaw('LOWER(name) LIKE ?', [$term])
                         ->orWhereRaw('LOWER(description) LIKE ?', [$term]);
