@@ -1,6 +1,6 @@
 <script setup>
-import { ref } from "vue";
-import { router, useForm } from "@inertiajs/vue3";
+import { ref, onMounted, watch } from "vue";
+import { router, useForm, usePage } from "@inertiajs/vue3";
 import AuthenticationCardLogo from "@/Components/AuthenticationCardLogo.vue";
 import TextInput from "@/Components/TextInput.vue";
 import PrimaryButton from "@/Components/PrimaryButton.vue";
@@ -13,10 +13,35 @@ import { useDarkMode } from "@/Composable/useDarkMode";
 
 const showingNavigationDropdown = ref(false);
 const { isDark, toggleDarkMode } = useDarkMode();
+const page = usePage();
+
+const props = defineProps({
+    routeName: {
+        type: String,
+        default: "dashboard.search",
+    },
+});
 
 const form = useForm({
     search: "",
 });
+
+onMounted(() => {
+    const urlParams = new URLSearchParams(window.location.search);
+    const initialQuery = page.props.query || urlParams.get("query") || urlParams.get("q") || "";
+    if (initialQuery) {
+        form.search = initialQuery;
+    }
+});
+
+watch(
+    () => page.props.query,
+    (newQuery) => {
+        if (newQuery !== undefined) {
+            form.search = newQuery || "";
+        }
+    }
+);
 
 const switchToTeam = (team) => {
     router.put(
@@ -31,15 +56,17 @@ const switchToTeam = (team) => {
 };
 
 const submit = () => {
+    const query = form.search ? form.search.trim() : "";
+    if (!query) return;
+
     router.get(
-        route("dashboard"),
+        route(props.routeName || "dashboard.search"),
         {
-            search: form.search,
+            query: query,
         },
         {
             preserveState: true,
             preserveScroll: true,
-            replace: true,
         },
     );
 };
@@ -85,7 +112,7 @@ const cart = () => {
                                 class="w-full"
                                 placeholder="Cari barang yang kamu butuhkan..."
                                 icon="search"
-                                :iconClick="() => {}"
+                                :iconClick="submit"
                             />
                         </form>
                     </div>
@@ -127,7 +154,21 @@ const cart = () => {
             }"
             class="sm:hidden"
         >
-            <div class="pt-2 pb-3 space-y-1">
+            <div class="px-4 pt-3 pb-2">
+                <form @submit.prevent="submit">
+                    <TextInput
+                        id="mobile-search"
+                        v-model="form.search"
+                        type="text"
+                        class="w-full"
+                        placeholder="Cari barang..."
+                        icon="search"
+                        :iconClick="submit"
+                    />
+                </form>
+            </div>
+
+            <div class="pt-1 pb-3 space-y-1">
                 <ResponsiveNavLink
                     :href="route('dashboard')"
                     :active="route().current('dashboard')"

@@ -16,7 +16,7 @@ const goToProductDetail = (id) => {
 </script>
 
 <template>
-    <AppLayout title="Belanjaja">
+    <AppLayout title="Belanjaja" routeName="dashboard.search">
         <div class="py-12">
             <BannerList />
         </div>

@@ -8,6 +8,7 @@ import LoadingDialog from "@/Components/LoadingDialog.vue";
 
 defineProps({
     title: String,
+    routeName: String
 });
 </script>
 
@@ -20,7 +21,7 @@ defineProps({
         <div
             class="min-h-screen flex flex-col bg-gray-50 dark:bg-gray-900 text-gray-900 dark:text-gray-100 transition-colors duration-200"
         >
-            <AppNavbar />
+            <AppNavbar :routeName="routeName" />
 
             <header
                 v-if="$slots.header"

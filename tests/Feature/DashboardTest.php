@@ -59,4 +59,67 @@ class DashboardTest extends TestCase
 
         $response->assertRedirect(route('login'));
     }
+
+    public function test_user_can_search_products_via_query_string(): void
+    {
+        $user = User::factory()->create();
+
+        // Product matching by name
+        Product::factory()->create([
+            'name' => 'Laptop Asus ROG Zephyrus',
+            'description' => 'Komputer portabel gaming cepat',
+            'is_active' => true,
+        ]);
+
+        // Product matching by description
+        Product::factory()->create([
+            'name' => 'Mouse Wireless Ergonomis',
+            'description' => 'Aksesoris gaming nyaman untuk produktivitas',
+            'is_active' => true,
+        ]);
+
+        // Non-matching product
+        Product::factory()->create([
+            'name' => 'Meja Belajar Kayu',
+            'description' => 'Perabotan rumah minimalis',
+            'is_active' => true,
+        ]);
+
+        // Inactive product matching keyword (should NOT be returned)
+        Product::factory()->create([
+            'name' => 'Monitor Gaming 144Hz',
+            'description' => 'Layar gaming rusak',
+            'is_active' => false,
+        ]);
+
+        // 1. Search by name keyword via GET query string
+        $response1 = $this->actingAs($user)->get(route('dashboard.search', ['query' => 'asus']));
+        $response1->assertStatus(200);
+        $response1->assertInertia(
+            fn($page) => $page
+                ->component('Search')
+                ->has('products.data', 1)
+                ->where('products.data.0.name', 'Laptop Asus ROG Zephyrus')
+                ->where('query', 'asus')
+        );
+
+        // 2. Search by description keyword via GET query string (case-insensitive)
+        $response2 = $this->actingAs($user)->get(route('dashboard.search', ['query' => 'GAMING']));
+        $response2->assertStatus(200);
+        $response2->assertInertia(
+            fn($page) => $page
+                ->component('Search')
+                ->has('products.data', 2)
+                ->where('query', 'GAMING')
+        );
+
+        // 3. Search via POST also works
+        $response3 = $this->actingAs($user)->post(route('dashboard.search'), ['query' => 'asus']);
+        $response3->assertStatus(200);
+        $response3->assertInertia(
+            fn($page) => $page
+                ->component('Search')
+                ->has('products.data', 1)
+        );
+    }
 }
