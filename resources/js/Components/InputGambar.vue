@@ -1,18 +1,62 @@
 <script setup>
-import { computed } from "vue";
+import { computed, ref } from "vue";
+import Card from "./Card.vue";
+import Modal from "./Modal.vue";
+import PrimaryButton from "./PrimaryButton.vue";
+import { useCrop } from "@/Composable/useCrop";
 
 const props = defineProps({
-    modelValue: File,
+    modelValue: [File, Object, null],
     existingImage: {
         type: String,
         default: null,
     },
 });
+
 const emit = defineEmits(["update:modelValue"]);
 
+const imageInput = ref(null);
+
+const {
+    imageSrc,
+    imgRef,
+    initCrop,
+    applyCrop,
+    closeCrop,
+} = useCrop({
+    aspectRatio: 1,
+    outputWidth: 800,
+    outputHeight: 800,
+    quality: 0.8,
+    fileName: "product.webp",
+});
+
 const handleFile = (e) => {
-    const file = e.target.files[0];
-    emit("update:modelValue", file);
+    const file = e.target.files?.[0];
+    if (!file) return;
+    initCrop(file);
+};
+
+const handleApplyCrop = async () => {
+    try {
+        const optimizedFile = await applyCrop();
+        if (optimizedFile) {
+            emit("update:modelValue", optimizedFile);
+        }
+    } catch (error) {
+        console.error("Gagal melakukan crop gambar:", error);
+    } finally {
+        if (imageInput.value) {
+            imageInput.value.value = "";
+        }
+    }
+};
+
+const handleClose = () => {
+    closeCrop();
+    if (imageInput.value) {
+        imageInput.value.value = "";
+    }
 };
 
 const previewUrl = computed(() => {
@@ -31,6 +75,7 @@ const previewUrl = computed(() => {
         ]"
     >
         <input
+            ref="imageInput"
             type="file"
             accept="image/*"
             class="hidden"
@@ -46,4 +91,56 @@ const previewUrl = computed(() => {
             >+</span
         >
     </label>
+
+    <Teleport to="body">
+        <Modal :show="Boolean(imageSrc)">
+            <Card>
+                <div
+                    class="px-6 py-4 border-b border-gray-200 dark:border-gray-800 flex justify-between items-center"
+                >
+                    <h3
+                        class="font-semibold text-lg text-gray-900 dark:text-gray-100"
+                    >
+                        Sesuaikan Potongan Foto Produk
+                    </h3>
+                    <button
+                        type="button"
+                        class="text-gray-400 hover:text-gray-600 dark:hover:text-gray-200 text-lg"
+                        @click.prevent.stop="handleClose"
+                    >
+                        ✕
+                    </button>
+                </div>
+
+                <div
+                    class="w-full h-[65vh] sm:h-[72vh] bg-black flex items-center justify-center overflow-hidden"
+                >
+                    <img
+                        ref="imgRef"
+                        :src="imageSrc"
+                        alt="Crop target"
+                        class="block max-w-full"
+                    />
+                </div>
+
+                <div
+                    class="px-6 py-4 border-t border-gray-200 dark:border-gray-800 flex justify-end gap-3 bg-gray-50 dark:bg-gray-900/50"
+                >
+                    <PrimaryButton
+                        type="button"
+                        variant="secondary"
+                        @click.prevent.stop="handleClose"
+                    >
+                        Batal
+                    </PrimaryButton>
+                    <PrimaryButton
+                        type="button"
+                        @click.prevent.stop="handleApplyCrop"
+                    >
+                        Potong & Terapkan
+                    </PrimaryButton>
+                </div>
+            </Card>
+        </Modal>
+    </Teleport>
 </template>

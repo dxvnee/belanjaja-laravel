@@ -23,6 +23,7 @@
         "vue": "^3.3.13"
     },
     "dependencies": {
-        "@heroicons/vue": "^2.2.0"
+        "@heroicons/vue": "^2.2.0",
+        "cropperjs": "^1.6.3"
     }
 }

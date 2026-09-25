@@ -46,12 +46,7 @@ defineProps({
                     >
                         <InputGambar
                             v-model="form['photo' + slot]"
-                            :existingImage="
-                                form.images?.[slot - 1]?.image_path
-                                    ? '/storage/' +
-                                      form.images[slot - 1].image_path
-                                    : null
-                            "
+                            :existingImage="form.images?.[slot - 1]?.image_path ? '/storage/' + form.images[slot - 1].image_path : null"
                         />
                         <InputError
                             class="mt-1"
