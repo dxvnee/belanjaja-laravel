@@ -61,6 +61,8 @@ const { isDark, initTheme, toggleDarkMode } = useDarkMode();
 
             <DropdownLink :href="route('admin.show')"> Jualan saya </DropdownLink>
 
+            <DropdownLink :href="route('admin.orders')"> Pesanan masuk </DropdownLink>
+
             <DropdownLink :href="route('orders.index')"> Pembelian saya </DropdownLink>
 
             <DropdownLink as="button" type="button" @click="toggleDarkMode">

@@ -116,6 +116,36 @@ class OrderController extends Controller
         return redirect()->route('orders.index')->with('success', 'Pembayaran berhasil diverifikasi!');
     }
 
+    public function cancel(Request $request, $id)
+    {
+        $order = $request->user()->orders()->findOrFail($id);
+
+        if ($order->status !== 'pending') {
+            return redirect()->route('orders.index')->with('error', 'Pesanan ini tidak dapat dibatalkan.');
+        }
+
+        $order->update(['status' => 'cancelled']);
+
+        foreach ($order->items as $item) {
+            $item->product?->increment('stock', $item->quantity);
+        }
+
+        return redirect()->route('orders.index')->with('success', 'Pesanan berhasil dibatalkan.');
+    }
+
+    public function complete(Request $request, $id)
+    {
+        $order = $request->user()->orders()->findOrFail($id);
+
+        if ($order->status !== 'shipped') {
+            return redirect()->route('orders.index')->with('error', 'Hanya pesanan yang sedang dikirim yang dapat dikonfirmasi.');
+        }
+
+        $order->update(['status' => 'completed']);
+
+        return redirect()->route('orders.index')->with('success', 'Pesanan telah selesai! Terima kasih telah berbelanja.');
+    }
+
     public function callback(Request $request)
     {
         $serverKey = config('services.midtrans.server_key');
@@ -147,7 +177,12 @@ class OrderController extends Controller
         } elseif ($transaction === 'pending') {
             $order->update(['status' => 'pending', 'payment_type' => $type]);
         } elseif (in_array($transaction, ['deny', 'expire', 'cancel'])) {
-            $order->update(['status' => 'cancelled']);
+            if ($order->status !== 'cancelled') {
+                $order->update(['status' => 'cancelled']);
+                foreach ($order->items as $item) {
+                    $item->product?->increment('stock', $item->quantity);
+                }
+            }
         }
 
         return response()->json(['message' => 'Notification handled successfully']);

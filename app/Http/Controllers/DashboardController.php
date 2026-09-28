@@ -23,7 +23,7 @@ class DashboardController extends Controller
 
     public function search(Request $request)
     {
-        $query = trim($request->query('query', ''));
+        $query = trim($request->input('query', ''));
 
         $products = Product::with('images')
             ->where('is_active', true)

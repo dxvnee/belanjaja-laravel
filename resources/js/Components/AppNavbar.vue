@@ -204,6 +204,13 @@ const cart = () => {
                     </ResponsiveNavLink>
 
                     <ResponsiveNavLink
+                        :href="route('admin.orders')"
+                        :active="route().current('admin.orders')"
+                    >
+                        Pesanan Masuk
+                    </ResponsiveNavLink>
+
+                    <ResponsiveNavLink
                         :href="route('orders.index')"
                         :active="route().current('orders.index')"
                     >

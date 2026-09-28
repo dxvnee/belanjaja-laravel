@@ -24,7 +24,7 @@ Route::middleware([
     'verified',
 ])->group(function () {
     Route::get('/dashboard', [DashboardController::class, 'index'])->name('dashboard');
-    Route::get('/search', [DashboardController::class, 'search'])->name('dashboard.search');
+    Route::match(['get', 'post'], '/search', [DashboardController::class, 'search'])->name('dashboard.search');
 
     Route::get('/product/{id}', [ProductController::class, 'show'])->name('product.show');
     Route::get('/product/{id}/edit', [ProductController::class, 'edit'])->name('product.edit');
@@ -46,8 +46,12 @@ Route::middleware([
     Route::get('/orders', [OrderController::class, 'index'])->name('orders.index');
     Route::get('/orders/{id}/payment', [OrderController::class, 'payment'])->name('orders.payment');
     Route::post('/orders/{id}/pay', [OrderController::class, 'pay'])->name('orders.pay');
+    Route::post('/orders/{id}/cancel', [OrderController::class, 'cancel'])->name('orders.cancel');
+    Route::post('/orders/{id}/complete', [OrderController::class, 'complete'])->name('orders.complete');
 
     Route::get('/jualan-saya', [AdminController::class, 'index'])->name('admin.show');
+    Route::get('/jualan-saya/pesanan', [AdminController::class, 'orders'])->name('admin.orders');
+    Route::post('/jualan-saya/pesanan/{id}/kirim', [AdminController::class, 'shipOrder'])->name('admin.orders.ship');
 
     Route::resource('my-address', AddressController::class)
         ->parameters(['my-address' => 'address'])
