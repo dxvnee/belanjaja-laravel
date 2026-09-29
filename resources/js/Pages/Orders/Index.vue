@@ -12,6 +12,7 @@ import SecondaryButton from "@/Components/SecondaryButton.vue";
 import ReviewModal from "@/Components/ReviewModal.vue";
 import StarRating from "@/Components/StarRating.vue";
 import OrderProductCard from "@/Components/OrderProductCard.vue";
+import InvoiceButton from "@/Components/InvoiceButton.vue";
 
 const { formatPrice } = useHelpers();
 const { confirm } = useFeedback();
@@ -178,6 +179,8 @@ const closeReviewModal = () => {
                         class="flex flex-col sm:flex-row sm:justify-between sm:items-center mt-4 pt-4 border-t border-gray-200 dark:border-gray-700 gap-4"
                     >
                         <div class="flex flex-wrap items-center gap-2">
+                            <InvoiceButton :order-id="order.id" />
+
                             <Link
                                 v-if="order.status === 'pending'"
                                 :href="

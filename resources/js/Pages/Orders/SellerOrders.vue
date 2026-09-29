@@ -12,6 +12,7 @@ import DialogModal from "@/Components/DialogModal.vue";
 import TextInput from "@/Components/TextInput.vue";
 import InputLabel from "@/Components/InputLabel.vue";
 import OrderProductCard from "@/Components/OrderProductCard.vue";
+import InvoiceButton from "@/Components/InvoiceButton.vue";
 
 const { formatPrice } = useHelpers();
 
@@ -160,7 +161,9 @@ const submitShip = () => {
                     </div>
 
                     <div class="flex flex-col sm:flex-row sm:justify-between sm:items-center mt-4 pt-4 border-t border-gray-200 dark:border-gray-700 gap-4">
-                        <div>
+                        <div class="flex flex-wrap items-center gap-2">
+                            <InvoiceButton :order-id="order.id" />
+
                             <PrimaryButton
                                 v-if="order.status === 'paid'"
                                 type="button"

@@ -47,6 +47,7 @@ Route::middleware([
     Route::post('/checkout', [CheckoutController::class, 'store'])->name('checkout.store');
 
     Route::get('/orders', [OrderController::class, 'index'])->name('orders.index');
+    Route::get('/orders/{id}/invoice', [OrderController::class, 'invoice'])->name('orders.invoice');
     Route::get('/orders/{id}/payment', [OrderController::class, 'payment'])->name('orders.payment');
     Route::post('/orders/{id}/pay', [OrderController::class, 'pay'])->name('orders.pay');
     Route::post('/orders/{id}/cancel', [OrderController::class, 'cancel'])->name('orders.cancel');

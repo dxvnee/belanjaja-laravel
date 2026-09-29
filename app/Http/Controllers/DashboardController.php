@@ -47,8 +47,8 @@ class DashboardController extends Controller
         switch ($activeFeed) {
             case 'popular':
                 $query->orderByDesc('reviews_count')
-                      ->orderByDesc('reviews_avg_rating')
-                      ->latest();
+                        ->orderByDesc('reviews_avg_rating')
+                        ->latest();
                 break;
 
             case 'near-you':

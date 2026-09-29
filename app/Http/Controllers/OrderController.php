@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use App\Models\Order;
+use Barryvdh\DomPDF\Facade\Pdf;
 use Exception;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Log;
@@ -187,4 +188,34 @@ class OrderController extends Controller
 
         return response()->json(['message' => 'Notification handled successfully']);
     }
+
+    public function invoice(Request $request, $id)
+    {
+        $order = Order::with(['items.product.category', 'user'])
+            ->findOrFail($id);
+
+        $currentUser = $request->user();
+
+        // Authorization: Only the buyer or the seller of any item in this order can view/print invoice
+        $isBuyer = $order->user_id === $currentUser->id;
+        $isSeller = $order->items()->whereHas('product', function ($q) use ($currentUser) {
+            $q->where('user_id', $currentUser->id);
+        })->exists();
+
+        if (!$isBuyer && !$isSeller) {
+            abort(403, 'Anda tidak memiliki hak akses untuk mencetak invoice pesanan ini.');
+        }
+
+        $pdf = Pdf::loadView('invoices.order', compact('order'))
+            ->setPaper('a4', 'portrait');
+
+        $filename = 'Invoice-Belanjaja-ORDER-' . $order->id . '.pdf';
+
+        if ($request->boolean('download')) {
+            return $pdf->download($filename);
+        }
+
+        return $pdf->stream($filename);
+    }
 }
+
