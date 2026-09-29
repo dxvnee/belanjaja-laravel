@@ -215,4 +215,85 @@ class DashboardTest extends TestCase
         $response->assertStatus(200);
         $response->assertExactJson(['products' => []]);
     }
+
+    public function test_dashboard_feed_supports_different_modes(): void
+    {
+        $user = User::factory()->create();
+
+        $product1 = Product::factory()->create(['name' => 'Item A', 'location' => 'Jakarta Selatan', 'is_active' => true]);
+        $product2 = Product::factory()->create(['name' => 'Item B', 'location' => 'Surabaya', 'is_active' => true]);
+
+        // 1. Popular feed
+        $responsePopular = $this->actingAs($user)->get(route('dashboard', ['feed' => 'popular']));
+        $responsePopular->assertStatus(200);
+        $responsePopular->assertInertia(
+            fn($page) => $page
+                ->component('Dashboard')
+                ->where('activeFeed', 'popular')
+        );
+
+        // 2. Near you feed
+        $responseNear = $this->actingAs($user)->get(route('dashboard', ['feed' => 'near-you']));
+        $responseNear->assertStatus(200);
+        $responseNear->assertInertia(
+            fn($page) => $page
+                ->component('Dashboard')
+                ->where('activeFeed', 'near-you')
+        );
+
+        // 3. Latest feed
+        $responseLatest = $this->actingAs($user)->get(route('dashboard', ['feed' => 'latest']));
+        $responseLatest->assertStatus(200);
+        $responseLatest->assertInertia(
+            fn($page) => $page
+                ->component('Dashboard')
+                ->where('activeFeed', 'latest')
+        );
+    }
+
+    public function test_dashboard_recommendation_algorithm_attaches_badges(): void
+    {
+        $user = User::factory()->create();
+        $user->address()->create([
+            'name' => 'Budi',
+            'phone' => '081234567890',
+            'province' => 'Jawa Barat',
+            'city' => 'Bandung',
+            'subdistrict' => 'Coblong',
+            'postal_code' => '40111',
+            'detail' => 'Jl. Braga No 10',
+        ]);
+
+        $catFashion = \App\Models\Category::firstOrCreate(['slug' => 'baju'], ['name' => 'Baju', 'slug' => 'baju']);
+
+        // Product from user's city
+        $bandungProduct = Product::factory()->create([
+            'name' => 'Jaket Kulit Bandung',
+            'location' => 'Bandung',
+            'category_id' => $catFashion->id,
+            'is_active' => true,
+            'stock' => 10,
+        ]);
+
+        $response = $this->actingAs($user)->get(route('dashboard', ['feed' => 'for-you']));
+        $response->assertStatus(200);
+        $response->assertInertia(
+            fn($page) => $page
+                ->component('Dashboard')
+                ->where('userCity', 'Bandung')
+                ->where('products.data.0.recommendation_badge', '📍 Dekat Kotamu')
+        );
+    }
+
+    public function test_dashboard_feed_refresh_updates_session_seed(): void
+    {
+        $user = User::factory()->create();
+
+        $response = $this->actingAs($user)->withSession(['feed_seed' => 1234])
+            ->get(route('dashboard', ['refresh_feed' => 1]));
+
+        $response->assertStatus(200);
+        $this->assertNotEquals(1234, session('feed_seed'));
+    }
 }
+

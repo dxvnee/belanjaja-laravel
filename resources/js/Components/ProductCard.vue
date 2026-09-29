@@ -125,9 +125,20 @@ function updateQty(qty) {
             @click="$emit('click-product')"
             :class="[
                 checkoutMode ? 'size-40 shrink-0' : 'w-full aspect-square shrink-0',
-                'overflow-hidden bg-gray-100 dark:bg-gray-700',
+                'relative overflow-hidden bg-gray-100 dark:bg-gray-700',
             ]"
         >
+            <div
+                v-if="product.recommendation_badge && !checkoutMode"
+                class="absolute top-2 left-2 z-10 pointer-events-none"
+            >
+                <span
+                    class="text-[10px] font-bold px-2 py-0.5 rounded-full shadow-xs bg-white/95 dark:bg-gray-900/95 text-primary-600 dark:text-primary-400 border border-primary-200 dark:border-primary-800/80 backdrop-blur-xs flex items-center gap-1"
+                >
+                    {{ product.recommendation_badge }}
+                </span>
+            </div>
+
             <img
                 :src="getProductImage(product)"
                 :alt="product.name"
@@ -145,17 +156,15 @@ function updateQty(qty) {
         >
             <!-- Top Content -->
             <div class="flex-1 flex flex-col">
-                <!-- Category Badge -->
                 <div class="min-h-[1.25rem] mb-1 flex items-center">
                     <span
                         v-if="product.category?.name"
-                        class="inline-block text-[10px] font-semibold text-primary-600 dark:text-primary-400 bg-primary-50 dark:bg-primary-950/60 px-1.5 py-0.5 rounded"
+                        class="inline-block text-[10px] font-semibold text-primary-600 dark:text-primary-600 bg-primary-50 dark:bg-primary-950/60 px-1.5 py-0.5 rounded"
                     >
                         {{ product.category.name }}
                     </span>
                 </div>
 
-                <!-- Product Name (uniform 2 lines height) -->
                 <h3
                     class="font-semibold text-sm text-gray-800 dark:text-gray-200 line-clamp-2 h-10 leading-snug mb-1"
                     :title="product.name"
@@ -163,14 +172,12 @@ function updateQty(qty) {
                     {{ product.name }}
                 </h3>
 
-                <!-- Price -->
                 <p
                     class="text-primary-600 dark:text-primary-400 font-bold text-base mb-1"
                 >
                     {{ formatPrice(product.price) }}
                 </p>
 
-                <!-- Rating (uniform height) -->
                 <div class="min-h-[1.25rem] flex items-center mb-1">
                     <StarRating
                         v-if="product.reviews_count > 0"
