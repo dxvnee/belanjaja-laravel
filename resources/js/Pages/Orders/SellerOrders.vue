@@ -11,6 +11,7 @@ import SecondaryButton from "@/Components/SecondaryButton.vue";
 import DialogModal from "@/Components/DialogModal.vue";
 import TextInput from "@/Components/TextInput.vue";
 import InputLabel from "@/Components/InputLabel.vue";
+import OrderProductCard from "@/Components/OrderProductCard.vue";
 
 const { formatPrice } = useHelpers();
 
@@ -150,34 +151,13 @@ const submitShip = () => {
                         Nomor Resi: <span class="font-mono text-gray-800 dark:text-gray-200">{{ order.tracking_number }}</span>
                     </div>
 
-                    <table class="w-full text-left text-sm">
-                        <thead>
-                            <tr class="text-gray-500 dark:text-gray-400">
-                                <th class="pb-2 font-medium">Produk</th>
-                                <th class="pb-2 font-medium">Harga Satuan</th>
-                                <th class="pb-2 font-medium">Jumlah</th>
-                                <th class="pb-2 font-medium text-right">Subtotal</th>
-                            </tr>
-                        </thead>
-                        <tbody>
-                            <tr
-                                v-for="item in order.items"
-                                :key="item.id"
-                                class="border-t border-gray-200 dark:border-gray-700 text-gray-800 dark:text-gray-200"
-                            >
-                                <td class="py-2.5">
-                                    {{ item.product?.name ?? "-" }}
-                                </td>
-                                <td class="py-2.5">
-                                    {{ formatPrice(item.price_snapshot) }}
-                                </td>
-                                <td class="py-2.5">{{ item.quantity }}</td>
-                                <td class="py-2.5 text-right font-medium text-gray-900 dark:text-gray-100">
-                                    {{ formatPrice(item.subtotal) }}
-                                </td>
-                            </tr>
-                        </tbody>
-                    </table>
+                    <div class="divide-y divide-gray-200 dark:divide-gray-700">
+                        <OrderProductCard
+                            v-for="item in order.items"
+                            :key="item.id"
+                            :item="item"
+                        />
+                    </div>
 
                     <div class="flex flex-col sm:flex-row sm:justify-between sm:items-center mt-4 pt-4 border-t border-gray-200 dark:border-gray-700 gap-4">
                         <div>

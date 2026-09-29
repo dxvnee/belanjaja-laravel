@@ -20,6 +20,8 @@ export const statusLabelMap = {
         shipped: "Dikirim",
         completed: "Selesai",
         cancelled: "Dibatalkan",
+        penjual: "Penjual",
+        seller: "Penjual",
     },
 };
 
@@ -34,6 +36,10 @@ export const statusColorMap = {
         "bg-green-100 text-green-800 dark:bg-green-900/40 dark:text-green-300 dark:border dark:border-green-700/50",
     cancelled:
         "bg-red-100 text-red-800 dark:bg-red-900/40 dark:text-red-300 dark:border dark:border-red-700/50",
+    penjual:
+        "bg-emerald-100 text-emerald-800 dark:bg-emerald-950/60 dark:text-emerald-300 border border-emerald-300 dark:border-emerald-700",
+    seller:
+        "bg-emerald-100 text-emerald-800 dark:bg-emerald-950/60 dark:text-emerald-300 border border-emerald-300 dark:border-emerald-700",
 };
 
 export function getStatusLabel(status, variant = "default") {

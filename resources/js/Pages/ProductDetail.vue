@@ -8,6 +8,7 @@ import { useHelpers } from "@/Composable/useHelpers";
 import Counter from "@/Components/Counter.vue";
 import StarRating from "@/Components/StarRating.vue";
 import ProductReviews from "@/Components/ProductReviews.vue";
+import SellerCard from "@/Components/SellerCard.vue";
 
 const { confirm, showSuccess, showError, showLoading, hideLoading } =
     useFeedback();
@@ -267,6 +268,8 @@ const deleteProduct = async () => {
                         </div>
                     </div>
                 </div>
+
+                <SellerCard v-if="product.user" :seller="product.user" />
 
                 <ProductReviews
                     :reviews="product.reviews"

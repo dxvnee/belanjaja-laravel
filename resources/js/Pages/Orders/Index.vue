@@ -11,6 +11,7 @@ import PrimaryButton from "@/Components/PrimaryButton.vue";
 import SecondaryButton from "@/Components/SecondaryButton.vue";
 import ReviewModal from "@/Components/ReviewModal.vue";
 import StarRating from "@/Components/StarRating.vue";
+import OrderProductCard from "@/Components/OrderProductCard.vue";
 
 const { formatPrice } = useHelpers();
 const { confirm } = useFeedback();
@@ -84,7 +85,6 @@ const closeReviewModal = () => {
         </slot>
 
         <div class="flex flex-col gap-4">
-            <!-- Flash success message -->
             <div
                 v-if="flash.success"
                 class="bg-green-50 dark:bg-green-950/40 border border-green-200 dark:border-green-800 text-green-800 dark:text-green-300 rounded-lg px-4 py-3"
@@ -142,63 +142,37 @@ const closeReviewModal = () => {
                         >
                     </div>
 
-                    <table class="w-full text-left text-sm">
-                        <thead>
-                            <tr class="text-gray-500 dark:text-gray-400">
-                                <th class="pb-2 font-medium">Produk</th>
-                                <th class="pb-2 font-medium">Harga Satuan</th>
-                                <th class="pb-2 font-medium">Jumlah</th>
-                                <th class="pb-2 font-medium text-right">
-                                    Subtotal
-                                </th>
-                            </tr>
-                        </thead>
-                        <tbody>
-                            <tr
-                                v-for="item in order.items"
-                                :key="item.id"
-                                class="border-t border-gray-200 dark:border-gray-700 text-gray-800 dark:text-gray-200"
-                            >
-                                <td class="py-2.5">
-                                    <div class="font-medium text-gray-900 dark:text-gray-100">
-                                        {{ item.product?.name ?? "-" }}
-                                    </div>
-                                    <div v-if="order.status === 'completed'" class="mt-1">
-                                        <div
-                                            v-if="getReview(order, item.product_id)"
-                                            class="inline-flex items-center gap-1.5 text-xs text-amber-600 dark:text-amber-400 bg-amber-50 dark:bg-amber-950/40 px-2 py-0.5 rounded border border-amber-200 dark:border-amber-800"
-                                        >
-                                            <StarRating :rating="getReview(order, item.product_id).rating" size="xs" />
-                                            <span class="text-gray-400 dark:text-gray-500">•</span>
-                                            <span class="text-gray-600 dark:text-gray-300 truncate max-w-xs">
-                                                {{ getReview(order, item.product_id).comment || "Sudah diulas" }}
-                                            </span>
-                                        </div>
-                                        <button
-                                            v-else
-                                            type="button"
-                                            @click="openReviewModal(order, item)"
-                                            class="inline-flex items-center gap-1 text-xs font-semibold text-primary-600 dark:text-primary-400 hover:text-primary-700 dark:hover:text-primary-300 hover:underline"
-                                        >
-                                            <svg class="w-3.5 h-3.5 fill-amber-400" viewBox="0 0 20 20">
-                                                <path d="M9.049 2.927c.3-.921 1.603-.921 1.902 0l1.07 3.292a1 1 0 00.95.69h3.462c.969 0 1.371 1.24.588 1.81l-2.8 2.034a1 1 0 00-.364 1.118l1.07 3.292c.3.921-.755 1.688-1.54 1.118l-2.8-2.034a1 1 0 00-1.175 0l-2.8 2.034c-.784.57-1.838-.197-1.539-1.118l1.07-3.292a1 1 0 00-.364-1.118L2.98 8.72c-.783-.57-.38-1.81.588-1.81h3.461a1 1 0 00.951-.69l1.07-3.292z"/>
-                                            </svg>
-                                            Beri Ulasan
-                                        </button>
-                                    </div>
-                                </td>
-                                <td class="py-2.5">
-                                    {{ formatPrice(item.price_snapshot) }}
-                                </td>
-                                <td class="py-2.5">{{ item.quantity }}</td>
-                                <td
-                                    class="py-2.5 text-right font-medium text-gray-900 dark:text-gray-100"
+                    <div class="divide-y divide-gray-200 dark:divide-gray-700">
+                        <OrderProductCard
+                            v-for="item in order.items"
+                            :key="item.id"
+                            :item="item"
+                        >
+                            <template #action v-if="order.status === 'completed'">
+                                <div
+                                    v-if="getReview(order, item.product_id)"
+                                    class="inline-flex items-center gap-1.5 text-xs text-amber-600 dark:text-amber-400 bg-amber-50 dark:bg-amber-950/40 px-2 py-0.5 rounded border border-amber-200 dark:border-amber-800"
                                 >
-                                    {{ formatPrice(item.subtotal) }}
-                                </td>
-                            </tr>
-                        </tbody>
-                    </table>
+                                    <StarRating :rating="getReview(order, item.product_id).rating" size="xs" />
+                                    <span class="text-gray-400 dark:text-gray-500">•</span>
+                                    <span class="text-gray-600 dark:text-gray-300 truncate max-w-xs">
+                                        {{ getReview(order, item.product_id).comment || "Sudah diulas" }}
+                                    </span>
+                                </div>
+                                <button
+                                    v-else
+                                    type="button"
+                                    @click="openReviewModal(order, item)"
+                                    class="inline-flex items-center gap-1 text-xs font-semibold text-primary-600 dark:text-primary-400 hover:text-primary-700 dark:hover:text-primary-300 hover:underline cursor-pointer"
+                                >
+                                    <svg class="w-3.5 h-3.5 fill-amber-400" viewBox="0 0 20 20">
+                                        <path d="M9.049 2.927c.3-.921 1.603-.921 1.902 0l1.07 3.292a1 1 0 00.95.69h3.462c.969 0 1.371 1.24.588 1.81l-2.8 2.034a1 1 0 00-.364 1.118l1.07 3.292c.3.921-.755 1.688-1.54 1.118l-2.8-2.034a1 1 0 00-1.175 0l-2.8 2.034c-.784.57-1.838-.197-1.539-1.118l1.07-3.292a1 1 0 00-.364-1.118L2.98 8.72c-.783-.57-.38-1.81.588-1.81h3.461a1 1 0 00.951-.69l1.07-3.292z"/>
+                                    </svg>
+                                    Beri Ulasan
+                                </button>
+                            </template>
+                        </OrderProductCard>
+                    </div>
 
                     <div
                         class="flex flex-col sm:flex-row sm:justify-between sm:items-center mt-4 pt-4 border-t border-gray-200 dark:border-gray-700 gap-4"
@@ -213,14 +187,14 @@ const closeReviewModal = () => {
                             >
                                 Bayar Sekarang
                             </Link>
-                            <SecondaryButton
+                            <PrimaryButton
                                 v-if="order.status === 'pending'"
-                                type="button"
-                                class="!text-red-600 dark:!text-red-400 hover:!bg-red-50 dark:hover:!bg-red-950/40"
+                                variant="secondary"
+                                class="!text-red-600 dark:!text-red-400 text-sm hover:!bg-red-50 dark:hover:!bg-red-950/40"
                                 @click="cancelOrder(order.id)"
                             >
                                 Batalkan Pesanan
-                            </SecondaryButton>
+                            </PrimaryButton>
                             <PrimaryButton
                                 v-if="order.status === 'shipped'"
                                 type="button"

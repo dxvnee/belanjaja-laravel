@@ -16,7 +16,11 @@ class ProductController extends Controller
         $product = Product::where('id', $id)
             ->with([
                 'images',
-                'user',
+                'user' => function ($q) {
+                    $q->withCount(['products' => function ($sq) {
+                        $sq->where('is_active', true);
+                    }]);
+                },
                 'reviews' => function ($q) {
                     $q->with('user')->latest();
                 },

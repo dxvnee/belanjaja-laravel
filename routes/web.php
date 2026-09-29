@@ -9,6 +9,7 @@ use App\Http\Controllers\JualController;
 use App\Http\Controllers\OrderController;
 use App\Http\Controllers\ProductController;
 use App\Http\Controllers\ReviewController;
+use App\Http\Controllers\SellerController;
 use Illuminate\Foundation\Application;
 use Illuminate\Support\Facades\Route;
 use Inertia\Inertia;
@@ -55,6 +56,8 @@ Route::middleware([
     Route::get('/jualan-saya', [AdminController::class, 'index'])->name('admin.show');
     Route::get('/jualan-saya/pesanan', [AdminController::class, 'orders'])->name('admin.orders');
     Route::post('/jualan-saya/pesanan/{id}/kirim', [AdminController::class, 'shipOrder'])->name('admin.orders.ship');
+
+    Route::get('/seller/{id}', [SellerController::class, 'show'])->name('seller.show');
 
     Route::resource('my-address', AddressController::class)
         ->parameters(['my-address' => 'address'])
