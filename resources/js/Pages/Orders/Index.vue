@@ -4,11 +4,13 @@ import Card from "@/Components/Card.vue";
 import { useHelpers } from "@/Composable/useHelpers";
 import { useFeedback } from "@/Composable/useFeedback";
 import { usePage, Link, router } from "@inertiajs/vue3";
-import { computed } from "vue";
+import { computed, ref } from "vue";
 import StatusSpan from "@/Components/StatusSpan.vue";
 import Pagination from "@/Components/Pagination.vue";
 import PrimaryButton from "@/Components/PrimaryButton.vue";
 import SecondaryButton from "@/Components/SecondaryButton.vue";
+import ReviewModal from "@/Components/ReviewModal.vue";
+import StarRating from "@/Components/StarRating.vue";
 
 const { formatPrice } = useHelpers();
 const { confirm } = useFeedback();
@@ -18,35 +20,6 @@ const props = defineProps({
 });
 
 const flash = computed(() => usePage().props.flash ?? {});
-
-const statusLabel = (status) => {
-    const map = {
-        pending: "Menunggu Pembayaran",
-        paid: "Sudah Dibayar",
-        shipped: "Dikirim",
-        completed: "Selesai",
-        cancelled: "Dibatalkan",
-    };
-    return map[status] ?? status;
-};
-
-const statusClass = (status) => {
-    const map = {
-        pending:
-            "bg-yellow-100 text-yellow-800 dark:bg-yellow-900/40 dark:text-yellow-300 dark:border dark:border-yellow-700/50",
-        paid: "bg-blue-100 text-blue-800 dark:bg-blue-900/40 dark:text-blue-300 dark:border dark:border-blue-700/50",
-        shipped:
-            "bg-indigo-100 text-indigo-800 dark:bg-indigo-900/40 dark:text-indigo-300 dark:border dark:border-indigo-700/50",
-        completed:
-            "bg-green-100 text-green-800 dark:bg-green-900/40 dark:text-green-300 dark:border dark:border-green-700/50",
-        cancelled:
-            "bg-red-100 text-red-800 dark:bg-red-900/40 dark:text-red-300 dark:border dark:border-red-700/50",
-    };
-    return (
-        map[status] ??
-        "bg-gray-100 text-gray-800 dark:bg-gray-800 dark:text-gray-300"
-    );
-};
 
 const formatDate = (dateStr) => {
     return new Date(dateStr).toLocaleDateString("id-ID", {
@@ -74,6 +47,26 @@ const completeOrder = async (id) => {
     if (confirmed) {
         router.post(route("orders.complete", id));
     }
+};
+
+const showReviewModal = ref(false);
+const reviewingProduct = ref(null);
+const reviewingOrder = ref(null);
+
+const getReview = (order, productId) => {
+    return order.reviews?.find((r) => r.product_id === productId);
+};
+
+const openReviewModal = (order, item) => {
+    reviewingOrder.value = order;
+    reviewingProduct.value = item.product;
+    showReviewModal.value = true;
+};
+
+const closeReviewModal = () => {
+    showReviewModal.value = false;
+    reviewingProduct.value = null;
+    reviewingOrder.value = null;
 };
 </script>
 
@@ -135,10 +128,7 @@ const completeOrder = async (id) => {
                                 {{ formatDate(order.created_at) }}
                             </p>
                         </div>
-                        <StatusSpan
-                            :status-color="statusClass(order.status)"
-                            :status-label="statusLabel(order.status)"
-                        />
+                        <StatusSpan :status="order.status" />
                     </div>
 
                     <div
@@ -170,7 +160,32 @@ const completeOrder = async (id) => {
                                 class="border-t border-gray-200 dark:border-gray-700 text-gray-800 dark:text-gray-200"
                             >
                                 <td class="py-2.5">
-                                    {{ item.product?.name ?? "-" }}
+                                    <div class="font-medium text-gray-900 dark:text-gray-100">
+                                        {{ item.product?.name ?? "-" }}
+                                    </div>
+                                    <div v-if="order.status === 'completed'" class="mt-1">
+                                        <div
+                                            v-if="getReview(order, item.product_id)"
+                                            class="inline-flex items-center gap-1.5 text-xs text-amber-600 dark:text-amber-400 bg-amber-50 dark:bg-amber-950/40 px-2 py-0.5 rounded border border-amber-200 dark:border-amber-800"
+                                        >
+                                            <StarRating :rating="getReview(order, item.product_id).rating" size="xs" />
+                                            <span class="text-gray-400 dark:text-gray-500">•</span>
+                                            <span class="text-gray-600 dark:text-gray-300 truncate max-w-xs">
+                                                {{ getReview(order, item.product_id).comment || "Sudah diulas" }}
+                                            </span>
+                                        </div>
+                                        <button
+                                            v-else
+                                            type="button"
+                                            @click="openReviewModal(order, item)"
+                                            class="inline-flex items-center gap-1 text-xs font-semibold text-primary-600 dark:text-primary-400 hover:text-primary-700 dark:hover:text-primary-300 hover:underline"
+                                        >
+                                            <svg class="w-3.5 h-3.5 fill-amber-400" viewBox="0 0 20 20">
+                                                <path d="M9.049 2.927c.3-.921 1.603-.921 1.902 0l1.07 3.292a1 1 0 00.95.69h3.462c.969 0 1.371 1.24.588 1.81l-2.8 2.034a1 1 0 00-.364 1.118l1.07 3.292c.3.921-.755 1.688-1.54 1.118l-2.8-2.034a1 1 0 00-1.175 0l-2.8 2.034c-.784.57-1.838-.197-1.539-1.118l1.07-3.292a1 1 0 00-.364-1.118L2.98 8.72c-.783-.57-.38-1.81.588-1.81h3.461a1 1 0 00.951-.69l1.07-3.292z"/>
+                                            </svg>
+                                            Beri Ulasan
+                                        </button>
+                                    </div>
                                 </td>
                                 <td class="py-2.5">
                                     {{ formatPrice(item.price_snapshot) }}
@@ -234,5 +249,12 @@ const completeOrder = async (id) => {
 
             <Pagination :pagination="orders" />
         </div>
+
+        <ReviewModal
+            :show="showReviewModal"
+            :order="reviewingOrder"
+            :product="reviewingProduct"
+            @close="closeReviewModal"
+        />
     </AppLayout>
 </template>

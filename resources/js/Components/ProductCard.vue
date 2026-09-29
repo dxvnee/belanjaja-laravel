@@ -6,6 +6,7 @@ import { ref, computed, watch } from "vue";
 import Counter from "./Counter.vue";
 import Checkbox from "./Checkbox.vue";
 import Card from "./Card.vue";
+import StarRating from "./StarRating.vue";
 import { useHelpers } from "../Composable/useHelpers";
 
 const { confirm, showSuccess, showError, showLoading, hideLoading } =
@@ -138,6 +139,14 @@ function updateQty(qty) {
             >
                 {{ formatPrice(product.price) }}
             </p>
+            <StarRating
+                v-if="product.reviews_count > 0"
+                :rating="product.reviews_avg_rating"
+                :count="product.reviews_count"
+                show-score
+                size="xs"
+                class="mt-1"
+            />
             <p
                 v-if="product.description"
                 class="text-xs text-gray-500 dark:text-gray-400 mt-2 line-clamp-2"

@@ -16,7 +16,7 @@ class OrderController extends Controller
     {
         $orders = $request->user()
             ->orders()
-            ->with('items.product.images')
+            ->with(['items.product.images', 'reviews'])
             ->latest()
             ->paginate(10)
             ->withQueryString();

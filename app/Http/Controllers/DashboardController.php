@@ -11,6 +11,8 @@ class DashboardController extends Controller
     public function index()
     {
         $products = Product::with('images')
+            ->withAvg('reviews', 'rating')
+            ->withCount('reviews')
             ->where('is_active', true)
             ->latest()
             ->paginate(10)
@@ -26,6 +28,8 @@ class DashboardController extends Controller
         $query = trim($request->input('query', ''));
 
         $products = Product::with('images')
+            ->withAvg('reviews', 'rating')
+            ->withCount('reviews')
             ->where('is_active', true)
             ->when($query !== '', function ($q) use ($query) {
                 $term = '%' . strtolower($query) . '%';

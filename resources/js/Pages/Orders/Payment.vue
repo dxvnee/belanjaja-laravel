@@ -194,10 +194,7 @@ const formatDate = (dateStr) => {
                         <h3 class="text-base font-semibold text-gray-800 dark:text-gray-200">
                             Ringkasan Pembayaran
                         </h3>
-                        <StatusSpan
-                            statusLabel="Menunggu Pembayaran"
-                            statusColor="bg-yellow-100 text-yellow-800 dark:bg-yellow-900/40 dark:text-yellow-300 dark:border dark:border-yellow-700/50"
-                        />
+                        <StatusSpan :status="order.status" />
                     </div>
 
                     <div class="space-y-3 text-sm">

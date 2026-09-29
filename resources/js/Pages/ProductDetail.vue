@@ -6,6 +6,8 @@ import { router } from "@inertiajs/vue3";
 import { useFeedback } from "@/Composable/useFeedback";
 import { useHelpers } from "@/Composable/useHelpers";
 import Counter from "@/Components/Counter.vue";
+import StarRating from "@/Components/StarRating.vue";
+import ProductReviews from "@/Components/ProductReviews.vue";
 
 const { confirm, showSuccess, showError, showLoading, hideLoading } =
     useFeedback();
@@ -168,6 +170,19 @@ const deleteProduct = async () => {
                             >
                                 {{ product.name }}
                             </h1>
+                            <div class="flex items-center gap-2 mt-2">
+                                <StarRating
+                                    v-if="product.reviews_count > 0"
+                                    :rating="product.reviews_avg_rating"
+                                    :count="product.reviews_count"
+                                    show-score
+                                    size="sm"
+                                />
+                                <div v-else class="flex items-center gap-1 text-xs text-gray-400 dark:text-gray-500">
+                                    <span class="text-amber-400">★</span>
+                                    <span>Belum ada ulasan</span>
+                                </div>
+                            </div>
                             <p
                                 class="mt-4 text-4xl font-bold text-primary-600 dark:text-primary-400"
                             >
@@ -252,6 +267,12 @@ const deleteProduct = async () => {
                         </div>
                     </div>
                 </div>
+
+                <ProductReviews
+                    :reviews="product.reviews"
+                    :avg-rating="product.reviews_avg_rating"
+                    :reviews-count="product.reviews_count"
+                />
             </div>
         </div>
     </AppLayout>

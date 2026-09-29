@@ -18,7 +18,7 @@ const goToProductDetail = (id) => {
 <template>
     <AppLayout title="Jualan Saya">
         <slot name="header">
-            <div class="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4">
+            <div class="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4 pb-10">
                 <div>
                     <h2
                         class="font-semibold text-xl text-gray-800 dark:text-gray-200 leading-tight"

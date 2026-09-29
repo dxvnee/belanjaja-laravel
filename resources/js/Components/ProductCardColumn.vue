@@ -3,6 +3,7 @@ import { router } from "@inertiajs/vue3";
 import IconButton from "./IconButton.vue";
 import { useFeedback } from "../Composable/useFeedback";
 import { useHelpers } from "../Composable/useHelpers";
+import StarRating from "./StarRating.vue";
 
 const { confirm, showSuccess, showError, showLoading, hideLoading } =
     useFeedback();
@@ -79,6 +80,14 @@ const deleteFromCart = async (productId, productName) => {
             >
                 {{ formatPrice(product.price) }}
             </p>
+            <StarRating
+                v-if="product.reviews_count > 0"
+                :rating="product.reviews_avg_rating"
+                :count="product.reviews_count"
+                show-score
+                size="xs"
+                class="mt-1"
+            />
             <p
                 v-if="product.description"
                 class="text-xs text-gray-500 dark:text-gray-400 mt-2 line-clamp-2"

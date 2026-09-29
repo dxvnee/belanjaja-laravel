@@ -8,6 +8,7 @@ use App\Http\Controllers\DashboardController;
 use App\Http\Controllers\JualController;
 use App\Http\Controllers\OrderController;
 use App\Http\Controllers\ProductController;
+use App\Http\Controllers\ReviewController;
 use Illuminate\Foundation\Application;
 use Illuminate\Support\Facades\Route;
 use Inertia\Inertia;
@@ -48,6 +49,8 @@ Route::middleware([
     Route::post('/orders/{id}/pay', [OrderController::class, 'pay'])->name('orders.pay');
     Route::post('/orders/{id}/cancel', [OrderController::class, 'cancel'])->name('orders.cancel');
     Route::post('/orders/{id}/complete', [OrderController::class, 'complete'])->name('orders.complete');
+
+    Route::post('/reviews', [ReviewController::class, 'store'])->name('reviews.store');
 
     Route::get('/jualan-saya', [AdminController::class, 'index'])->name('admin.show');
     Route::get('/jualan-saya/pesanan', [AdminController::class, 'orders'])->name('admin.orders');

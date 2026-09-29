@@ -20,27 +20,6 @@ const props = defineProps({
 
 const flash = computed(() => usePage().props.flash ?? {});
 
-const statusLabel = (status) => {
-    const map = {
-        pending: "Menunggu Pembayaran",
-        paid: "Perlu Dikirim",
-        shipped: "Sedang Dikirim",
-        completed: "Selesai",
-        cancelled: "Dibatalkan",
-    };
-    return map[status] ?? status;
-};
-
-const statusClass = (status) => {
-    const map = {
-        pending: "bg-yellow-100 text-yellow-800 dark:bg-yellow-900/40 dark:text-yellow-300 dark:border dark:border-yellow-700/50",
-        paid: "bg-blue-100 text-blue-800 dark:bg-blue-900/40 dark:text-blue-300 dark:border dark:border-blue-700/50",
-        shipped: "bg-indigo-100 text-indigo-800 dark:bg-indigo-900/40 dark:text-indigo-300 dark:border dark:border-indigo-700/50",
-        completed: "bg-green-100 text-green-800 dark:bg-green-900/40 dark:text-green-300 dark:border dark:border-green-700/50",
-        cancelled: "bg-red-100 text-red-800 dark:bg-red-900/40 dark:text-red-300 dark:border dark:border-red-700/50",
-    };
-    return map[status] ?? "bg-gray-100 text-gray-800 dark:bg-gray-800 dark:text-gray-300";
-};
 
 const formatDate = (dateStr) => {
     return new Date(dateStr).toLocaleDateString("id-ID", {
@@ -89,7 +68,7 @@ const submitShip = () => {
 <template>
     <AppLayout title="Pesanan Masuk">
         <slot name="header">
-            <div class="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4">
+            <div class="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4 pb-10">
                 <div>
                     <h2
                         class="font-semibold text-xl text-gray-800 dark:text-gray-200 leading-tight"
@@ -118,7 +97,6 @@ const submitShip = () => {
         </slot>
 
         <div class="flex flex-col gap-4">
-            <!-- Flash Message -->
             <div
                 v-if="flash.success"
                 class="bg-green-50 dark:bg-green-950/40 border border-green-200 dark:border-green-800 text-green-800 dark:text-green-300 rounded-lg px-4 py-3"
@@ -156,20 +134,15 @@ const submitShip = () => {
                                 {{ formatDate(order.created_at) }}
                             </p>
                         </div>
-                        <StatusSpan
-                            :status-color="statusClass(order.status)"
-                            :status-label="statusLabel(order.status)"
-                        />
+                        <StatusSpan :status="order.status" variant="seller" />
                     </div>
 
-                    <!-- Alamat Pengiriman -->
                     <div class="text-xs text-gray-600 dark:text-gray-400 mb-3 bg-gray-50 dark:bg-gray-900/50 p-3 rounded-lg border border-gray-200 dark:border-gray-700">
                         <span class="font-semibold text-gray-700 dark:text-gray-300">Alamat Pengiriman:</span>
                         {{ order.shipping_address?.name ?? '-' }} ({{ order.shipping_address?.phone ?? '-' }}) -
                         {{ order.shipping_address?.detail ?? '-' }}, {{ order.shipping_address?.city ?? '' }} {{ order.shipping_address?.postal_code ?? '' }}
                     </div>
 
-                    <!-- Nomor Resi jika sudah ada -->
                     <div
                         v-if="order.tracking_number"
                         class="text-xs font-semibold text-indigo-600 dark:text-indigo-400 mb-3"
@@ -208,7 +181,6 @@ const submitShip = () => {
 
                     <div class="flex flex-col sm:flex-row sm:justify-between sm:items-center mt-4 pt-4 border-t border-gray-200 dark:border-gray-700 gap-4">
                         <div>
-                            <!-- Tombol Kirim Pesanan -->
                             <PrimaryButton
                                 v-if="order.status === 'paid'"
                                 type="button"
@@ -230,7 +202,6 @@ const submitShip = () => {
             <Pagination :pagination="orders" />
         </div>
 
-        <!-- Modal Dialog Kirim Pesanan -->
         <DialogModal :show="shippingModal" @close="closeShippingModal">
             <template #title>
                 Kirim Pesanan #{{ selectedOrder?.id }}

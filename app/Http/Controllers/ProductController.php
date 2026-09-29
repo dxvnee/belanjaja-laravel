@@ -13,10 +13,21 @@ class ProductController extends Controller
     public function show($id)
     {
         $user = Auth::user();
-        $product = Product::where('id', $id)->with('images')->firstOrFail();
+        $product = Product::where('id', $id)
+            ->with([
+                'images',
+                'user',
+                'reviews' => function ($q) {
+                    $q->with('user')->latest();
+                },
+            ])
+            ->withAvg('reviews', 'rating')
+            ->withCount('reviews')
+            ->firstOrFail();
+
         return Inertia::render('ProductDetail', [
             'product' => $product,
-            'is_owner' => $product->user_id === $user->id,
+            'is_owner' => $user ? $product->user_id === $user->id : false,
         ]);
     }
 
