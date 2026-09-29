@@ -102,27 +102,43 @@ defineProps({
                             />
                         </div>
                     </div>
-                    <div>
-                        <InputLabel for="stok" value="Stok" />
-                        <TextInput
-                            id="stok"
-                            v-model="form.stok"
-                            type="number"
-                            class="mt-1 block w-full"
-                            required
-                            autofocus
-                            autocomplete="off"
-                            placeholder="Stok"
-                            icon="stock"
-                            min="0"
-                            max="99998"
-                            @keydown="
-                                (e) =>
-                                    ['e', 'E', '+', '-', '.'].includes(e.key) &&
-                                    e.preventDefault()
-                            "
-                        />
-                        <InputError class="mt-2" :message="form.errors.stok" />
+                    <div class="grid grid-cols-1 gap-5 md:grid-cols-2">
+                        <div>
+                            <InputLabel for="stok" value="Stok" />
+                            <TextInput
+                                id="stok"
+                                v-model="form.stok"
+                                type="number"
+                                class="mt-1 block w-full"
+                                required
+                                autofocus
+                                autocomplete="off"
+                                placeholder="Stok"
+                                icon="stock"
+                                min="0"
+                                max="99998"
+                                @keydown="
+                                    (e) =>
+                                        ['e', 'E', '+', '-', '.'].includes(e.key) &&
+                                        e.preventDefault()
+                                "
+                            />
+                            <InputError class="mt-2" :message="form.errors.stok" />
+                        </div>
+
+                        <div>
+                            <InputLabel for="lokasi" value="Lokasi / Asal Pengiriman" />
+                            <TextInput
+                                id="lokasi"
+                                v-model="form.lokasi"
+                                type="text"
+                                class="mt-1 block w-full"
+                                autocomplete="off"
+                                placeholder="Contoh: Jakarta Selatan, Bandung..."
+                                icon="location"
+                            />
+                            <InputError class="mt-2" :message="form.errors.lokasi" />
+                        </div>
                     </div>
                     <div>
                         <InputLabel for="kategori" value="Kategori" />

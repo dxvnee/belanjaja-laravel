@@ -22,6 +22,7 @@ class ProductDetailTest extends TestCase
             'description' => 'iPhone 13 Pro Max kondisi mulus',
             'price' => 15000000,
             'stock' => 5,
+            'location' => 'Kota Surabaya',
             'is_active' => true,
         ]);
 
@@ -46,6 +47,7 @@ class ProductDetailTest extends TestCase
                 ->where('product.slug', 'iphone-13-pro-max')
                 ->where('product.price', 15000000)
                 ->where('product.stock', 5)
+                ->where('product.location', 'Kota Surabaya')
                 ->has('product.images', 2)
         );
     }

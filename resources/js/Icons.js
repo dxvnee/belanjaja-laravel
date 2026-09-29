@@ -12,6 +12,7 @@ import {
     TrashIcon,
     BackwardIcon,
     PencilSquareIcon,
+    MapPinIcon,
 } from '@heroicons/vue/20/solid'
 
 export const Icons = {
@@ -28,4 +29,5 @@ export const Icons = {
     stock: BanknotesIcon,
     back: BackwardIcon,
     edit: PencilSquareIcon,
+    location: MapPinIcon,
 }

@@ -58,4 +58,29 @@ class JualProductTest extends TestCase
             $this->assertTrue(Storage::disk('public')->exists($image->image_path));
         }
     }
+
+    public function test_user_can_submit_product_with_custom_location(): void
+    {
+        $user = User::factory()->create();
+        $category = \App\Models\Category::firstOrCreate(
+            ['slug' => 'elektronik'],
+            ['name' => 'Elektronik', 'slug' => 'elektronik']
+        );
+
+        $response = $this->actingAs($user)->post(route('jual.store'), [
+            'judul' => 'MacBook Pro M1',
+            'harga' => 14000000,
+            'deskripsi' => 'MacBook Pro mulus.',
+            'stok' => 2,
+            'kategori' => $category->id,
+            'lokasi' => 'Kota Bandung',
+        ]);
+
+        $response->assertRedirect(route('dashboard'));
+
+        $this->assertDatabaseHas('products', [
+            'name' => 'MacBook Pro M1',
+            'location' => 'Kota Bandung',
+        ]);
+    }
 }

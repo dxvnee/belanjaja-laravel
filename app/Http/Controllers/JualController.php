@@ -13,7 +13,11 @@ class JualController extends Controller
 {
     public function index()
     {
-        return Inertia::render('Jual');
+        $defaultLocation = Auth::user()->address()->first()?->city ?? '';
+
+        return Inertia::render('Jual', [
+            'defaultLocation' => $defaultLocation,
+        ]);
     }
 
     public function store(Request $request)
@@ -23,11 +27,16 @@ class JualController extends Controller
             'harga' => ['required', 'numeric', 'min:0'],
             'stok' => ['required', 'integer', 'min:1'],
             'deskripsi' => ['required', 'string'],
+            'lokasi' => ['nullable', 'string', 'max:255'],
             'photo1' => ['nullable', 'image', 'max:2048'],
             'photo2' => ['nullable', 'image', 'max:2048'],
             'photo3' => ['nullable', 'image', 'max:2048'],
             'kategori' => ['required', 'numeric', 'max:6'],
         ]);
+
+        $location = !empty($validated['lokasi'])
+            ? $validated['lokasi']
+            : (Auth::user()->address()->first()?->city ?? 'Kota Jakarta Selatan');
 
         // Create product
         $product = Product::create([
@@ -37,6 +46,7 @@ class JualController extends Controller
             'description' => $validated['deskripsi'],
             'price' => $validated['harga'],
             'stock' => $validated['stok'],
+            'location' => $location,
             'is_active' => true,
             'category_id' => $validated['kategori'],
         ]);

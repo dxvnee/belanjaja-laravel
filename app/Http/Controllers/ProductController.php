@@ -77,6 +77,7 @@ class ProductController extends Controller
             'harga'    => ['required', 'numeric', 'min:0'],
             'stok'     => ['required', 'integer', 'min:0'],
             'deskripsi'=> ['required', 'string'],
+            'lokasi'   => ['nullable', 'string', 'max:255'],
             'kategori' => ['required', 'numeric', 'max:6'],
             'photo1'   => ['nullable', 'image', 'max:2048'],
             'photo2'   => ['nullable', 'image', 'max:2048'],
@@ -88,6 +89,7 @@ class ProductController extends Controller
             'description' => $validated['deskripsi'],
             'price'       => $validated['harga'],
             'stock'       => $validated['stok'],
+            'location'    => $validated['lokasi'] ?? $product->location,
             'category_id' => $validated['kategori'],
         ]);
 

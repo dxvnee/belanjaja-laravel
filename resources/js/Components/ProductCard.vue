@@ -121,7 +121,6 @@ function updateQty(qty) {
             'bg-white w-full dark:bg-gray-800 rounded-lg overflow-hidden hover:scale-[1.01] transition-transform duration-300 cursor-pointer',
         ]"
     >
-        <!-- Product Image -->
         <div
             @click="$emit('click-product')"
             :class="[
@@ -182,7 +181,31 @@ function updateQty(qty) {
                     />
                 </div>
 
-                <!-- Description -->
+                <div class="min-h-[1.25rem] flex items-center gap-1 text-[11px] text-gray-500 dark:text-gray-400 mb-1">
+                    <template v-if="product.location">
+                        <svg
+                            class="w-3.5 h-3.5 text-gray-400 shrink-0"
+                            fill="none"
+                            stroke="currentColor"
+                            viewBox="0 0 24 24"
+                        >
+                            <path
+                                stroke-linecap="round"
+                                stroke-linejoin="round"
+                                stroke-width="2"
+                                d="M17.657 16.657L13.414 20.9a1.998 1.998 0 01-2.827 0l-4.244-4.243a8 8 0 1111.314 0z"
+                            />
+                            <path
+                                stroke-linecap="round"
+                                stroke-linejoin="round"
+                                stroke-width="2"
+                                d="M15 11a3 3 0 11-6 0 3 3 0 016 0z"
+                            />
+                        </svg>
+                        <span class="truncate">{{ product.location }}</span>
+                    </template>
+                </div>
+
                 <p
                     v-if="product.description"
                     class="text-xs text-gray-500 dark:text-gray-400 line-clamp-2 mt-0.5"
@@ -191,7 +214,6 @@ function updateQty(qty) {
                 </p>
             </div>
 
-            <!-- Bottom Content: Pinned Stock / Quantity -->
             <div
                 class="mt-3 pt-2.5 border-t border-gray-100 dark:border-gray-700/60 flex items-center justify-between"
             >
@@ -218,7 +240,6 @@ function updateQty(qty) {
             </div>
         </div>
 
-        <!-- Checkout Mode Actions -->
         <div
             v-if="checkoutMode"
             class="flex-1 flex flex-row items-center justify-between p-3 shrink-0"

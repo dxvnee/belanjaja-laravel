@@ -28,6 +28,7 @@ class ProductFactory extends Factory
             'description' => fake()->paragraph(),
             'price' => fake()->numberBetween(10000, 10000000),
             'stock' => fake()->numberBetween(1, 100),
+            'location' => fake()->randomElement(['Kota Jakarta Selatan', 'Bandung', 'Surabaya', 'Semarang', 'Medan', 'Yogyakarta']),
             'is_active' => true,
             'user_id' => \App\Models\User::factory(),
             'category_id' => fn () => \App\Models\Category::first()?->id ?? \App\Models\Category::create([

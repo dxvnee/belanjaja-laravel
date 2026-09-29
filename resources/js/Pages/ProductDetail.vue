@@ -126,7 +126,6 @@ const deleteProduct = async () => {
         <div class="py-12">
             <div class="mx-auto w-full max-w-7xl">
                 <div class="grid grid-cols-1 gap-8 lg:grid-cols-2">
-                    <!-- Product Images -->
                     <div class="space-y-4">
                         <div
                             class="aspect-square w-full overflow-hidden rounded-lg bg-gray-100 dark:bg-gray-800 border border-gray-200 dark:border-gray-700"
@@ -138,7 +137,6 @@ const deleteProduct = async () => {
                             />
                         </div>
 
-                        <!-- Thumbnails -->
                         <div
                             v-if="product.images && product.images.length > 1"
                             class="grid grid-cols-4 gap-2"
@@ -163,7 +161,6 @@ const deleteProduct = async () => {
                         </div>
                     </div>
 
-                    <!-- Product Info -->
                     <div class="space-y-6">
                         <div>
                             <h1
@@ -191,23 +188,47 @@ const deleteProduct = async () => {
                             </p>
                         </div>
 
-                        <!-- Stock Info -->
-                        <div class="flex items-center gap-4">
+                        <div class="flex flex-wrap items-center gap-3">
+                            <div
+                                v-if="product.location"
+                                class="inline-flex items-center gap-1.5 rounded-lg bg-gray-50 dark:bg-gray-800/80 px-3 py-1.5 text-sm font-medium text-gray-700 dark:text-gray-300 border border-gray-200 dark:border-gray-700"
+                            >
+                                <svg
+                                    class="w-4 h-4 text-primary-600 dark:text-primary-400 shrink-0"
+                                    fill="none"
+                                    stroke="currentColor"
+                                    viewBox="0 0 24 24"
+                                >
+                                    <path
+                                        stroke-linecap="round"
+                                        stroke-linejoin="round"
+                                        stroke-width="2"
+                                        d="M17.657 16.657L13.414 20.9a1.998 1.998 0 01-2.827 0l-4.244-4.243a8 8 0 1111.314 0z"
+                                    />
+                                    <path
+                                        stroke-linecap="round"
+                                        stroke-linejoin="round"
+                                        stroke-width="2"
+                                        d="M15 11a3 3 0 11-6 0 3 3 0 016 0z"
+                                    />
+                                </svg>
+                                <span>Dikirim dari: <strong class="text-gray-900 dark:text-gray-100 font-semibold">{{ product.location }}</strong></span>
+                            </div>
+
                             <div
                                 v-if="product.stock > 0"
-                                class="rounded-lg bg-green-100 px-3 py-1 text-sm font-medium text-green-800 dark:bg-green-900/40 dark:text-green-300 dark:border dark:border-green-800"
+                                class="rounded-lg bg-green-100 px-3 py-1.5 text-sm font-medium text-green-800 dark:bg-green-900/40 dark:text-green-300 dark:border dark:border-green-800"
                             >
                                 Stok: {{ product.stock }}
                             </div>
                             <div
                                 v-else
-                                class="rounded-lg bg-red-100 px-3 py-1 text-sm font-medium text-red-800 dark:bg-red-900/40 dark:text-red-300 dark:border dark:border-red-800"
+                                class="rounded-lg bg-red-100 px-3 py-1.5 text-sm font-medium text-red-800 dark:bg-red-900/40 dark:text-red-300 dark:border dark:border-red-800"
                             >
                                 Stok Habis
                             </div>
                         </div>
 
-                        <!-- Description -->
                         <div class="border-t border-gray-200 dark:border-gray-700 pt-6">
                             <h2
                                 class="text-lg font-semibold text-gray-900 dark:text-gray-100"

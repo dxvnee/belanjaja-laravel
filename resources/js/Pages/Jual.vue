@@ -7,12 +7,20 @@ import ProductDetails from "@/Components/ProductDetails.vue";
 const { confirm, showSuccess, showError, showLoading, hideLoading } =
     useFeedback();
 
+const props = defineProps({
+    defaultLocation: {
+        type: String,
+        default: "",
+    },
+});
+
 const photoSlots = [1, 2, 3];
 
 const form = useForm({
     judul: "",
     harga: "",
     stok: "",
+    lokasi: props.defaultLocation || "",
     deskripsi: "",
     kategori: "",
     photo1: null,

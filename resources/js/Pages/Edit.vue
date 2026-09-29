@@ -20,6 +20,7 @@ const form = useForm({
     judul: props.product.name,
     harga: props.product.price,
     stok: props.product.stock,
+    lokasi: props.product.location || "",
     deskripsi: props.product.description,
     kategori: props.product.category_id,
     images: props.product.images || [],
