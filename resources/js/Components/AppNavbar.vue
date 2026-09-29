@@ -1,8 +1,8 @@
 <script setup>
-import { ref, onMounted, watch } from "vue";
-import { router, useForm, usePage } from "@inertiajs/vue3";
+import { ref } from "vue";
+import { router, usePage } from "@inertiajs/vue3";
 import AuthenticationCardLogo from "@/Components/AuthenticationCardLogo.vue";
-import TextInput from "@/Components/TextInput.vue";
+import SearchAutocomplete from "@/Components/SearchAutocomplete.vue";
 import PrimaryButton from "@/Components/PrimaryButton.vue";
 import AccountDropdown from "@/Components/AccountDropdown.vue";
 import Hamburger from "@/Components/Hamburger.vue";
@@ -22,10 +22,6 @@ const props = defineProps({
     },
 });
 
-const form = useForm({
-    search: page.props.query || "",
-});
-
 const switchToTeam = (team) => {
     router.put(
         route("current-team.update"),
@@ -34,22 +30,6 @@ const switchToTeam = (team) => {
         },
         {
             preserveState: false,
-        },
-    );
-};
-
-const submit = () => {
-    const query = form.search ? form.search.trim() : "";
-    if (!query) return;
-
-    router.get(
-        route(props.routeName || "dashboard.search"),
-        {
-            query: query,
-        },
-        {
-            preserveState: true,
-            preserveScroll: true,
         },
     );
 };
@@ -87,17 +67,11 @@ const cart = () => {
 
                 <div class="hidden sm:flex sm:items-center sm:ms-6 w-full">
                     <div class="ms-2 w-full">
-                        <form @submit.prevent="submit">
-                            <TextInput
-                                id="search"
-                                v-model="form.search"
-                                type="text"
-                                class="w-full"
-                                placeholder="Cari barang yang kamu butuhkan..."
-                                icon="search"
-                                :iconClick="submit"
-                            />
-                        </form>
+                        <SearchAutocomplete
+                            id="search"
+                            :routeName="routeName"
+                            placeholder="Cari barang yang kamu butuhkan..."
+                        />
                     </div>
 
                     <!-- Settings Dropdown -->
@@ -108,10 +82,6 @@ const cart = () => {
                         <div>
                             <PrimaryButton
                                 class="w-full flex items-center min-w-20"
-                                :class="{
-                                    'opacity-25': form.processing,
-                                }"
-                                :disabled="form.processing"
                                 @click="jual"
                             >
                                 + Jual
@@ -138,17 +108,11 @@ const cart = () => {
             class="sm:hidden"
         >
             <div class="px-4 pt-3 pb-2">
-                <form @submit.prevent="submit">
-                    <TextInput
-                        id="mobile-search"
-                        v-model="form.search"
-                        type="text"
-                        class="w-full"
-                        placeholder="Cari barang..."
-                        icon="search"
-                        :iconClick="submit"
-                    />
-                </form>
+                <SearchAutocomplete
+                    id="mobile-search"
+                    :routeName="routeName"
+                    placeholder="Cari barang..."
+                />
             </div>
 
             <div class="pt-1 pb-3 space-y-1">

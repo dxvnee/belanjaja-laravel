@@ -50,7 +50,7 @@ const goToProductDetail = (id) => {
             v-if="products.length > 0"
             class="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5 gap-4"
         >
-            <div v-for="product in products" :key="product.id">
+            <div v-for="product in products" :key="product.id" class="h-full">
                 <ProductCard
                     :onClick="() => goToProductDetail(product.id)"
                     :product="product"

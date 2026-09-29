@@ -122,4 +122,97 @@ class DashboardTest extends TestCase
                 ->has('products.data', 1)
         );
     }
+
+    public function test_dashboard_can_filter_products_by_category(): void
+    {
+        $user = User::factory()->create();
+
+        $catElectronics = \App\Models\Category::firstOrCreate(
+            ['slug' => 'elektronik'],
+            ['name' => 'Elektronik', 'slug' => 'elektronik']
+        );
+        $catFashion = \App\Models\Category::firstOrCreate(
+            ['slug' => 'fashion'],
+            ['name' => 'Fashion', 'slug' => 'fashion']
+        );
+
+        Product::factory()->create([
+            'name' => 'Laptop Dell',
+            'category_id' => $catElectronics->id,
+            'is_active' => true,
+        ]);
+        Product::factory()->create([
+            'name' => 'Kemeja Pria',
+            'category_id' => $catFashion->id,
+            'is_active' => true,
+        ]);
+
+        $response = $this->actingAs($user)->get(route('dashboard', ['category' => 'elektronik']));
+        $response->assertStatus(200);
+        $response->assertInertia(
+            fn($page) => $page
+                ->component('Dashboard')
+                ->has('products.data', 1)
+                ->where('products.data.0.name', 'Laptop Dell')
+                ->where('selectedCategory', 'elektronik')
+                ->has('categories')
+                ->has('totalProductsCount')
+        );
+    }
+
+    public function test_user_can_get_instant_search_preview(): void
+    {
+        $user = User::factory()->create();
+
+        Product::factory()->create([
+            'name' => 'Sony Headphone WH-1000XM5',
+            'price' => 4500000,
+            'stock' => 10,
+            'is_active' => true,
+        ]);
+        Product::factory()->create([
+            'name' => 'Sony Speaker Bluetooth',
+            'price' => 1200000,
+            'stock' => 5,
+            'is_active' => true,
+        ]);
+        Product::factory()->create([
+            'name' => 'Bose Headphone',
+            'price' => 3800000,
+            'stock' => 2,
+            'is_active' => true,
+        ]);
+
+        $response = $this->actingAs($user)->getJson(route('dashboard.search.preview', ['query' => 'Sony']));
+        $response->assertStatus(200);
+        $response->assertJsonStructure([
+            'products' => [
+                '*' => ['id', 'name', 'price', 'stock', 'images', 'category'],
+            ],
+        ]);
+        $response->assertJsonCount(2, 'products');
+    }
+
+    public function test_search_preview_returns_empty_when_query_is_empty(): void
+    {
+        $user = User::factory()->create();
+
+        $response = $this->actingAs($user)->getJson(route('dashboard.search.preview', ['query' => '']));
+        $response->assertStatus(200);
+        $response->assertExactJson(['products' => []]);
+    }
+
+    public function test_search_preview_does_not_return_inactive_products(): void
+    {
+        $user = User::factory()->create();
+
+        Product::factory()->create([
+            'name' => 'Sony Inactive Gadget',
+            'is_active' => false,
+        ]);
+
+        $response = $this->actingAs($user)->getJson(route('dashboard.search.preview', ['query' => 'Sony']));
+        $response->assertStatus(200);
+        $response->assertExactJson(['products' => []]);
+    }
 }

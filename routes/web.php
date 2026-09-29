@@ -26,6 +26,7 @@ Route::middleware([
     'verified',
 ])->group(function () {
     Route::get('/dashboard', [DashboardController::class, 'index'])->name('dashboard');
+    Route::get('/search/preview', [DashboardController::class, 'searchPreview'])->name('dashboard.search.preview');
     Route::match(['get', 'post'], '/search', [DashboardController::class, 'search'])->name('dashboard.search');
 
     Route::get('/product/{id}', [ProductController::class, 'show'])->name('product.show');
