@@ -147,4 +147,42 @@ class CheckoutTest extends TestCase
         // Check if shipping_address cast works
         $this->assertEquals($addressData, $order->shipping_address);
     }
+
+    public function test_checkout_fails_and_rolls_back_if_stock_is_insufficient(): void
+    {
+        $user = User::factory()->create();
+        $seller = User::factory()->create();
+        $category = Category::create(['name' => 'Buku', 'slug' => 'buku']);
+
+        $product = Product::factory()->create([
+            'user_id'     => $seller->id,
+            'category_id' => $category->id,
+            'stock'       => 2,
+            'price'       => 50000,
+            'location'    => 'Bandung',
+        ]);
+
+        $addressData = [
+            'name'        => 'Ahmad',
+            'phone'       => '08123456789',
+            'detail'      => 'Jl. Merdeka No 1',
+            'subdistrict' => 'Coblong',
+            'city'        => 'Bandung',
+            'province'    => 'Jawa Barat',
+            'postal_code' => '40132',
+        ];
+
+        // Attempt to buy 5 when stock is only 2
+        $response = $this->actingAs($user)->from(route('checkout.index'))->post(route('checkout.store'), [
+            'product_ids' => [$product->id],
+            'quantities'  => [$product->id => 5],
+            'is_buy_now'  => true,
+            'address'     => $addressData,
+        ]);
+
+        $response->assertSessionHasErrors('stock');
+        $this->assertEquals(0, Order::count());
+        $this->assertEquals(2, $product->fresh()->stock); // Stock intact, no partial decrement
+    }
 }
+

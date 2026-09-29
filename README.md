@@ -7,7 +7,8 @@
 [![Inertia.js](https://img.shields.io/badge/Inertia.js-Modern_SPA-9553E9?style=for-the-badge&logo=inertia&logoColor=white)](https://inertiajs.com)
 [![Tailwind CSS](https://img.shields.io/badge/Tailwind_CSS-3.x-38B2AC?style=for-the-badge&logo=tailwind-css&logoColor=white)](https://tailwindcss.com)
 [![PHP](https://img.shields.io/badge/PHP-8.3-777BB4?style=for-the-badge&logo=php&logoColor=white)](https://php.net)
-[![Tests](https://img.shields.io/badge/Tests-74_Passed-success?style=for-the-badge&logo=checkmarx&logoColor=white)](#-automated-testing)
+[![CI/CD Pipeline](https://github.com/dxvnee/belanjaja-laravel/actions/workflows/ci.yml/badge.svg)](https://github.com/dxvnee/belanjaja-laravel/actions/workflows/ci.yml)
+[![Tests](https://img.shields.io/badge/Tests-80_Passed-success?style=for-the-badge&logo=checkmarx&logoColor=white)](#-automated-testing)
 [![License](https://img.shields.io/badge/License-MIT-blue?style=for-the-badge)](LICENSE)
 
 <p align="center">
@@ -46,10 +47,11 @@
 - **Alur Pemenuhan Pesanan (Fulfillment)**: Modal input nomor resi pengiriman real-time oleh penjual saat status pesanan `paid` (terbayar).
 - **Manajemen Katalog**: Filter ketersediaan stok (*Semua, Tersedia, Habis*) dan pencarian produk toko secara lokal.
 
-### 6. 💳 Transaksi & Gateway Pembayaran Midtrans Snap
+### 6. 💳 Transaksi, Midtrans Webhook & Concurrency Safety
 - Mendukung alur **Keranjang Belanja** maupun **Beli Langsung (Buy Now)**.
+- **Pessimistic Locking (`lockForUpdate()`) & `DB::transaction()`**: Menjamin ketersediaan stok produk secara atomik saat checkout bersamaan, mencegah masalah *overselling* atau *race conditions*.
+- **Midtrans Webhook & Signature Verification ([`MidtransWebhookService`](app/Services/MidtransWebhookService.php))**: Verifikasi keamanan signature SHA-512 dengan `hash_equals()` untuk proteksi *timing attacks*, penanganan notifikasi (*settlement, capture, cancel, expire*), mekanisme idempoten, dan pemulihan stok otomatis (*atomic stock restoration*).
 - Integrasi Midtrans Snap Popup Payment dengan kalkulasi biaya ongkos kirim otomatis masuk ke rincian tagihan.
-- Pengurangan stok produk otomatis saat checkout dan *auto-restore* stok jika pesanan dibatalkan.
 
 ### 7. 🧾 Cetak Faktur PDF Invoice Resmi
 - Dibuat menggunakan template Blade khusus dengan layout profesional, barcode nomor transaksi, rincian biaya kurir, dan tabel barang.
@@ -59,7 +61,11 @@
 - Verifikasi pembelian: Hanya pembeli yang telah mengonfirmasi barang diterima (`completed`) yang dapat memberikan rating bintang (1–5) dan ulasan.
 - Halaman profil publik penjual ([`/seller/{id}`](app/Http/Controllers/SellerController.php)) lengkap dengan metrik ulasan toko.
 
-### 9. 🌙 Modern Design & Dark Mode Support
+### 9. 🔄 CI/CD Automation (GitHub Actions)
+- Otomatisasi pengujian dan kompilasi aset pada setiap `push` dan `pull_request` ke cabang `main`.
+- Menjalankan pipeline komprehensif: setup PHP 8.3, dependency caching, `npm run build`, dan eksekusi test PHPUnit secara headless.
+
+### 10. 🌙 Modern Design & Dark Mode Support
 - Dibangun dengan **Tailwind CSS** mendukung perpindahan instan antara *Light Mode* dan *Dark Mode*.
 - Komponen interaktif: Glassmorphism modal dialog, Skeleton loaders, micro-animations, dan tata letak responsif untuk perangkat mobile maupun desktop.
 
@@ -76,9 +82,10 @@
 | **Styling & Icons** | [Tailwind CSS 3](https://tailwindcss.com), [@heroicons/vue](https://github.com/tailwindlabs/heroicons) |
 | **Authentication** | [Laravel Jetstream](https://jetstream.laravel.com) (Sanctum, 2FA, Profile Management) |
 | **Database** | PostgreSQL / SQLite |
-| **Payment Gateway** | [Midtrans Snap API](https://midtrans.com) |
+| **Payment Gateway** | [Midtrans Snap API](https://midtrans.com) & Webhook Handler |
 | **PDF Generation** | [Barryvdh Laravel DomPDF](https://github.com/barryvdh/laravel-dompdf) |
-| **Testing Suite** | PHPUnit / Pest (74 Automated Test Cases) |
+| **CI / CD** | GitHub Actions Pipeline (`.github/workflows/ci.yml`) |
+| **Testing Suite** | PHPUnit (80 Automated Test Cases, 455 Assertions) |
 | **Build Tool** | [Vite 7](https://vitejs.dev) |
 
 ---
@@ -152,6 +159,7 @@ PASS  Tests\Feature\AddressTest
 PASS  Tests\Feature\CheckoutTest
 PASS  Tests\Feature\DashboardTest
 PASS  Tests\Feature\JualProductTest
+PASS  Tests\Feature\MidtransWebhookTest
 PASS  Tests\Feature\NewEcommerceFeaturesTest
 PASS  Tests\Feature\OrderFulfillmentTest
 PASS  Tests\Feature\OrderInvoiceTest
@@ -160,8 +168,8 @@ PASS  Tests\Feature\ReviewTest
 PASS  Tests\Feature\SellerProfileTest
 ...
 
-Tests:    74 passed (435 assertions)
-Duration: 1.58s
+Tests:    80 passed (455 assertions)
+Duration: 1.81s
 ```
 
 ---
@@ -170,10 +178,13 @@ Duration: 1.58s
 
 ```bash
 belanjaja/
+├── .github/
+│   └── workflows/
+│       └── ci.yml                      # GitHub Actions CI/CD Pipeline
 ├── app/
 │   ├── Http/Controllers/
 │   │   ├── AdminController.php         # Dashboard & Metrik Penjual
-│   │   ├── CheckoutController.php      # Checkout & Perhitungan Ongkir
+│   │   ├── CheckoutController.php      # Checkout (Pessimistic Lock & DB::transaction)
 │   │   ├── DashboardController.php     # Algoritma Feeds & Pencarian
 │   │   ├── JualController.php          # Pasang Iklan Multi-Kategori
 │   │   ├── OrderController.php         # Transaksi, Midtrans & Invoice PDF
@@ -184,6 +195,7 @@ belanjaja/
 │   │   ├── Product.php                 # Relasi Kategori, Rating, Ulasan
 │   │   └── User.php                    # Multi-Role Pembeli & Penjual
 │   └── Services/
+│       ├── MidtransWebhookService.php  # Signature Verification & Idempotency
 │       └── ShippingService.php         # Engine Jarak Geografis & Tarif
 ├── resources/
 │   ├── js/
@@ -202,15 +214,10 @@ belanjaja/
 │   └── views/
 │       └── invoices/order.blade.php    # Template Cetak PDF Faktur
 └── tests/Feature/
-    ├── CheckoutTest.php                # Uji Checkout & Kalkulasi Ongkir
+    ├── CheckoutTest.php                # Uji Checkout, Ongkir & Concurrency Rollback
     ├── DashboardTest.php               # Uji Feeds & Algoritma Scoring
+    ├── MidtransWebhookTest.php         # Uji Signature, Idempotency & Stock Restoration
     ├── NewEcommerceFeaturesTest.php    # Uji Multi-Kategori & Shipping
     ├── OrderFulfillmentTest.php        # Uji Resi & Status Pemenuhan
     └── OrderInvoiceTest.php            # Uji Validasi & Unduh PDF
 ```
-
----
-
-## 📄 Lisensi
-
-Proyek ini dirilis di bawah lisensi [MIT License](LICENSE).

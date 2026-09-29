@@ -9,3 +9,4 @@ Route::get('/user', function (Request $request) {
 })->middleware('auth:sanctum');
 
 Route::post('/midtrans/callback', [OrderController::class, 'callback'])->name('midtrans.callback');
+Route::post('/midtrans/webhook', [OrderController::class, 'callback'])->name('midtrans.webhook');

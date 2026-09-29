@@ -137,14 +137,6 @@ class CheckoutController extends Controller
 
         abort_if($items->isEmpty(), 422, 'Tidak ada produk yang dipilih.');
 
-        foreach ($items as $item) {
-            if ($item->product->stock < $item->quantity) {
-                return back()->withErrors([
-                    'stock' => "Stok produk \"{$item->product->name}\" tidak mencukupi.",
-                ]);
-            }
-        }
-
         $shippingService = $validated['shipping_service'] ?? ShippingService::SERVICE_REGULER;
         $buyerLocation = $validated['address']['city'] ?? null;
         $sellerLocation = $items->first()?->product?->location ?? null;
@@ -153,34 +145,53 @@ class CheckoutController extends Controller
         $itemsSubtotal = $items->sum(fn($item) => $item->price_snapshot * $item->quantity);
         $totalPrice = $itemsSubtotal + $shippingCost;
 
-        $order = DB::transaction(function () use ($user, $items, $totalPrice, $validated, $shippingService, $shippingCost) {
-            $order = Order::create([
-                'user_id'          => $user->id,
-                'total_price'      => $totalPrice,
-                'status'           => 'pending',
-                'shipping_address' => $validated['address'],
-                'shipping_service' => $shippingService,
-                'shipping_cost'    => $shippingCost,
-            ]);
+        try {
+            $order = DB::transaction(function () use ($user, $items, $totalPrice, $validated, $shippingService, $shippingCost) {
+                // 1. Lock and validate stock atomically with pessimistic lock (lockForUpdate)
+                foreach ($items as $item) {
+                    $lockedProduct = Product::where('id', $item->product_id)->lockForUpdate()->first();
 
-            foreach ($items as $item) {
-                OrderItem::create([
-                    'order_id'       => $order->id,
-                    'product_id'     => $item->product_id,
-                    'quantity'       => $item->quantity,
-                    'price_snapshot' => $item->price_snapshot,
-                    'subtotal'       => $item->price_snapshot * $item->quantity,
+                    if (! $lockedProduct || $lockedProduct->stock < $item->quantity) {
+                        $productName = $lockedProduct ? $lockedProduct->name : 'Produk';
+                        throw new \Exception("Stok produk \"{$productName}\" tidak mencukupi untuk memenuhi pesanan.");
+                    }
+
+                    // Decrement stock atomically
+                    $lockedProduct->decrement('stock', $item->quantity);
+                }
+
+                // 2. Create the order record
+                $order = Order::create([
+                    'user_id'          => $user->id,
+                    'total_price'      => $totalPrice,
+                    'status'           => 'pending',
+                    'shipping_address' => $validated['address'],
+                    'shipping_service' => $shippingService,
+                    'shipping_cost'    => $shippingCost,
                 ]);
 
-                $item->product->decrement('stock', $item->quantity);
+                // 3. Create order items and clean up cart if from cart
+                foreach ($items as $item) {
+                    OrderItem::create([
+                        'order_id'       => $order->id,
+                        'product_id'     => $item->product_id,
+                        'quantity'       => $item->quantity,
+                        'price_snapshot' => $item->price_snapshot,
+                        'subtotal'       => $item->price_snapshot * $item->quantity,
+                    ]);
 
-                if ($item->cart_item) {
-                    $item->cart_item->delete();
+                    if ($item->cart_item) {
+                        $item->cart_item->delete();
+                    }
                 }
-            }
 
-            return $order;
-        });
+                return $order;
+            });
+        } catch (\Exception $e) {
+            return back()->withErrors([
+                'stock' => $e->getMessage(),
+            ]);
+        }
 
         return redirect()->route('orders.payment', ['id' => $order->id])->with('success', 'Pesanan berhasil dibuat! Silakan selesaikan pembayaran.');
     }

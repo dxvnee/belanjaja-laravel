@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use App\Models\Order;
+use App\Services\MidtransWebhookService;
 use Barryvdh\DomPDF\Facade\Pdf;
 use Exception;
 use Illuminate\Http\Request;
@@ -158,44 +159,9 @@ class OrderController extends Controller
 
     public function callback(Request $request)
     {
-        $serverKey = config('services.midtrans.server_key');
-        $signatureKey = hash('sha512', $request->order_id . $request->status_code . $request->gross_amount . $serverKey);
+        $result = MidtransWebhookService::handle($request);
 
-        if ($signatureKey !== $request->signature_key) {
-            return response()->json(['message' => 'Invalid signature key'], 403);
-        }
-
-        // Format order_id: ORDER-{id}-{timestamp}
-        $parts = explode('-', $request->order_id);
-        $orderId = isset($parts[1]) ? (int) $parts[1] : (int) $request->order_id;
-
-        $order = Order::find($orderId);
-        if (!$order) {
-            return response()->json(['message' => 'Order not found'], 404);
-        }
-
-        $transaction = $request->transaction_status;
-        $type = $request->payment_type;
-        $fraud = $request->fraud_status;
-
-        if ($transaction === 'capture') {
-            if ($fraud === 'accept') {
-                $order->update(['status' => 'paid', 'payment_type' => $type]);
-            }
-        } elseif ($transaction === 'settlement') {
-            $order->update(['status' => 'paid', 'payment_type' => $type]);
-        } elseif ($transaction === 'pending') {
-            $order->update(['status' => 'pending', 'payment_type' => $type]);
-        } elseif (in_array($transaction, ['deny', 'expire', 'cancel'])) {
-            if ($order->status !== 'cancelled') {
-                $order->update(['status' => 'cancelled']);
-                foreach ($order->items as $item) {
-                    $item->product?->increment('stock', $item->quantity);
-                }
-            }
-        }
-
-        return response()->json(['message' => 'Notification handled successfully']);
+        return response()->json(['message' => $result['message']], $result['status']);
     }
 
     public function invoice(Request $request, $id)
