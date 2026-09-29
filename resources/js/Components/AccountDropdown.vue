@@ -59,7 +59,7 @@ const { isDark, initTheme, toggleDarkMode } = useDarkMode();
 
             <DropdownLink :href="route('profile.show')"> Profile </DropdownLink>
 
-            <DropdownLink :href="route('admin.show')"> Jualan saya </DropdownLink>
+            <DropdownLink :href="route('admin.show')"> Dashboard Penjual </DropdownLink>
 
             <DropdownLink :href="route('admin.orders')"> Pesanan masuk </DropdownLink>
 

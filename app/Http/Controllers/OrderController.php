@@ -57,6 +57,15 @@ class OrderController extends Controller
                 ];
             })->toArray();
 
+            if ((float) ($order->shipping_cost ?? 0) > 0) {
+                $itemDetails[] = [
+                    'id'       => 'SHIPPING',
+                    'price'    => (int) round($order->shipping_cost),
+                    'quantity' => 1,
+                    'name'     => 'Ongkir (' . ucfirst($order->shipping_service ?? 'Reguler') . ')',
+                ];
+            }
+
             $params = [
                 'transaction_details' => [
                     'order_id'     => 'ORDER-' . $order->id . '-' . time(),

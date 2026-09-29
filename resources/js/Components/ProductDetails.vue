@@ -4,10 +4,9 @@ import InputGambar from "@/Components/InputGambar.vue";
 import InputError from "@/Components/InputError.vue";
 import InputLabel from "@/Components/InputLabel.vue";
 import PrimaryButton from "@/Components/PrimaryButton.vue";
-import SelectInput from "@/Components/SelectInput.vue";
 import TextInput from "@/Components/TextInput.vue";
 
-defineProps({
+const props = defineProps({
     submit: {
         type: Function,
         required: true,
@@ -25,6 +24,36 @@ defineProps({
         default: "Jual",
     },
 });
+
+const availableCategories = [
+    { id: 1, name: "Elektronik" },
+    { id: 2, name: "Fashion" },
+    { id: 3, name: "Rumah Tangga" },
+    { id: 4, name: "Hobi" },
+    { id: 5, name: "Kendaraan" },
+    { id: 6, name: "Lainnya" },
+];
+
+if (!Array.isArray(props.form.kategori_ids)) {
+    props.form.kategori_ids = props.form.kategori ? [Number(props.form.kategori)] : [1];
+}
+
+const toggleCategory = (id) => {
+    if (!Array.isArray(props.form.kategori_ids)) {
+        props.form.kategori_ids = [Number(props.form.kategori) || 1];
+    }
+    const idx = props.form.kategori_ids.indexOf(id);
+    if (idx > -1) {
+        if (props.form.kategori_ids.length > 1) {
+            props.form.kategori_ids.splice(idx, 1);
+        }
+    } else {
+        if (props.form.kategori_ids.length < 3) {
+            props.form.kategori_ids.push(id);
+        }
+    }
+    props.form.kategori = props.form.kategori_ids[0] || null;
+};
 </script>
 
 <template>
@@ -141,27 +170,43 @@ defineProps({
                         </div>
                     </div>
                     <div>
-                        <InputLabel for="kategori" value="Kategori" />
-                        <SelectInput
-                            id="kategori"
-                            v-model="form.kategori"
-                            class="mt-1 block w-full"
-                            required
-                            autocomplete="off"
-                            placeholder="Pilih Kategori"
-                            :option="[
-                                { value: 1, label: 'Elektronik' },
-                                { value: 2, label: 'Fashion' },
-                                { value: 3, label: 'Rumah Tangga' },
-                                { value: 4, label: 'Hobi' },
-                                { value: 5, label: 'Kendaraan' },
-                                { value: 6, label: 'Lainnya' },
-                            ]"
-                            icon="kategori"
-                        />
+                        <div class="flex items-center justify-between">
+                            <InputLabel for="kategori" value="Kategori Produk" />
+                            <span class="text-xs font-semibold text-gray-500 dark:text-gray-400">
+                                Pilih 1 - 3 kategori (Terpilih: {{ form.kategori_ids?.length || 1 }}/3)
+                            </span>
+                        </div>
+                        <div class="mt-2 flex flex-wrap gap-2">
+                            <button
+                                v-for="cat in availableCategories"
+                                :key="cat.id"
+                                type="button"
+                                @click="toggleCategory(cat.id)"
+                                :class="[
+                                    'inline-flex items-center gap-1.5 px-3.5 py-2 rounded-lg text-xs sm:text-sm font-semibold border transition cursor-pointer',
+                                    (form.kategori_ids?.includes(cat.id) || (!form.kategori_ids && form.kategori == cat.id))
+                                        ? 'bg-primary-600 text-white border-primary-600 shadow-xs ring-2 ring-primary-500/20'
+                                        : 'bg-white dark:bg-gray-800 text-gray-700 dark:text-gray-300 border-gray-300 dark:border-gray-600 hover:border-primary-400 dark:hover:border-primary-500'
+                                ]"
+                            >
+                                <svg
+                                    v-if="form.kategori_ids?.includes(cat.id) || (!form.kategori_ids && form.kategori == cat.id)"
+                                    class="w-3.5 h-3.5"
+                                    fill="none"
+                                    stroke="currentColor"
+                                    viewBox="0 0 24 24"
+                                >
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M5 13l4 4L19 7" />
+                                </svg>
+                                <span>{{ cat.name }}</span>
+                            </button>
+                        </div>
+                        <p v-if="form.kategori_ids?.length >= 3" class="text-[11px] text-amber-600 dark:text-amber-400 mt-1.5">
+                            Maksimal 3 kategori telah tercapai. Klik kategori terpilih untuk membatalkan sebelum memilih yang lain.
+                        </p>
                         <InputError
                             class="mt-2"
-                            :message="form.errors.deskripsi"
+                            :message="form.errors.kategori || form.errors.kategori_ids"
                         />
                     </div>
                     <div>

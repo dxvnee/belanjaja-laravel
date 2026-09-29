@@ -21,6 +21,13 @@ class Product extends Model
         'is_active',
     ];
 
+    protected $appends = ['title'];
+
+    public function getTitleAttribute(): ?string
+    {
+        return $this->attributes['name'] ?? null;
+    }
+
     public function user()
     {
         return $this->belongsTo(User::class, 'user_id');
@@ -29,6 +36,20 @@ class Product extends Model
     public function category()
     {
         return $this->belongsTo(Category::class, 'category_id');
+    }
+
+    public function categories()
+    {
+        return $this->belongsToMany(Category::class, 'category_product');
+    }
+
+    protected static function booted()
+    {
+        static::saved(function ($product) {
+            if ($product->category_id && !$product->categories()->where('category_id', $product->category_id)->exists()) {
+                $product->categories()->syncWithoutDetaching([$product->category_id]);
+            }
+        });
     }
 
     public function cartItems()

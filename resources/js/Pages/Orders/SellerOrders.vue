@@ -87,7 +87,7 @@ const submitShip = () => {
                         :href="route('admin.show')"
                         class="px-3.5 py-1.5 rounded-md text-xs sm:text-sm font-medium text-gray-600 dark:text-gray-300 hover:text-gray-900 dark:hover:text-white transition"
                     >
-                        Produk Saya
+                        Dashboard Penjual
                     </Link>
                     <span
                         class="px-3.5 py-1.5 rounded-md text-xs sm:text-sm font-semibold bg-white dark:bg-gray-700 text-primary-600 dark:text-primary-400 shadow-xs"

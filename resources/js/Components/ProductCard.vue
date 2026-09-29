@@ -156,10 +156,20 @@ function updateQty(qty) {
         >
             <!-- Top Content -->
             <div class="flex-1 flex flex-col">
-                <div class="min-h-[1.25rem] mb-1 flex items-center">
+                <div class="min-h-[1.25rem] mb-1 flex items-center gap-1 overflow-hidden flex-wrap">
+                    <template v-if="product.categories && product.categories.length > 0">
+                        <span
+                            v-for="cat in product.categories.slice(0, 3)"
+                            :key="cat.id"
+                            class="inline-block text-[10px] font-semibold text-primary-600 dark:text-primary-400 bg-primary-50 dark:bg-primary-950/60 px-1.5 py-0.5 rounded truncate max-w-[80px]"
+                            :title="cat.name"
+                        >
+                            {{ cat.name }}
+                        </span>
+                    </template>
                     <span
-                        v-if="product.category?.name"
-                        class="inline-block text-[10px] font-semibold text-primary-600 dark:text-primary-600 bg-primary-50 dark:bg-primary-950/60 px-1.5 py-0.5 rounded"
+                        v-else-if="product.category?.name"
+                        class="inline-block text-[10px] font-semibold text-primary-600 dark:text-primary-400 bg-primary-50 dark:bg-primary-950/60 px-1.5 py-0.5 rounded"
                     >
                         {{ product.category.name }}
                     </span>

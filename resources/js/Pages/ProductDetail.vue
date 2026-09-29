@@ -163,6 +163,24 @@ const deleteProduct = async () => {
 
                     <div class="space-y-6">
                         <div>
+                            <div class="flex items-center gap-1.5 flex-wrap mb-2">
+                                <template v-if="product.categories && product.categories.length > 0">
+                                    <span
+                                        v-for="cat in product.categories"
+                                        :key="cat.id"
+                                        class="inline-block text-xs font-semibold text-primary-600 dark:text-primary-400 bg-primary-50 dark:bg-primary-950/60 px-2.5 py-0.5 rounded-md border border-primary-200 dark:border-primary-800/60"
+                                    >
+                                        {{ cat.name }}
+                                    </span>
+                                </template>
+                                <span
+                                    v-else-if="product.category?.name"
+                                    class="inline-block text-xs font-semibold text-primary-600 dark:text-primary-400 bg-primary-50 dark:bg-primary-950/60 px-2.5 py-0.5 rounded-md border border-primary-200 dark:border-primary-800/60"
+                                >
+                                    {{ product.category.name }}
+                                </span>
+                            </div>
+
                             <h1
                                 class="text-3xl font-bold text-gray-900 dark:text-gray-100"
                             >

@@ -8,10 +8,30 @@ export function useHelpers() {
     };
 
     const getProductImage = (product) => {
-        if (product.images && product.images.length > 0) {
-            return `/storage/${product.images[0].image_path}`;
+        if (!product) return "/images/placeholder-product.svg";
+
+        let path = null;
+        if (typeof product === "string") {
+            path = product;
+        } else if (product.images && product.images.length > 0 && product.images[0]?.image_path) {
+            path = product.images[0].image_path;
         }
-        return "/images/placeholder-product.png";
+
+        if (path) {
+            if (path.startsWith("http://") || path.startsWith("https://") || path.startsWith("data:")) {
+                return path;
+            }
+            if (path.startsWith("/storage/")) {
+                return path;
+            }
+            if (path.startsWith("storage/")) {
+                return `/${path}`;
+            }
+            const cleanPath = path.startsWith("/") ? path.substring(1) : path;
+            return `/storage/${cleanPath}`;
+        }
+
+        return "/images/placeholder-product.svg";
     };
 
     return { formatPrice, getProductImage };

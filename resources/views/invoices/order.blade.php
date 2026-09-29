@@ -350,13 +350,22 @@
     <!-- Total Section -->
     <div class="total-section">
         <table class="total-table">
+            @php
+                $shippingCost = (float) ($order->shipping_cost ?? 0);
+                $itemsSubtotal = (float) $order->total_price - $shippingCost;
+                if ($itemsSubtotal <= 0) {
+                    $itemsSubtotal = (float) $order->total_price;
+                }
+            @endphp
             <tr>
                 <td class="label">Subtotal Produk:</td>
-                <td class="value">Rp {{ number_format($order->total_price, 0, ',', '.') }}</td>
+                <td class="value">Rp {{ number_format($itemsSubtotal, 0, ',', '.') }}</td>
             </tr>
             <tr>
-                <td class="label">Biaya Pengiriman:</td>
-                <td class="value" style="color: #16a34a;">Gratis Ongkir</td>
+                <td class="label">Biaya Pengiriman ({{ ucfirst($order->shipping_service ?? 'Reguler') }}):</td>
+                <td class="value" style="{{ $shippingCost > 0 ? '' : 'color: #16a34a;' }}">
+                    {{ $shippingCost > 0 ? 'Rp ' . number_format($shippingCost, 0, ',', '.') : 'Gratis Ongkir' }}
+                </td>
             </tr>
             <tr class="grand-total-row">
                 <td class="label">Total Pembayaran:</td>

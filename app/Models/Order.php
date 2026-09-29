@@ -13,6 +13,8 @@ class Order extends Model
         'snap_token',
         'payment_type',
         'shipping_address',
+        'shipping_service',
+        'shipping_cost',
         'tracking_number',
     ];
 

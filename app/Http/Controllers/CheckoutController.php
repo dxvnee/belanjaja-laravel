@@ -8,6 +8,7 @@ use App\Models\CartItem;
 use App\Models\Order;
 use App\Models\OrderItem;
 use App\Models\Product;
+use App\Services\ShippingService;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
 use Inertia\Inertia;
@@ -33,11 +34,18 @@ class CheckoutController extends Controller
             ->get()
             ->toArray();
 
+        $sellerLocation = $products->first()?->product?->location ?? 'Kota Jakarta Selatan';
+        $defaultAddress = collect($addresses)->firstWhere('is_default', true) ?? ($addresses[0] ?? null);
+        $buyerLocation = $defaultAddress['city'] ?? null;
+        $shippingOptions = ShippingService::getOptions($sellerLocation, $buyerLocation);
+
         return Inertia::render('Checkout', [
-            'title' => 'Checkout',
-            'products' => $products,
-            'addresses' => $addresses,
-            'isBuyNow' => false,
+            'title'           => 'Checkout',
+            'products'        => $products,
+            'addresses'       => $addresses,
+            'isBuyNow'        => false,
+            'shippingOptions' => $shippingOptions,
+            'sellerLocation'  => $sellerLocation,
         ]);
     }
 
@@ -63,22 +71,30 @@ class CheckoutController extends Controller
             ->get()
             ->toArray();
 
+        $sellerLocation = $product->location ?? 'Kota Jakarta Selatan';
+        $defaultAddress = collect($addresses)->firstWhere('is_default', true) ?? ($addresses[0] ?? null);
+        $buyerLocation = $defaultAddress['city'] ?? null;
+        $shippingOptions = ShippingService::getOptions($sellerLocation, $buyerLocation);
+
         return Inertia::render('Checkout', [
-            'title' => 'Checkout',
-            'products' => $products,
-            'addresses' => $addresses,
-            'isBuyNow' => true,
+            'title'           => 'Checkout',
+            'products'        => $products,
+            'addresses'       => $addresses,
+            'isBuyNow'        => true,
+            'shippingOptions' => $shippingOptions,
+            'sellerLocation'  => $sellerLocation,
         ]);
     }
 
     public function store(Request $request)
     {
         $validated = $request->validate([
-            'product_ids'   => ['required', 'array', 'min:1'],
-            'address'       => ['required', 'array'],
-            'product_ids.*' => ['integer', 'exists:products,id'],
-            'quantities'    => ['nullable', 'array'],
-            'is_buy_now'    => ['nullable', 'boolean'],
+            'product_ids'      => ['required', 'array', 'min:1'],
+            'address'          => ['required', 'array'],
+            'product_ids.*'    => ['integer', 'exists:products,id'],
+            'quantities'       => ['nullable', 'array'],
+            'is_buy_now'       => ['nullable', 'boolean'],
+            'shipping_service' => ['nullable', 'string', 'in:hemat,reguler,express'],
         ]);
 
         $user = $request->user();
@@ -129,14 +145,22 @@ class CheckoutController extends Controller
             }
         }
 
-        $totalPrice = $items->sum(fn($item) => $item->price_snapshot * $item->quantity);
+        $shippingService = $validated['shipping_service'] ?? ShippingService::SERVICE_REGULER;
+        $buyerLocation = $validated['address']['city'] ?? null;
+        $sellerLocation = $items->first()?->product?->location ?? null;
+        $shippingCost = ShippingService::calculateCost($sellerLocation, $buyerLocation, $shippingService);
 
-        $order = DB::transaction(function () use ($user, $items, $totalPrice, $validated) {
+        $itemsSubtotal = $items->sum(fn($item) => $item->price_snapshot * $item->quantity);
+        $totalPrice = $itemsSubtotal + $shippingCost;
+
+        $order = DB::transaction(function () use ($user, $items, $totalPrice, $validated, $shippingService, $shippingCost) {
             $order = Order::create([
                 'user_id'          => $user->id,
                 'total_price'      => $totalPrice,
                 'status'           => 'pending',
                 'shipping_address' => $validated['address'],
+                'shipping_service' => $shippingService,
+                'shipping_cost'    => $shippingCost,
             ]);
 
             foreach ($items as $item) {

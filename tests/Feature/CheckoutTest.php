@@ -32,6 +32,7 @@ class CheckoutTest extends TestCase
             'category_id' => $category->id,
             'stock' => 10,
             'price' => 100000,
+            'location' => 'Bandung',
         ]);
 
         // Create a cart for the user
@@ -66,10 +67,12 @@ class CheckoutTest extends TestCase
         $this->assertNotNull($order);
         $response->assertRedirect(route('orders.payment', ['id' => $order->id]));
 
-        // Assert database has order
+        // Assert database has order with calculated shipping cost
         $this->assertDatabaseHas('orders', [
             'user_id' => $user->id,
-            'total_price' => 200000,
+            'total_price' => 222000,
+            'shipping_service' => 'reguler',
+            'shipping_cost' => 22000,
             'status' => 'pending',
         ]);
 
@@ -94,6 +97,7 @@ class CheckoutTest extends TestCase
             'category_id' => $category->id,
             'stock' => 10,
             'price' => 120000,
+            'location' => 'Bandung',
         ]);
 
         $addressData = [
@@ -128,10 +132,12 @@ class CheckoutTest extends TestCase
         $this->assertNotNull($order);
         $response->assertRedirect(route('orders.payment', ['id' => $order->id]));
 
-        // Assert database has order
+        // Assert database has order with calculated shipping cost
         $this->assertDatabaseHas('orders', [
             'user_id' => $user->id,
-            'total_price' => 360000, // 3 * 120000
+            'total_price' => 382000, // 3 * 120000 + 22000 shipping
+            'shipping_service' => 'reguler',
+            'shipping_cost' => 22000,
             'status' => 'pending',
         ]);
 

@@ -16,6 +16,8 @@ class ProductController extends Controller
         $product = Product::where('id', $id)
             ->with([
                 'images',
+                'category',
+                'categories',
                 'user' => function ($q) {
                     $q->withCount(['products' => function ($sq) {
                         $sq->where('is_active', true);
@@ -38,15 +40,17 @@ class ProductController extends Controller
     public function edit($id)
     {
         $user = Auth::user();
-        $product = Product::where('id', $id)->with('images')->firstOrFail();
+        $product = Product::where('id', $id)->with(['images', 'categories', 'category'])->firstOrFail();
 
-        if($product->user_id !== $user->id) {
+        if ($product->user_id !== $user->id) {
             return redirect()->route('product.show', ['id' => $id])->with('error', 'Anda tidak memiliki izin untuk mengedit produk ini.');
         }
 
+        $categories = \App\Models\Category::all();
 
         return Inertia::render('Edit', [
-            'product' => $product,
+            'product'    => $product,
+            'categories' => $categories,
         ]);
     }
 
@@ -72,16 +76,24 @@ class ProductController extends Controller
             return redirect()->route('product.show', ['id' => $id])->with('error', 'Anda tidak memiliki izin untuk mengedit produk ini.');
         }
 
+        $rawKategori = $request->input('kategori_ids') ?? $request->input('kategori');
+        $kategoriIds = is_array($rawKategori) ? $rawKategori : [$rawKategori];
+        $kategoriIds = array_slice(array_values(array_unique(array_map('intval', array_filter($kategoriIds)))), 0, 3);
+        if (empty($kategoriIds)) {
+            $kategoriIds = [$product->category_id ?: 1];
+        }
+
         $validated = $request->validate([
-            'judul'    => ['required', 'string', 'max:255'],
-            'harga'    => ['required', 'numeric', 'min:0'],
-            'stok'     => ['required', 'integer', 'min:0'],
-            'deskripsi'=> ['required', 'string'],
-            'lokasi'   => ['nullable', 'string', 'max:255'],
-            'kategori' => ['required', 'numeric', 'max:6'],
-            'photo1'   => ['nullable', 'image', 'max:2048'],
-            'photo2'   => ['nullable', 'image', 'max:2048'],
-            'photo3'   => ['nullable', 'image', 'max:2048'],
+            'judul'        => ['required', 'string', 'max:255'],
+            'harga'        => ['required', 'numeric', 'min:0'],
+            'stok'         => ['required', 'integer', 'min:0'],
+            'deskripsi'    => ['required', 'string'],
+            'lokasi'       => ['nullable', 'string', 'max:255'],
+            'kategori'     => ['nullable'],
+            'kategori_ids' => ['nullable', 'array', 'min:1', 'max:3'],
+            'photo1'       => ['nullable', 'image', 'max:2048'],
+            'photo2'       => ['nullable', 'image', 'max:2048'],
+            'photo3'       => ['nullable', 'image', 'max:2048'],
         ]);
 
         $product->update([
@@ -90,8 +102,10 @@ class ProductController extends Controller
             'price'       => $validated['harga'],
             'stock'       => $validated['stok'],
             'location'    => $validated['lokasi'] ?? $product->location,
-            'category_id' => $validated['kategori'],
+            'category_id' => $kategoriIds[0],
         ]);
+
+        $product->categories()->sync($kategoriIds);
 
         foreach (['photo1', 'photo2', 'photo3'] as $photoField) {
             if ($request->hasFile($photoField)) {

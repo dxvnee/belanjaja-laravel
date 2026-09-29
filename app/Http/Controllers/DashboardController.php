@@ -31,15 +31,22 @@ class DashboardController extends Controller
 
         $totalProductsCount = Product::where('is_active', true)->count();
 
-        $query = Product::with(['images', 'category'])
+        $query = Product::with(['images', 'category', 'categories'])
             ->withAvg('reviews', 'rating')
             ->withCount('reviews')
             ->where('is_active', true);
 
-        // Apply category filter if selected
+        // Apply category filter if selected (matches primary category or any of 3 categories by slug or id)
         if ($selectedCategory) {
-            $query->whereHas('category', function ($q) use ($selectedCategory) {
-                $q->where('slug', $selectedCategory);
+            $query->where(function ($q) use ($selectedCategory) {
+                $filterFn = function ($cq) use ($selectedCategory) {
+                    if (is_numeric($selectedCategory)) {
+                        $cq->where('categories.id', $selectedCategory);
+                    } else {
+                        $cq->where('slug', $selectedCategory);
+                    }
+                };
+                $q->whereHas('categories', $filterFn)->orWhereHas('category', $filterFn);
             });
         }
 
@@ -187,7 +194,11 @@ class DashboardController extends Controller
         $query = trim($request->input('query', ''));
         $selectedCategory = $request->input('category');
 
-        $products = Product::with(['images', 'category'])
+        $categories = Category::withCount(['products' => function ($q) {
+            $q->where('is_active', true);
+        }])->get();
+
+        $products = Product::with(['images', 'category', 'categories'])
             ->withAvg('reviews', 'rating')
             ->withCount('reviews')
             ->where('is_active', true)
@@ -200,8 +211,15 @@ class DashboardController extends Controller
                 });
             })
             ->when($selectedCategory, function ($query) use ($selectedCategory) {
-                $query->whereHas('category', function ($q) use ($selectedCategory) {
-                    $q->where('slug', $selectedCategory);
+                $query->where(function ($q) use ($selectedCategory) {
+                    $filterFn = function ($cq) use ($selectedCategory) {
+                        if (is_numeric($selectedCategory)) {
+                            $cq->where('categories.id', $selectedCategory);
+                        } else {
+                            $cq->where('slug', $selectedCategory);
+                        }
+                    };
+                    $q->whereHas('categories', $filterFn)->orWhereHas('category', $filterFn);
                 });
             })
             ->latest()
@@ -209,14 +227,17 @@ class DashboardController extends Controller
             ->withQueryString();
 
         return Inertia::render('Search', [
-            'products' => $products,
-            'query' => $query,
+            'products'         => $products,
+            'query'            => $query,
+            'categories'       => $categories,
+            'selectedCategory' => $selectedCategory,
         ]);
     }
 
     public function searchPreview(Request $request)
     {
-        $query = trim($request->input('query', ''));
+        $query = trim($request->input('query', $request->input('q', '')));
+        $selectedCategory = $request->input('category', $request->input('category_id'));
 
         if ($query === '') {
             return response()->json(['products' => []]);
@@ -224,11 +245,23 @@ class DashboardController extends Controller
 
         $term = '%' . strtolower($query) . '%';
 
-        $products = Product::with(['images', 'category'])
+        $products = Product::with(['images', 'category', 'categories'])
             ->where('is_active', true)
             ->where(function ($sub) use ($term) {
                 $sub->whereRaw('LOWER(name) LIKE ?', [$term])
                     ->orWhereRaw('LOWER(description) LIKE ?', [$term]);
+            })
+            ->when($selectedCategory, function ($q) use ($selectedCategory) {
+                $q->where(function ($sq) use ($selectedCategory) {
+                    $filterFn = function ($cq) use ($selectedCategory) {
+                        if (is_numeric($selectedCategory)) {
+                            $cq->where('categories.id', $selectedCategory);
+                        } else {
+                            $cq->where('slug', $selectedCategory);
+                        }
+                    };
+                    $sq->whereHas('categories', $filterFn)->orWhereHas('category', $filterFn);
+                });
             })
             ->latest()
             ->take(5)

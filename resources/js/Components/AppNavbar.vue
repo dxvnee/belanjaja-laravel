@@ -164,7 +164,7 @@ const cart = () => {
                         :href="route('admin.show')"
                         :active="route().current('admin.show')"
                     >
-                        Jualan Saya
+                        Dashboard Penjual
                     </ResponsiveNavLink>
 
                     <ResponsiveNavLink

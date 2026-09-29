@@ -3,13 +3,22 @@ import AppLayout from "@/Layouts/AppLayout.vue";
 import ProductCard from "@/Components/ProductCard.vue";
 import Pagination from "@/Components/Pagination.vue";
 import EmptyState from "@/Components/EmptyState.vue";
+import CategoryFilter from "@/Components/CategoryFilter.vue";
 import { router } from "@inertiajs/vue3";
 
-defineProps({
+const props = defineProps({
     products: Object,
     query: {
         type: String,
         default: "",
+    },
+    categories: {
+        type: Array,
+        default: () => [],
+    },
+    selectedCategory: {
+        type: String,
+        default: null,
     },
 });
 
@@ -35,6 +44,26 @@ const goToProductDetail = (id) => {
                 </template>
             </p>
         </slot>
+
+        <div v-if="categories && categories.length > 0" class="mb-6 space-y-2">
+            <div class="flex items-center justify-between">
+                <p class="text-xs font-semibold text-gray-500 dark:text-gray-400">
+                    Saring Berdasarkan Kategori:
+                </p>
+                <button
+                    v-if="selectedCategory"
+                    type="button"
+                    @click="router.get(route('dashboard.search'), { query }, { preserveState: true, preserveScroll: true })"
+                    class="text-xs font-semibold text-primary-600 dark:text-primary-400 hover:underline cursor-pointer"
+                >
+                    Hapus Filter Kategori
+                </button>
+            </div>
+            <CategoryFilter
+                :categories="categories"
+                :selected="selectedCategory"
+            />
+        </div>
 
         <div
             v-if="products.data.length === 0"

@@ -16,13 +16,18 @@ const props = defineProps({
 
 const photoSlots = [1, 2, 3];
 
+const initialCategoryIds = props.product.categories && props.product.categories.length > 0
+    ? props.product.categories.map((c) => c.id)
+    : [props.product.category_id || 1];
+
 const form = useForm({
     judul: props.product.name,
     harga: props.product.price,
     stok: props.product.stock,
     lokasi: props.product.location || "",
     deskripsi: props.product.description,
-    kategori: props.product.category_id,
+    kategori: initialCategoryIds[0],
+    kategori_ids: initialCategoryIds,
     images: props.product.images || [],
     photo1: null,
     photo2: null,
