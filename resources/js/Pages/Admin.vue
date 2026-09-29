@@ -44,9 +44,8 @@ const props = defineProps({
 
 const flash = computed(() => usePage().props.flash ?? {});
 
-// Product filtering & search
 const productSearch = ref("");
-const productFilter = ref("all"); // 'all', 'in_stock', 'out_of_stock'
+const productFilter = ref("all");
 
 const filteredProducts = computed(() => {
     return props.products.filter((p) => {
@@ -80,7 +79,6 @@ const formatDate = (dateStr) => {
     });
 };
 
-// Shipping Modal logic
 const shippingModal = ref(false);
 const selectedOrder = ref(null);
 const trackingNumber = ref("");

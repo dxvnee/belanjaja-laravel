@@ -1,5 +1,5 @@
 <script setup>
-import { Link } from "@inertiajs/vue3";
+import { Link, router } from "@inertiajs/vue3";
 import Card from "@/Components/Card.vue";
 import { useHelpers } from "@/Composable/useHelpers";
 import PrimaryButton from "./PrimaryButton.vue";
@@ -92,14 +92,16 @@ const onImageError = (event) => {
         <!-- Action Buttons -->
         <div class="flex items-center gap-2 pt-3 border-t border-gray-100 dark:border-gray-700/60">
             <PrimaryButton
-                :href="route('product.show', { id: product.id })"
-                class="flex-1 text-center py-1.5 px-2.5  text-sm"
+                type="button"
+                @click="router.visit(route('product.show', { id: product.id }))"
+                class="flex-1 text-center py-1.5 px-2.5 text-sm cursor-pointer"
             >
                 Lihat
             </PrimaryButton>
             <PrimaryButton
-                :href="route('product.edit', { id: product.id })"
-                class="flex-1 text-center py-1.5 px-2.5 text-sm"
+                type="button"
+                @click="router.visit(route('product.edit', { id: product.id }))"
+                class="flex-1 text-center py-1.5 px-2.5 text-sm cursor-pointer"
             >
                 Edit
             </PrimaryButton>
